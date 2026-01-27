@@ -18,6 +18,23 @@ const MAPPING = {
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
+  // Cards screen icons
+  'chevron.left': 'chevron-left',
+  'magnifyingglass': 'search',
+  'questionmark.circle': 'help-outline',
+  'person.circle': 'account-circle',
+  'plus': 'add',
+  'slider.horizontal.3': 'tune',
+  'square.grid.2x2': 'grid-view',
+  'arrow.up.arrow.down': 'swap-vert',
+  // Drawer actions
+  creditcard: 'credit-card',
+  'doc.text': 'description',
+  gift: 'card-giftcard',
+  globe: 'public',
+  'hand.tap': 'touch-app',
+  link: 'link',
+  'qrcode.viewfinder': 'qr-code-scanner',
 } as IconMapping;
 
 /**
