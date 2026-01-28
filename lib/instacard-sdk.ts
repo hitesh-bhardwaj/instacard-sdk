@@ -119,7 +119,7 @@ export function generateDevToken(): string {
 export const DEV_SDK_CONFIG: SDKConfig = {
   // pwaBaseUrl: 'http://localhost:3000',
   // pwaBaseUrl: "http://192.168.3.1:3000",
-  pwaBaseUrl: "http://10.5.50.29:3000",
+  pwaBaseUrl: "http://10.5.50.29:3000/card-detail",
   userToken: generateDevToken(),
   environment: "development",
 };

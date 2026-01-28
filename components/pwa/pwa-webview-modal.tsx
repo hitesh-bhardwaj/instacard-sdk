@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { ActivityIndicator, Modal, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 
 import { CardsHeader } from '@/components/cards/cards-header';
@@ -59,7 +59,7 @@ export function PWAWebViewModal({ visible, config, onClose }: PWAWebViewModalPro
         case 'CARD_ADDED':
           onClose({
             success: true,
-            data: data as CardAddedData,
+            data: data as unknown as CardAddedData,
           });
           break;
 
@@ -110,6 +110,7 @@ export function PWAWebViewModal({ visible, config, onClose }: PWAWebViewModalPro
       presentationStyle="pageSheet"
       onRequestClose={handleClose}
     >
+      
       <View style={styles.container}>
         <CardsHeader
           subtitle={currentScreen}
