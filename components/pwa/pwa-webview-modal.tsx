@@ -3,30 +3,35 @@ import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, View } fr
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 
 import { CardsHeader } from '@/components/cards/cards-header';
-import { SheetContainer } from '@/components/ui/sheet-container';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { SheetContainer } from '@/components/ui/sheet-container';
 import { InstacardColors } from '@/constants/colors';
 import {
   buildPWAUrl,
+  CardAddedData,
   parseWebViewMessage,
   SDKConfig,
   SDKResult,
-  CardAddedData,
 } from '@/lib/instacard-sdk';
 
 interface PWAWebViewModalProps {
   visible: boolean;
   config: SDKConfig;
   onClose: (result: SDKResult) => void;
+  /**
+   * Optional route inside the PWA to open, e.g. '/card-detail'.
+   * If not provided, root ('/') is used.
+   */
+  route?: string;
 }
 
-export function PWAWebViewModal({ visible, config, onClose }: PWAWebViewModalProps) {
+export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewModalProps) {
   const webViewRef = useRef<WebView>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentScreen, setCurrentScreen] = useState('Instacard');
   const [error, setError] = useState<string | null>(null);
 
-  const pwaUrl = buildPWAUrl(config);
+  const pwaUrl = buildPWAUrl({ ...config, route });
 
   const handleMessage = useCallback(
     (event: WebViewMessageEvent) => {

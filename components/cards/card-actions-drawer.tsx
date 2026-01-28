@@ -1,11 +1,15 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { CardData, CardImages } from '@/constants/cards';
 import { InstacardColors } from '@/constants/colors';
+import { DEV_SDK_CONFIG } from '@/lib/instacard-sdk';
+import { ScrollView } from 'react-native-gesture-handler';
+import LinkthePhyicalUniversalCard from '../Modals/LinkthePhyicalUniversalCard';
+import { PWAWebViewModal } from '../pwa/pwa-webview-modal';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const DRAWER_HEIGHT = Math.min(560, SCREEN_HEIGHT * 0.5);
@@ -47,6 +51,9 @@ export function CardActionsDrawer({
 }: CardActionsDrawerProps) {
   const insets = useSafeAreaInsets();
   const sheetRef = useRef<BottomSheetModal>(null);
+  const [linkPhysicalVisible, setLinkPhysicalVisible] = useState<boolean>(false);
+  const [viewCardDetail, setViewCardDetail] = useState<boolean>(false);
+  const [viewManageCard, setViewManageCard] = useState<boolean>(false);
 
   const snapPoints = useMemo(() => [DRAWER_HEIGHT], []);
 
@@ -70,90 +77,124 @@ export function CardActionsDrawer({
   }, [onClose]);
 
   return (
-    <BottomSheetModal
-      ref={sheetRef}
-      index={0}
-      snapPoints={snapPoints}
-      enablePanDownToClose
-      enableDismissOnClose
-      handleIndicatorStyle={styles.handleIndicator}
-      backgroundStyle={styles.sheetBackground}
-      backdropComponent={null}
-      onDismiss={handleDismiss}
-    >
-      <BottomSheetScrollView
-        contentContainerStyle={[styles.sheetContent, { paddingBottom: insets.bottom + 16 }]}
-        showsVerticalScrollIndicator={false}
+    <>
+      <BottomSheetModal
+        ref={sheetRef}
+        index={0}
+        snapPoints={snapPoints}
+        enablePanDownToClose
+        enableDismissOnClose
+        handleIndicatorStyle={styles.handleIndicator}
+        backgroundStyle={styles.sheetBackground}
+        backdropComponent={() => null}
+        onDismiss={handleDismiss}
       >
-        <View style={styles.carouselContainer}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.carouselContent}
-          >
-            {cards.map((card) => {
-              const isSelected = card.id === selectedCard?.id;
-              return (
-                <TouchableOpacity
-                  key={card.id}
-                  style={[styles.cardThumb, isSelected && styles.cardThumbSelected]}
-                  activeOpacity={0.9}
-                  onPress={() => onSelectCard?.(card)}
-                  accessibilityRole="button"
-                  accessibilityLabel={`${card.name} card ending in ${card.cardNumber.slice(-4)}`}
-                  accessibilityState={{ selected: isSelected }}
-                >
-                  <Image
-                    source={CardImages[card.imageId]}
-                    style={styles.cardThumbImage}
-                    resizeMode="contain"
-                    accessibilityIgnoresInvertColors
-                  />
-                  {isSelected ? <View style={styles.selectedDot} /> : null}
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-        </View>
-
-        <View style={styles.actionsGrid}>
-          {ACTIONS.map((action) => (
-            <TouchableOpacity
-              key={action.id}
-              style={styles.actionCard}
-              activeOpacity={0.9}
-              onPress={() => {
-                if (selectedCard) {
-                  onActionPress?.(action.id, selectedCard);
-                }
-              }}
-              accessibilityRole="button"
-              accessibilityLabel={action.title}
+        <BottomSheetScrollView
+          contentContainerStyle={[styles.sheetContent, { paddingBottom: insets.bottom + 16 }]}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.carouselContainer}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.carouselContent}
             >
-              <View style={styles.actionHeader}>
-                <IconSymbol
-                  name={action.icon}
-                  size={22}
-                  color={InstacardColors.primary}
-                />
-                <IconSymbol
-                  name="questionmark.circle"
-                  size={18}
-                  color={InstacardColors.tabInactive}
-                />
-              </View>
-              <Text style={styles.actionText}>{action.title}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </BottomSheetScrollView>
-    </BottomSheetModal>
+              {cards.map((card) => {
+                const isSelected = card.id === selectedCard?.id;
+                return (
+                  <TouchableOpacity
+                    key={card.id}
+                    style={[styles.cardThumb, isSelected && styles.cardThumbSelected]}
+                    activeOpacity={0.7}
+                    onPress={() => onSelectCard?.(card)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${card.name} card ending in ${card.cardNumber.slice(-4)}`}
+                    accessibilityState={{ selected: isSelected }}
+                  >
+                    <Image
+                      source={CardImages[card.imageId]}
+                      style={styles.cardThumbImage}
+                      resizeMode="contain"
+                      accessibilityIgnoresInvertColors
+                    />
+                    {isSelected ? <View style={styles.selectedDot} /> : null}
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
+
+          <View style={styles.actionsGrid}>
+            {ACTIONS.map((action) => (
+              <TouchableOpacity
+                key={action.id}
+                style={styles.actionCard}
+                activeOpacity={0.9}
+                onPress={() => {
+                  if (selectedCard) {
+                    onActionPress?.(action.id, selectedCard);
+                  }
+                  if (action.id === 'link-physical') {
+                    setLinkPhysicalVisible(true);
+                  }
+                  if (action.id === 'card-details') {
+                    setViewCardDetail(true);
+                  }
+                  if (action.id === 'manage') {
+                    setViewManageCard(true);
+                  }
+                }}
+                accessibilityRole="button"
+                accessibilityLabel={action.title}
+              >
+                <View style={styles.actionHeader}>
+                  <IconSymbol
+                    name={action.icon}
+                    size={22}
+                    color={InstacardColors.primary}
+                  />
+                  <IconSymbol
+                    name="questionmark.circle"
+                    size={18}
+                    color={InstacardColors.tabInactive}
+                  />
+                </View>
+                <Text style={styles.actionText}>{action.title}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </BottomSheetScrollView>
+      </BottomSheetModal>
+      <LinkthePhyicalUniversalCard
+        visible={linkPhysicalVisible}
+        onClose={() => setLinkPhysicalVisible(false)}
+      />
+      <PWAWebViewModal
+        visible={viewCardDetail}
+        config={DEV_SDK_CONFIG}
+        route="/card-detail"
+        onClose={() =>
+          setViewCardDetail(false)
+        }
+      />
+      <PWAWebViewModal
+        visible={viewManageCard}
+        config={DEV_SDK_CONFIG}
+        route="/manage-card"
+        onClose={() =>
+          setViewManageCard(false)
+        }
+      />
+    </>
+
   );
 }
 
 const styles = StyleSheet.create({
   sheetBackground: {
     backgroundColor: InstacardColors.white,
+    borderColor: InstacardColors.border,
+    borderWidth: 1,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
   },

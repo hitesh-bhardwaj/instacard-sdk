@@ -38,6 +38,11 @@ export interface CardAddedData {
 export interface SDKConfig {
   /** Base URL for the PWA (e.g., http://localhost:3000 for dev) */
   pwaBaseUrl: string;
+  /**
+   * Optional route/path inside the PWA, e.g. '/card-detail' or 'card-detail'.
+   * If not provided, '/' (root) will be used.
+   */
+  route?: string;
   /** JWT token for authentication */
   userToken: string;
   /** Optional: Pre-select card type */
@@ -59,10 +64,18 @@ export interface SDKResult {
 }
 
 /**
- * Build the PWA URL with authentication parameters
+ * Build the PWA URL with authentication parameters and optional route
  */
 export function buildPWAUrl(config: SDKConfig): string {
   const url = new URL(config.pwaBaseUrl);
+
+  // Apply optional route (fallback to root if none provided)
+  if (config.route && config.route.trim() !== "") {
+    const normalized = config.route.startsWith("/")
+      ? config.route
+      : `/${config.route}`;
+    url.pathname = normalized;
+  }
 
   // Add authentication token
   url.searchParams.set("token", config.userToken);
@@ -119,7 +132,7 @@ export function generateDevToken(): string {
 export const DEV_SDK_CONFIG: SDKConfig = {
   // pwaBaseUrl: 'http://localhost:3000',
   // pwaBaseUrl: "http://192.168.3.1:3000",
-  pwaBaseUrl: "http://10.5.50.29:3000/card-detail",
+  pwaBaseUrl: "http://10.5.50.29:3000",
   userToken: generateDevToken(),
   environment: "development",
 };

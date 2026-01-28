@@ -7,8 +7,8 @@ import { CardActionsDrawer } from '@/components/cards/card-actions-drawer';
 import { CardStack } from '@/components/cards/card-stack';
 import { CardsHeader } from '@/components/cards/cards-header';
 import { FilterBar, FilterTab } from '@/components/cards/filter-bar';
-import { GreetingBar } from '@/components/cards/greeting-bar';
 import { FloatingBottomBar } from '@/components/cards/floating-bottom-bar';
+import { GreetingBar } from '@/components/cards/greeting-bar';
 import { PWAWebViewModal } from '@/components/pwa/pwa-webview-modal';
 import { CardData, mockCards } from '@/constants/cards';
 import { InstacardColors } from '@/constants/colors';
@@ -125,6 +125,7 @@ export default function CardsScreen() {
       <PWAWebViewModal
         visible={pwaVisible}
         config={DEV_SDK_CONFIG}
+        route="/"
         onClose={handlePWAClose}
       />
     </View>
