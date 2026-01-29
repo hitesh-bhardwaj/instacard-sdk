@@ -8,8 +8,8 @@ import { CardData, CardImages } from '@/constants/cards';
 import { InstacardColors } from '@/constants/colors';
 import { DEV_SDK_CONFIG } from '@/lib/instacard-sdk';
 import { ScrollView } from 'react-native-gesture-handler';
-import LinkthePhyicalUniversalCard from '../Modals/LinkthePhyicalUniversalCard';
 import { PWAWebViewModal } from '../pwa/pwa-webview-modal';
+import FAQModal from '../Modals/FAQModal';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const DRAWER_HEIGHT = Math.min(560, SCREEN_HEIGHT * 0.5);
@@ -18,6 +18,70 @@ const CARD_THUMB_WIDTH = 100;
 const CARD_THUMB_HEIGHT = CARD_THUMB_WIDTH / CARD_ASPECT;
 const CARD_GAP = 10;
 const ACTION_GAP = 10;
+
+interface FAQData {
+  heading: string;
+  bulletPoints: string[];
+}
+
+const ACTION_FAQ_DATA: Record<string, FAQData> = {
+  'manage': {
+    heading: 'Manage Card',
+    bulletPoints: [
+      'View and update your card settings and preferences.',
+      'Set spending limits and transaction controls.',
+      'Enable or disable online and international transactions.',
+      'Update your PIN or request a new card.',
+      'View your card statement and transaction history.',
+    ],
+  },
+  'card-details': {
+    heading: 'Card Details View',
+    bulletPoints: [
+      'View your complete card information including card number, expiry date, and CVV.',
+      'Copy card details securely for online transactions.',
+      'Card details are protected and require authentication to view.',
+      'You can view details for any of your linked virtual cards.',
+    ],
+  },
+  'online-payment': {
+    heading: 'Make Online Payment',
+    bulletPoints: [
+      'Use your virtual card for secure online purchases.',
+      'Generate a one-time virtual card number for added security.',
+      'Set transaction limits for online payments.',
+      'Track all your online transactions in real-time.',
+    ],
+  },
+  'add-gift': {
+    heading: 'Add a Gift-card',
+    bulletPoints: [
+      'Add gift cards from various retailers to your wallet.',
+      'Manage all your gift cards in one place.',
+      'Check gift card balances and transaction history.',
+      'Use gift cards for in-store and online purchases.',
+    ],
+  },
+  'contactless-default': {
+    heading: 'Make Default for Contactless Payments',
+    bulletPoints: [
+      'Set this card as your default for tap-to-pay transactions.',
+      'Use your phone or smartwatch for contactless payments.',
+      'Enjoy faster checkout at supported terminals.',
+      'Change your default card anytime from settings.',
+    ],
+  },
+  'link-physical': {
+    heading: 'Link to a Physical Universal or Sigma Instacard',
+    bulletPoints: [
+      'You can purchase a Universal Card or a Sigma card from your Bank or any Agent, Marketplace or order online.',
+      'Universal Card or Sigma Card offer unified card experience such that you can link any Virtual Instacard to them to start using the virtual Instacard on any POS/ATM through the linked Universal or Sigma Instacard.',
+      'Sigma Card is a physical card variant of Instacard that is issued by a Bank/ FinTech to allow users to link any Virtual Instacard issued by them for making Domestic as well as International payments.',
+      'Universal Card is another physical card variant of Instacard that users can link any virtual Instacard issued by any Bank/ FinTech in your country for making Domestic Payments through a single Physical Card.',
+      'You can simply link any one Virtual Instacard to a Universal or Sigma Cards to start using the linked Virtual Instacard from the physical card. When you link a new Virtual Instacard to a Universal or Sigma card, previously linked Virtual Instacard is de-linked and you can start using the newly linked Virtual Card from the physical Universal / Sigma card.',
+    ],
+  },
+};
 
 const ACTIONS = [
   { id: 'manage', title: 'Manage Card', icon: 'creditcard' },
@@ -51,7 +115,8 @@ export function CardActionsDrawer({
 }: CardActionsDrawerProps) {
   const insets = useSafeAreaInsets();
   const sheetRef = useRef<BottomSheetModal>(null);
-  const [linkPhysicalVisible, setLinkPhysicalVisible] = useState<boolean>(false);
+  const [faqModalVisible, setFaqModalVisible] = useState<boolean>(false);
+  const [currentFaqData, setCurrentFaqData] = useState<FAQData | undefined>(undefined);
   const [viewCardDetail, setViewCardDetail] = useState<boolean>(false);
   const [viewManageCard, setViewManageCard] = useState<boolean>(false);
 
@@ -75,6 +140,11 @@ export function CardActionsDrawer({
   const handleDismiss = useCallback(() => {
     onClose();
   }, [onClose]);
+
+  const handleFaqPress = useCallback((actionId: string) => {
+    setCurrentFaqData(ACTION_FAQ_DATA[actionId]);
+    setFaqModalVisible(true);
+  }, []);
 
   return (
     <>
@@ -134,9 +204,9 @@ export function CardActionsDrawer({
                   if (selectedCard) {
                     onActionPress?.(action.id, selectedCard);
                   }
-                  if (action.id === 'link-physical') {
-                    setLinkPhysicalVisible(true);
-                  }
+                  // if (action.id === 'link-physical') {
+                  //   setLinkPhysicalVisible(true);
+                  // }
                   if (action.id === 'card-details') {
                     setViewCardDetail(true);
                   }
@@ -153,11 +223,21 @@ export function CardActionsDrawer({
                     size={22}
                     color={InstacardColors.primary}
                   />
-                  <IconSymbol
-                    name="questionmark.circle"
-                    size={18}
-                    color={InstacardColors.tabInactive}
-                  />
+
+                  <TouchableOpacity
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      handleFaqPress(action.id);
+                    }}
+                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  >
+                    <IconSymbol
+                      name="questionmark.circle"
+                      size={18}
+                      color={InstacardColors.tabInactive}
+                    />
+                  </TouchableOpacity>
+
                 </View>
                 <Text style={styles.actionText}>{action.title}</Text>
               </TouchableOpacity>
@@ -165,9 +245,10 @@ export function CardActionsDrawer({
           </View>
         </BottomSheetScrollView>
       </BottomSheetModal>
-      <LinkthePhyicalUniversalCard
-        visible={linkPhysicalVisible}
-        onClose={() => setLinkPhysicalVisible(false)}
+      <FAQModal
+        visible={faqModalVisible}
+        onClose={() => setFaqModalVisible(false)}
+        data={currentFaqData}
       />
       <PWAWebViewModal
         visible={viewCardDetail}
@@ -189,6 +270,8 @@ export function CardActionsDrawer({
 
   );
 }
+
+
 
 const styles = StyleSheet.create({
   sheetBackground: {
