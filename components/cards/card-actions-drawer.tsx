@@ -119,6 +119,7 @@ export function CardActionsDrawer({
   const [currentFaqData, setCurrentFaqData] = useState<FAQData | undefined>(undefined);
   const [viewCardDetail, setViewCardDetail] = useState<boolean>(false);
   const [viewManageCard, setViewManageCard] = useState<boolean>(false);
+  const [linkPhysicalVisible, setLinkPhysicalVisible] = useState<boolean>(false);
 
   const snapPoints = useMemo(() => [DRAWER_HEIGHT], []);
 
@@ -204,9 +205,9 @@ export function CardActionsDrawer({
                   if (selectedCard) {
                     onActionPress?.(action.id, selectedCard);
                   }
-                  // if (action.id === 'link-physical') {
-                  //   setLinkPhysicalVisible(true);
-                  // }
+                  if (action.id === 'link-physical') {
+                    setLinkPhysicalVisible(true);
+                  }
                   if (action.id === 'card-details') {
                     setViewCardDetail(true);
                   }
@@ -264,6 +265,14 @@ export function CardActionsDrawer({
         route="/manage-card"
         onClose={() =>
           setViewManageCard(false)
+        }
+      />
+      <PWAWebViewModal
+        visible={linkPhysicalVisible}
+        config={DEV_SDK_CONFIG}
+        route="/link-physical-card"
+        onClose={() =>
+          setLinkPhysicalVisible(false)
         }
       />
     </>
