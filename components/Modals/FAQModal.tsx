@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     },
     bulletItem: {
         flexDirection: 'row',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         gap: 8,
     },
     bulletDot: {

@@ -84,6 +84,7 @@ export default function CardsScreen() {
             experimentalBlurMethod={Platform.OS === 'android' ? 'dimezisBlurView' : 'none'}
             blurReductionFactor={Platform.OS === 'android' ? 6 : 4}
             style={StyleSheet.absoluteFillObject}
+            
           />
           <GreetingBar
             userName="Nirdesh Malik"
