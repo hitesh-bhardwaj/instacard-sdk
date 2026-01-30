@@ -110,6 +110,24 @@ export function parseWebViewMessage(data: string): InstacardEvent | null {
 }
 
 /**
+ * Create a message to send to the PWA WebView
+ * Used for native-to-PWA communication (e.g., back button events)
+ */
+export function createWebViewMessage(
+  event: InstacardEventType,
+  data?: Record<string, unknown>,
+): string {
+  const message: InstacardEvent = {
+    type: "INSTACARD_EVENT",
+    payload: {
+      event,
+      data,
+    },
+  };
+  return JSON.stringify(message);
+}
+
+/**
  * Generate a mock JWT token for development
  */
 export function generateDevToken(): string {

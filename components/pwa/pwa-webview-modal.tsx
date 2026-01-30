@@ -1,6 +1,15 @@
-import { useCallback, useRef, useState } from 'react';
-import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { WebView, WebViewMessageEvent } from 'react-native-webview';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  ActivityIndicator,
+  BackHandler,
+  Modal,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { WebView, WebViewMessageEvent, WebViewNavigation } from 'react-native-webview';
 
 import { CardsHeader } from '@/components/cards/cards-header';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -9,6 +18,7 @@ import { InstacardColors } from '@/constants/colors';
 import {
   buildPWAUrl,
   CardAddedData,
+  createWebViewMessage,
   parseWebViewMessage,
   SDKConfig,
   SDKResult,
@@ -27,11 +37,46 @@ interface PWAWebViewModalProps {
 
 export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewModalProps) {
   const webViewRef = useRef<WebView>(null);
+  const canGoBackRef = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currentScreen, setCurrentScreen] = useState('Instacard');
   const [error, setError] = useState<string | null>(null);
 
   const pwaUrl = buildPWAUrl({ ...config, route });
+
+  /**
+   * Handle Android hardware back button press
+   * - If WebView can go back, navigate back within the WebView
+   * - If not, send USER_CANCELLED event and allow modal to close
+   */
+  useEffect(() => {
+    if (!visible || Platform.OS !== 'android') {
+      return;
+    }
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (canGoBackRef.current && webViewRef.current) {
+        // WebView has navigation history - go back within PWA
+        webViewRef.current.goBack();
+        return true; // Prevent default behavior (closing modal)
+      }
+
+      // No more PWA history - send cancellation event to PWA
+      webViewRef.current?.postMessage(createWebViewMessage('USER_CANCELLED'));
+
+      // Allow modal to close
+      return false;
+    });
+
+    return () => backHandler.remove();
+  }, [visible]);
+
+  /**
+   * Track WebView navigation state to know if we can go back
+   */
+  const handleNavigationStateChange = useCallback((navState: WebViewNavigation) => {
+    canGoBackRef.current = navState.canGoBack;
+  }, []);
 
   const handleMessage = useCallback(
     (event: WebViewMessageEvent) => {
@@ -90,7 +135,18 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
     [onClose]
   );
 
+  /**
+   * Handle close/back action from header or modal dismiss
+   * Uses same logic as hardware back: go back in WebView if possible
+   */
   const handleClose = useCallback(() => {
+    if (canGoBackRef.current && webViewRef.current) {
+      // WebView has navigation history - go back within PWA
+      webViewRef.current.goBack();
+      return;
+    }
+
+    // No more PWA history - close the modal
     onClose({
       success: false,
       cancelled: true,
@@ -160,6 +216,7 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
                 onLoadEnd={() => setIsLoading(false)}
                 onError={handleLoadError}
                 onHttpError={handleLoadError}
+                onNavigationStateChange={handleNavigationStateChange}
                 javaScriptEnabled
                 domStorageEnabled
                 startInLoadingState
