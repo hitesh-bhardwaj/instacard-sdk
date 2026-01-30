@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { InstacardColors } from '@/constants/colors';
+import { hapticLight, hapticMedium } from '@/lib/haptics';
 
 interface FloatingBottomBarProps {
   onHomePress?: () => void;
@@ -19,20 +20,38 @@ export function FloatingBottomBar({
 
   return (
     <View style={[styles.bottomBar, { bottom: insets.bottom + 16 }]}>
-      <TouchableOpacity style={styles.bottomAction} onPress={onHomePress}>
+      <TouchableOpacity
+        style={styles.bottomAction}
+        onPress={() => {
+          hapticLight();
+          onHomePress?.();
+        }}
+      >
         <IconSymbol name="house.fill" size={20} color={InstacardColors.textOnPrimary} />
         <Text style={styles.bottomText}>Home</Text>
       </TouchableOpacity>
 
       <View style={styles.centerSlot} />
 
-      <TouchableOpacity style={styles.bottomAction} onPress={onAddPress}>
+      <TouchableOpacity
+        style={styles.bottomAction}
+        onPress={() => {
+          hapticLight();
+          onAddPress?.();
+        }}
+      >
         <IconSymbol name="plus" size={20} color={InstacardColors.textOnPrimary} />
         <Text style={styles.bottomText}>Add Instacard</Text>
       </TouchableOpacity>
 
       <View style={styles.centerButtonWrap}>
-        <TouchableOpacity style={styles.centerButton} onPress={onScanPress}>
+        <TouchableOpacity
+          style={styles.centerButton}
+          onPress={() => {
+            hapticMedium();
+            onScanPress?.();
+          }}
+        >
           <IconSymbol
             name="qrcode.viewfinder"
             size={24}

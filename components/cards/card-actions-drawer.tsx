@@ -1,15 +1,16 @@
 import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { CardData, CardImages } from '@/constants/cards';
 import { InstacardColors } from '@/constants/colors';
+import { hapticLight, hapticSelection } from '@/lib/haptics';
 import { DEV_SDK_CONFIG } from '@/lib/instacard-sdk';
-import { ScrollView } from 'react-native-gesture-handler';
-import { PWAWebViewModal } from '../pwa/pwa-webview-modal';
 import FAQModal from '../Modals/FAQModal';
+import { PWAWebViewModal } from '../pwa/pwa-webview-modal';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const DRAWER_HEIGHT = Math.min(SCREEN_HEIGHT * 0.42);
@@ -177,7 +178,10 @@ export function CardActionsDrawer({
                     key={card.id}
                     style={[styles.cardThumb, isSelected && styles.cardThumbSelected]}
                     activeOpacity={0.7}
-                    onPress={() => onSelectCard?.(card)}
+                    onPress={() => {
+                      hapticSelection();
+                      onSelectCard?.(card);
+                    }}
                     accessibilityRole="button"
                     accessibilityLabel={`${card.name} card ending in ${card.cardNumber.slice(-4)}`}
                     accessibilityState={{ selected: isSelected }}
@@ -202,6 +206,7 @@ export function CardActionsDrawer({
                 style={styles.actionCard}
                 activeOpacity={0.9}
                 onPress={() => {
+                  hapticLight();
                   if (selectedCard) {
                     onActionPress?.(action.id, selectedCard);
                   }
@@ -228,6 +233,7 @@ export function CardActionsDrawer({
                   <TouchableOpacity
                     onPress={(e) => {
                       e.stopPropagation();
+                      hapticLight();
                       handleFaqPress(action.id);
                     }}
                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}

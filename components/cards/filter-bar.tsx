@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { InstacardColors } from '@/constants/colors';
+import { hapticLight } from '@/lib/haptics';
 
 import { CardFilterType, FilterDropdown } from './filter-dropdown';
 
@@ -52,6 +53,7 @@ export function FilterBar({
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const handleFilterTabPress = () => {
+    hapticLight();
     setDropdownVisible(true);
   };
 
@@ -65,7 +67,10 @@ export function FilterBar({
     <View style={styles.container} accessibilityRole="tablist">
       <TouchableOpacity
         style={[styles.tab, activeTab === 'all' && styles.tabActive]}
-        onPress={() => onTabChange('all')}
+        onPress={() => {
+          hapticLight();
+          onTabChange('all');
+        }}
         accessibilityRole="tab"
         accessibilityState={{ selected: activeTab === 'all' }}
         accessibilityLabel={filterLabel}
@@ -94,7 +99,10 @@ export function FilterBar({
 
       <TouchableOpacity
         style={[styles.tab, activeTab === 'recent' && styles.tabActive]}
-        onPress={() => onTabChange('recent')}
+        onPress={() => {
+          hapticLight();
+          onTabChange('recent');
+        }}
         accessibilityRole="tab"
         accessibilityState={{ selected: activeTab === 'recent' }}
         accessibilityLabel="Recently Used"

@@ -15,6 +15,7 @@ import { CardsHeader } from '@/components/cards/cards-header';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { SheetContainer } from '@/components/ui/sheet-container';
 import { InstacardColors } from '@/constants/colors';
+import { hapticLight } from '@/lib/haptics';
 import {
   buildPWAUrl,
   CardAddedData,
@@ -154,6 +155,7 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
   }, [onClose]);
 
   const handleRetry = useCallback(() => {
+    hapticLight();
     setError(null);
     setIsLoading(true);
     webViewRef.current?.reload();

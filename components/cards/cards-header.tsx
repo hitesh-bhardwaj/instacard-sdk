@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { InstacardColors } from '@/constants/colors';
+import { hapticLight } from '@/lib/haptics';
 
 interface CardsHeaderProps {
   onSearchPress?: () => void;
@@ -31,7 +32,10 @@ export function CardsHeader({
         <View style={styles.leftSection}>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={handleBackPress}
+            onPress={() => {
+              hapticLight();
+              handleBackPress();
+            }}
             accessibilityRole="button"
             accessibilityLabel="Go back"
           >
@@ -52,7 +56,10 @@ export function CardsHeader({
         <View style={styles.rightSection}>
           <TouchableOpacity
             style={styles.iconButton}
-            onPress={onSearchPress}
+            onPress={() => {
+              hapticLight();
+              onSearchPress?.();
+            }}
             accessibilityRole="button"
             accessibilityLabel="Search"
           >
@@ -64,7 +71,10 @@ export function CardsHeader({
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.iconButton}
-            onPress={onHelpPress}
+            onPress={() => {
+              hapticLight();
+              onHelpPress?.();
+            }}
             accessibilityRole="button"
             accessibilityLabel="Help"
           >
@@ -76,7 +86,10 @@ export function CardsHeader({
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.avatarButton}
-            onPress={onAvatarPress}
+            onPress={() => {
+              hapticLight();
+              onAvatarPress?.();
+            }}
             accessibilityRole="button"
             accessibilityLabel="Profile"
           >

@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { LayoutChangeEvent, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
+    Easing,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
 } from 'react-native-reanimated';
 
 import { InstacardColors } from '@/constants/colors';
+import { hapticMedium } from '@/lib/haptics';
 
 type ToggleValue = 'virtual' | 'universal';
 
@@ -57,7 +58,10 @@ export function AnimatedToggle({ value, onChange }: AnimatedToggleProps) {
           <TouchableOpacity
             key={option.id}
             style={styles.option}
-            onPress={() => onChange(option.id)}
+            onPress={() => {
+              hapticMedium();
+              onChange(option.id);
+            }}
             activeOpacity={0.9}
             accessibilityRole="tab"
             accessibilityState={{ selected: isActive }}

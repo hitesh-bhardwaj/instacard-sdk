@@ -1,5 +1,6 @@
 import { IconSymbol } from '@/components/ui/icon-symbol'
 import { InstacardColors } from '@/constants/colors'
+import { hapticLight } from '@/lib/haptics'
 import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import React, { useEffect, useMemo, useRef } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
@@ -61,7 +62,15 @@ export default function FAQModal({ visible, onClose, data = DEFAULT_FAQ_DATA }: 
                             Link to a Physical <Text style={styles.highlightText}>Universal</Text> or <Text style={styles.highlightText}>Sigma</Text> Instacard
                         </Text>
                     </View>
-                    <TouchableOpacity onPress={onClose} style={styles.closeButton} accessibilityRole="button" accessibilityLabel="Close">
+                    <TouchableOpacity
+                        onPress={() => {
+                            hapticLight();
+                            onClose();
+                        }}
+                        style={styles.closeButton}
+                        accessibilityRole="button"
+                        accessibilityLabel="Close"
+                    >
                         <IconSymbol name="xmark" size={20} color={InstacardColors.textSecondary} />
                     </TouchableOpacity>
                 </View>

@@ -101,7 +101,7 @@ export default function CardsScreen() {
         <View style={styles.overlay}>
           <BlurView
             intensity={90}
-            tint="default"
+            tint="light"
             experimentalBlurMethod={Platform.OS === 'android' ? 'dimezisBlurView' : 'none'}
             blurReductionFactor={Platform.OS === 'android' ? 6 : 4}
             style={StyleSheet.absoluteFillObject}

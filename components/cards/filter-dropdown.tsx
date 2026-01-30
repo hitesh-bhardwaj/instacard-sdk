@@ -13,6 +13,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { InstacardColors } from '@/constants/colors';
+import { hapticLight, hapticSelection } from '@/lib/haptics';
 
 export type CardFilterType = 'all' | 'debit' | 'credit' | 'prepaid' | 'gift';
 
@@ -44,6 +45,8 @@ export function FilterDropdown({
 }: FilterDropdownProps) {
   const handleToggle = useCallback(
     (filter: CardFilterType) => {
+      hapticSelection();
+      
       if (filter === 'all') {
         // "All Cards" clears other selections
         onSelectionChange(['all']);
@@ -105,7 +108,10 @@ export function FilterDropdown({
                     <Text style={styles.headerText}>Filters</Text>
                   </View>
                   <TouchableOpacity
-                    onPress={onClose}
+                    onPress={() => {
+                      hapticLight();
+                      onClose();
+                    }}
                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                     accessibilityLabel="Close filters"
                     accessibilityRole="button"

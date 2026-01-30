@@ -1,6 +1,7 @@
 import { Image, StyleSheet, TouchableOpacity, View, type ViewStyle } from 'react-native';
 
 import { CardData, CardImages } from '@/constants/cards';
+import { hapticLight } from '@/lib/haptics';
 
 interface CardItemProps {
   card: CardData;
@@ -12,7 +13,10 @@ export function CardItem({ card, onPress, style }: CardItemProps) {
   return (
     <TouchableOpacity
       style={[styles.container, style]}
-      onPress={() => onPress?.(card)}
+      onPress={() => {
+        hapticLight();
+        onPress?.(card);
+      }}
       activeOpacity={1.0}
       accessibilityRole="button"
       accessibilityLabel={`${card.name} ${card.cardType} card ending in ${card.cardNumber.slice(-4)}`}
