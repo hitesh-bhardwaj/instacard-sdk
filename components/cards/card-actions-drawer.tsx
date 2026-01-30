@@ -12,7 +12,7 @@ import { PWAWebViewModal } from '../pwa/pwa-webview-modal';
 import FAQModal from '../Modals/FAQModal';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-const DRAWER_HEIGHT = Math.min(560, SCREEN_HEIGHT * 0.5);
+const DRAWER_HEIGHT = Math.min(SCREEN_HEIGHT * 0.42);
 const CARD_ASPECT = 1.58;
 const CARD_THUMB_WIDTH = 100;
 const CARD_THUMB_HEIGHT = CARD_THUMB_WIDTH / CARD_ASPECT;
@@ -343,16 +343,21 @@ const styles = StyleSheet.create({
     rowGap: ACTION_GAP,
   },
   actionCard: {
-    width: '48.5%',
+    width: '48.7%',
     backgroundColor: InstacardColors.white,
     borderRadius: 16,
     padding: 12,
-    minHeight: 96,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    minHeight: 80,
     borderWidth: 1,
     borderColor: InstacardColors.border,
   },
   actionHeader: {
     flexDirection: 'row',
+    display: 'flex',
+    width: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,

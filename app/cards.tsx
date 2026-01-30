@@ -1,12 +1,12 @@
 import { BlurView } from 'expo-blur';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 
 import { CardActionsDrawer } from '@/components/cards/card-actions-drawer';
 import { CardStack } from '@/components/cards/card-stack';
 import { CardsHeader } from '@/components/cards/cards-header';
-import { FilterBar, FilterTab } from '@/components/cards/filter-bar';
+import { CardFilterType, FilterBar, FilterTab } from '@/components/cards/filter-bar';
 import { FloatingBottomBar } from '@/components/cards/floating-bottom-bar';
 import { GreetingBar } from '@/components/cards/greeting-bar';
 import { PWAWebViewModal } from '@/components/pwa/pwa-webview-modal';
@@ -16,6 +16,7 @@ import { DEV_SDK_CONFIG, SDKResult } from '@/lib/instacard-sdk';
 
 export default function CardsScreen() {
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
+  const [cardFilters, setCardFilters] = useState<CardFilterType[]>(['all']);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [pwaVisible, setPwaVisible] = useState(false);
@@ -45,6 +46,26 @@ export default function CardsScreen() {
     setDrawerVisible(true);
   };
 
+  // Filter cards based on selected filters
+  const filteredCards = useMemo(() => {
+    // If 'all' is selected or no filters, show all cards
+    if (cardFilters.includes('all') || cardFilters.length === 0) {
+      return mockCards;
+    }
+
+    // Filter cards by selected types
+    return mockCards.filter((card) =>
+      cardFilters.includes(card.cardType as CardFilterType)
+    );
+  }, [cardFilters]);
+
+  // Reset selected card if it's no longer in filtered results
+  const handleCardFiltersChange = useCallback((filters: CardFilterType[]) => {
+    setCardFilters(filters);
+    // Reset selection to avoid stale state
+    setSelectedCardId(null);
+  }, []);
+
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
@@ -66,7 +87,7 @@ export default function CardsScreen() {
         {/* Card stack positioned behind the UI elements */}
         <View style={styles.cardStackContainer}>
           <CardStack
-            cards={mockCards}
+            cards={filteredCards}
             onCardPress={handleCardPress}
             onCardChange={() => {
               // Card index changed - can be used for analytics or UI updates
@@ -94,7 +115,10 @@ export default function CardsScreen() {
           <FilterBar
             activeTab={activeTab}
             onTabChange={setActiveTab}
+            cardFilters={cardFilters}
+            onCardFiltersChange={handleCardFiltersChange}
           />
+          
         </View>
 
         <Text style={styles.stackHint}>
@@ -114,8 +138,8 @@ export default function CardsScreen() {
 
       <CardActionsDrawer
         visible={drawerVisible}
-        cards={mockCards}
-        selectedCardId={selectedCardId ?? mockCards[0]?.id}
+        cards={filteredCards}
+        selectedCardId={selectedCardId ?? filteredCards[0]?.id}
         onClose={() => setDrawerVisible(false)}
         onSelectCard={(card) => setSelectedCardId(card.id)}
         onActionPress={() => {
