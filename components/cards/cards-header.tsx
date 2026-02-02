@@ -2,9 +2,11 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import LogoIcon from '@/assets/svg/instacard.svg';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { InstacardColors } from '@/constants/colors';
 import { hapticLight } from '@/lib/haptics';
+import { Image } from 'expo-image';
 
 interface CardsHeaderProps {
   onSearchPress?: () => void;
@@ -47,7 +49,7 @@ export function CardsHeader({
           </TouchableOpacity>
           <View style={styles.brandSection} accessibilityRole="header">
             <View style={styles.logoPlaceholder}>
-              <Text style={styles.logoText}>IC</Text>
+              <LogoIcon width={40} height={40} color={InstacardColors.textOnPrimary} />
             </View>
             <Text style={styles.brandName}>Instacard</Text>
           </View>
@@ -65,7 +67,7 @@ export function CardsHeader({
           >
             <IconSymbol
               name="magnifyingglass"
-              size={22}
+              size={27}
               color={InstacardColors.textOnPrimary}
             />
           </TouchableOpacity>
@@ -80,7 +82,7 @@ export function CardsHeader({
           >
             <IconSymbol
               name="questionmark.circle"
-              size={22}
+              size={27}
               color={InstacardColors.textOnPrimary}
             />
           </TouchableOpacity>
@@ -90,16 +92,12 @@ export function CardsHeader({
               hapticLight();
               onAvatarPress?.();
             }}
-            accessibilityRole="button"
-            accessibilityLabel="Profile"
           >
-            <View style={styles.avatar}>
-              <IconSymbol
-                name="person.circle"
-                size={32}
-                color={InstacardColors.textOnPrimary}
-              />
-            </View>
+            <Image
+              source={require('@/assets/images/profile.png')}
+              style={styles.avatarImage}
+              contentFit="contain"
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -113,7 +111,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: InstacardColors.primary,
     paddingHorizontal: 16,
-    paddingBottom: 32,
+    paddingBottom: 24,
   },
   topRow: {
     flexDirection: 'row',
@@ -135,10 +133,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   logoPlaceholder: {
-    width: 32,
-    height: 32,
+    width: 45,
+    height: 45,
     borderRadius: 8,
-    backgroundColor: InstacardColors.textOnPrimary,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -155,25 +152,32 @@ const styles = StyleSheet.create({
   rightSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 6,
   },
   iconButton: {
     padding: 4,
   },
   avatarButton: {
-    marginLeft: 4,
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  avatarImage: {
+    width: '100%',
+    height: '100%',
   },
   avatar: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    overflow: 'hidden',
   },
   subtitle: {
     fontSize: 14,
     color: InstacardColors.textOnPrimary,
     opacity: 1,
     marginTop: -2,
-    marginLeft: 40,
+    marginLeft: 10,
   },
 });

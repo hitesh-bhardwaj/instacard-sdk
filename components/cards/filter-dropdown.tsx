@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import FilterIcon from '@/assets/svg/filter.svg';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { InstacardColors } from '@/constants/colors';
@@ -100,11 +101,11 @@ export function FilterDropdown({
                 {/* Header */}
                 <View style={styles.header}>
                   <View style={styles.headerTitle}>
-                    <IconSymbol
-                      name="slider.horizontal.3"
-                      size={18}
-                      color={InstacardColors.textPrimary}
-                    />
+                   <FilterIcon
+                    width={16}
+                    height={16}
+                    color={InstacardColors.textPrimary}
+                  />
                     <Text style={styles.headerText}>Filters</Text>
                   </View>
                   <TouchableOpacity
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
   dropdownContent: {
     paddingVertical: 16,
     paddingTop: 30,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
   },
   header: {
     flexDirection: 'row',

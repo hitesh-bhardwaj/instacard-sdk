@@ -23,7 +23,7 @@ const TOGGLE_OPTIONS: Array<{ id: ToggleValue; label: string }> = [
 ];
 
 const GAP = 4;
-const PADDING = 4;
+const PADDING = 8;
 
 export function AnimatedToggle({ value, onChange }: AnimatedToggleProps) {
   const [layoutWidth, setLayoutWidth] = useState(0);
@@ -80,11 +80,13 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: InstacardColors.lightGray,
+    backgroundColor: InstacardColors.white,
+    borderColor:`${InstacardColors.border}80`,
     borderRadius: 22,
     padding: PADDING,
     gap: GAP,
     minWidth: 180,
+    borderWidth: 1,
   },
   indicator: {
     position: 'absolute',

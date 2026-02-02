@@ -6,7 +6,7 @@ import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 import { CardActionsDrawer } from '@/components/cards/card-actions-drawer';
 import { CardStack } from '@/components/cards/card-stack';
 import { CardsHeader } from '@/components/cards/cards-header';
-import { CardFilterType, FilterBar, FilterTab } from '@/components/cards/filter-bar';
+import { CardFilterType, FilterBar } from '@/components/cards/filter-bar';
 import { FloatingBottomBar } from '@/components/cards/floating-bottom-bar';
 import { GreetingBar } from '@/components/cards/greeting-bar';
 import { PWAWebViewModal } from '@/components/pwa/pwa-webview-modal';
@@ -15,7 +15,6 @@ import { InstacardColors } from '@/constants/colors';
 import { DEV_SDK_CONFIG, SDKResult } from '@/lib/instacard-sdk';
 
 export default function CardsScreen() {
-  const [activeTab, setActiveTab] = useState<FilterTab>('all');
   const [cardFilters, setCardFilters] = useState<CardFilterType[]>(['all']);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
@@ -113,8 +112,6 @@ export default function CardsScreen() {
             onModeChange={setCardMode}
           />
           <FilterBar
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
             cardFilters={cardFilters}
             onCardFiltersChange={handleCardFiltersChange}
           />
@@ -122,7 +119,7 @@ export default function CardsScreen() {
         </View>
 
         <Text style={styles.stackHint}>
-          Tap to view details & Swipe left to see next cards
+          <Text style={{ fontWeight: '700' }}>Tap</Text> to view details & <Text style={{ fontWeight: '700' }}>Swipe </Text>left to see next cards
         </Text>
       </View>
 
@@ -180,6 +177,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
     overflow: 'hidden',
     paddingBottom: 20,
+    paddingHorizontal: 5,
   },
   stackHint: {
     position: 'absolute',
@@ -189,6 +187,6 @@ const styles = StyleSheet.create({
     // bottom: 170,
     textAlign: 'center',
     fontSize: 13,
-    color: InstacardColors.textMuted,
+    color: InstacardColors.textSecondary,
   },
 });

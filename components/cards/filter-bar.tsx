@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import FilterIcon from '@/assets/svg/filter.svg';
+import SortIcon from '@/assets/svg/sort.svg';
 import { InstacardColors } from '@/constants/colors';
 import { hapticLight } from '@/lib/haptics';
 
 import { CardFilterType, FilterDropdown } from './filter-dropdown';
+import { Filter } from 'react-native-svg';
 
 // Re-export for convenience
 export type { CardFilterType };
@@ -36,8 +38,6 @@ function getFilterLabel(filters: CardFilterType[]): string {
 }
 
 interface FilterBarProps {
-  activeTab: FilterTab;
-  onTabChange: (tab: FilterTab) => void;
   /** Currently selected card type filters (multi-select) */
   cardFilters?: CardFilterType[];
   /** Called when user changes filter selection */
@@ -45,8 +45,6 @@ interface FilterBarProps {
 }
 
 export function FilterBar({
-  activeTab,
-  onTabChange,
   cardFilters = ['all'],
   onCardFiltersChange,
 }: FilterBarProps) {
@@ -66,31 +64,20 @@ export function FilterBar({
   return (
     <View style={styles.container} accessibilityRole="tablist">
       <TouchableOpacity
-        style={[styles.tab, activeTab === 'all' && styles.tabActive]}
-        onPress={() => {
-          hapticLight();
-          onTabChange('all');
-        }}
+        style={styles.tab}
+        onPress={handleFilterTabPress}
         accessibilityRole="tab"
-        accessibilityState={{ selected: activeTab === 'all' }}
         accessibilityLabel={filterLabel}
+        accessibilityHint="Opens card type filter dropdown"
         activeOpacity={0.7}
       >
-        <TouchableOpacity
-          onPress={handleFilterTabPress}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          accessibilityLabel="Open filters"
-          accessibilityHint="Opens card type filter dropdown"
-          accessibilityRole="button"
-        >
-          <IconSymbol
-            name="slider.horizontal.3"
-            size={16}
-            color={activeTab === 'all' ? InstacardColors.tabActive : InstacardColors.tabInactive}
-          />
-        </TouchableOpacity>
+        <FilterIcon
+          width={16}
+          height={16}
+          color={InstacardColors.textPrimary}
+        />
         <Text
-          style={[styles.tabText, activeTab === 'all' && styles.tabTextActive]}
+          style={styles.tabText}
           numberOfLines={1}
         >
           {filterLabel}
@@ -98,23 +85,20 @@ export function FilterBar({
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.tab, activeTab === 'recent' && styles.tabActive]}
+        style={styles.tab}
         onPress={() => {
           hapticLight();
-          onTabChange('recent');
         }}
         accessibilityRole="tab"
-        accessibilityState={{ selected: activeTab === 'recent' }}
         accessibilityLabel="Recently Used"
+        activeOpacity={0.7}
       >
-        <IconSymbol
-          name="arrow.up.arrow.down"
-          size={16}
-          color={activeTab === 'recent' ? InstacardColors.tabActive : InstacardColors.tabInactive}
+        <SortIcon
+          width={16}
+          height={16}
+          color={InstacardColors.textPrimary}
         />
-        <Text
-          style={[styles.tabText, activeTab === 'recent' && styles.tabTextActive]}
-        >
+        <Text style={styles.tabText}>
           Recently Used
         </Text>
       </TouchableOpacity>
@@ -147,24 +131,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderWidth: 1,
     borderRadius: 50,
-    borderColor: InstacardColors.tabBorder,
+    borderColor: `${InstacardColors.textPrimary}10`,
+   
     backgroundColor: InstacardColors.white,
-  },
-  tabActive: {
-    borderColor: InstacardColors.tabActive,
   },
   tabText: {
     fontSize: 14,
-    color: InstacardColors.tabInactive,
-  },
-  tabTextActive: {
-    color: InstacardColors.tabActive,
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  actionButton: {
-    padding: 8,
+    color: InstacardColors.textPrimary,
   },
 });

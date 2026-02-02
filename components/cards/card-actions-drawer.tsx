@@ -1,10 +1,16 @@
 import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { BlurView } from 'expo-blur';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import CreditCardIcon from '@/assets/svg/manage-card.svg';
+import DocTextIcon from '@/assets/svg/card-detail.svg';
+import GlobeIcon from '@/assets/svg/phone.svg';
+import GiftIcon from '@/assets/svg/gift-card.svg';
+import HandTapIcon from '@/assets/svg/contactlesspayment.svg';
+import LinkIcon from '@/assets/svg/sigma.svg';
 import { CardData, CardImages } from '@/constants/cards';
 import { InstacardColors } from '@/constants/colors';
 import { hapticLight, hapticSelection } from '@/lib/haptics';
@@ -30,7 +36,7 @@ const ACTION_FAQ_DATA: Record<string, FAQData> = {
     heading: 'Manage Card',
     bulletPoints: [
       'View and update your card settings and preferences.',
-      'Set spending limits and transaction controls.',
+      'Set spending limits and transaction controls.', 
       'Enable or disable online and international transactions.',
       'Update your PIN or request a new card.',
       'View your card statement and transaction history.',
@@ -84,16 +90,24 @@ const ACTION_FAQ_DATA: Record<string, FAQData> = {
   },
 };
 
+const ACTION_ICONS: Record<string, React.FC<{ width: number; height: number; color: string }>> = {
+  'manage': CreditCardIcon,
+  'card-details': DocTextIcon,
+  'online-payment': GlobeIcon,
+  'add-gift': GiftIcon,
+  'contactless-default': HandTapIcon,
+  'link-physical': LinkIcon,
+};
+
 const ACTIONS = [
-  { id: 'manage', title: 'Manage Card', icon: 'creditcard' },
-  { id: 'card-details', title: 'Card Details View', icon: 'doc.text' },
-  { id: 'online-payment', title: 'Make Online Payment', icon: 'globe' },
-  { id: 'add-gift', title: 'Add a Gift-card', icon: 'gift' },
-  { id: 'contactless-default', title: 'Make default for Contactless Payments', icon: 'hand.tap' },
+  { id: 'manage', title: 'Manage Card' },
+  { id: 'card-details', title: 'Card Details View' },
+  { id: 'online-payment', title: 'Make Online Payment' },
+  { id: 'add-gift', title: 'Add a Gift-card' },
+  { id: 'contactless-default', title: 'Make default for Contactless Payments' },
   {
     id: 'link-physical',
     title: 'Link to Physical Universal or Sigma Instacard',
-    icon: 'link',
   },
 ] as const;
 
@@ -160,6 +174,13 @@ export function CardActionsDrawer({
         backgroundStyle={styles.sheetBackground}
         backdropComponent={() => null}
         onDismiss={handleDismiss}
+        backgroundComponent={({ style }) => (
+          <BlurView
+            intensity={90}
+            tint="light"
+            style={[style, styles.blurBackground]}
+          />
+        )}
       >
         <BottomSheetScrollView
           contentContainerStyle={[styles.sheetContent, { paddingBottom: insets.bottom + 16 }]}
@@ -200,55 +221,56 @@ export function CardActionsDrawer({
           </View>
 
           <View style={styles.actionsGrid}>
-            {ACTIONS.map((action) => (
-              <TouchableOpacity
-                key={action.id}
-                style={styles.actionCard}
-                activeOpacity={0.9}
-                onPress={() => {
-                  hapticLight();
-                  if (selectedCard) {
-                    onActionPress?.(action.id, selectedCard);
-                  }
-                  if (action.id === 'link-physical') {
-                    setLinkPhysicalVisible(true);
-                  }
-                  if (action.id === 'card-details') {
-                    setViewCardDetail(true);
-                  }
-                  if (action.id === 'manage') {
-                    setViewManageCard(true);
-                  }
-                }}
-                accessibilityRole="button"
-                accessibilityLabel={action.title}
-              >
-                <View style={styles.actionHeader}>
-                  <IconSymbol
-                    name={action.icon}
-                    size={22}
-                    color={InstacardColors.primary}
-                  />
+            {ACTIONS.map((action) => {
+              const IconComponent = ACTION_ICONS[action.id];
+              return (
+                <TouchableOpacity
+                  key={action.id}
+                  style={styles.actionCard}
+                  activeOpacity={0.9}
+                  onPress={() => {
+                    hapticLight();
+                    if (selectedCard) {
+                      onActionPress?.(action.id, selectedCard);
+                    }
+                    if (action.id === 'link-physical') {
+                      setLinkPhysicalVisible(true);
+                    }
+                    if (action.id === 'card-details') {
+                      setViewCardDetail(true);
+                    }
+                    if (action.id === 'manage') {
+                      setViewManageCard(true);
+                    }
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel={action.title}
+                >
+                  <View style={styles.actionHeader}>
+                    {IconComponent && (
+                      <IconComponent
+                        width={25}
+                        height={25}
+                        color={InstacardColors.primary}
+                      />
+                    )}
+                    <TouchableOpacity
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        hapticLight();
+                        handleFaqPress(action.id);
+                      }}
+                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                      style={{ backgroundColor: InstacardColors.primary, borderRadius: 10, width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}
+                    >
+                     <Text style={{ color: InstacardColors.textOnPrimary, textAlign: 'center' }}>?</Text>
+                    </TouchableOpacity>
 
-                  <TouchableOpacity
-                    onPress={(e) => {
-                      e.stopPropagation();
-                      hapticLight();
-                      handleFaqPress(action.id);
-                    }}
-                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                  >
-                    <IconSymbol
-                      name="questionmark.circle"
-                      size={18}
-                      color={InstacardColors.tabInactive}
-                    />
-                  </TouchableOpacity>
-
-                </View>
-                <Text style={styles.actionText}>{action.title}</Text>
-              </TouchableOpacity>
-            ))}
+                  </View>
+                  <Text style={styles.actionText}>{action.title}</Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </BottomSheetScrollView>
       </BottomSheetModal>
@@ -290,11 +312,16 @@ export function CardActionsDrawer({
 
 const styles = StyleSheet.create({
   sheetBackground: {
-    backgroundColor: InstacardColors.white,
-    borderColor: InstacardColors.border,
-    borderWidth: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
+  },
+  blurBackground: {
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    overflow: 'hidden',
+    borderColor: InstacardColors.border,
+    borderWidth: 1,
   },
   handleIndicator: {
     width: 42,
@@ -303,14 +330,12 @@ const styles = StyleSheet.create({
     backgroundColor: InstacardColors.border,
   },
   sheetContent: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 0,
     paddingTop: 8,
     gap: 24,
   },
   carouselContainer: {
     paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: InstacardColors.border,
   },
   carouselContent: {
     paddingHorizontal: 4,
@@ -345,6 +370,7 @@ const styles = StyleSheet.create({
   actionsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    paddingHorizontal: 16,
     justifyContent: 'space-between',
     rowGap: ACTION_GAP,
   },

@@ -1,6 +1,8 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
+import HomeIcon from '@/assets/svg/home.svg';
+import AddIcon from '@/assets/svg/add.svg';
+import ScanIcon from '@/assets/svg/scan.svg';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { InstacardColors } from '@/constants/colors';
 import { hapticLight, hapticMedium } from '@/lib/haptics';
@@ -26,8 +28,8 @@ export function FloatingBottomBar({
           hapticLight();
           onHomePress?.();
         }}
-      >
-        <IconSymbol name="house.fill" size={20} color={InstacardColors.textOnPrimary} />
+        >
+          <HomeIcon width={25} height={25} color={InstacardColors.textOnPrimary} />
         <Text style={styles.bottomText}>Home</Text>
       </TouchableOpacity>
 
@@ -40,7 +42,7 @@ export function FloatingBottomBar({
           onAddPress?.();
         }}
       >
-        <IconSymbol name="plus" size={20} color={InstacardColors.textOnPrimary} />
+        <AddIcon width={25} height={25} color={InstacardColors.textOnPrimary} />
         <Text style={styles.bottomText}>Add Instacard</Text>
       </TouchableOpacity>
 
@@ -52,11 +54,7 @@ export function FloatingBottomBar({
             onScanPress?.();
           }}
         >
-          <IconSymbol
-            name="qrcode.viewfinder"
-            size={24}
-            color={InstacardColors.textOnPrimary}
-          />
+          <ScanIcon width={35} height={35} color={InstacardColors.textOnPrimary} />
         </TouchableOpacity>
       </View>
     </View>
@@ -74,7 +72,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 30,
+    paddingHorizontal: 40,
     shadowColor: InstacardColors.shadow,
     shadowOpacity: 0.25,
     shadowRadius: 10,
@@ -87,7 +85,7 @@ const styles = StyleSheet.create({
   },
   bottomText: {
     color: InstacardColors.textOnPrimary,
-    fontSize: 14,
+    fontSize: 12,
   },
   centerSlot: {
     width: 64,
@@ -106,7 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: InstacardColors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: InstacardColors.white,
   },
 });
