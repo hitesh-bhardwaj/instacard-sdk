@@ -1,5 +1,5 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -40,7 +40,8 @@ export default function RootLayout() {
                 name="cards"
                 options={{
                   headerShown: false,
-                  animation: 'slide_from_right',
+                  animation: 'fade',
+                  animationDuration:300,      
                 }}
               />
               <Stack.Screen
@@ -48,6 +49,7 @@ export default function RootLayout() {
                 options={{
                   headerShown: false,
                   animation: 'fade',
+                  animationDuration:300,
                 }}
               />
               <Stack.Screen
@@ -69,6 +71,14 @@ export default function RootLayout() {
                 options={{
                   headerShown: false,
                   animation: 'slide_from_right',
+                }}
+              />
+              <Stack.Screen
+                name="scan"
+                options={{
+                  headerShown: false,
+                  animation: 'fade',
+                  animationDuration:300,
                 }}
               />
               <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />

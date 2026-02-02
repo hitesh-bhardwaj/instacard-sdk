@@ -1,4 +1,5 @@
 import { BlurView } from 'expo-blur';
+import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useMemo, useState } from 'react';
 import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
@@ -128,7 +129,7 @@ export default function CardsScreen() {
           // TODO: Navigate to home
         }}
         onScanPress={() => {
-          // TODO: Trigger scan action
+          router.push('/scan');
         }}
         onAddPress={handleAddNewPress}
       />

@@ -39,6 +39,20 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Instacart to access your camera",
+          "microphonePermission": "Allow Instacart to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Instacart to access your photos to let you share them with your friends."
+        }
       ]
     ],
     "experiments": {
