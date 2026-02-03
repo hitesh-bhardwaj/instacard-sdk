@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import FilterIcon from '@/assets/svg/filter.svg';
+import { Check, X } from 'lucide-react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { InstacardColors } from '@/constants/colors';
@@ -117,9 +118,9 @@ export function FilterDropdown({
                     accessibilityLabel="Close filters"
                     accessibilityRole="button"
                   >
-                    <IconSymbol
-                      name="xmark"
-                      size={18}
+                    <X
+                   
+                      size={22}
                       color={InstacardColors.textPrimary}
                     />
                   </TouchableOpacity>
@@ -148,11 +149,10 @@ export function FilterDropdown({
                           ]}
                         >
                           {isSelected && (
-                            <IconSymbol
-                              name="checkmark"
+                            <Check
                               size={14}
-                              
                               color={InstacardColors.white}
+                              strokeWidth={3}
                             />
                           )}
                         </View>
@@ -171,13 +171,15 @@ export function FilterDropdown({
 
 const styles = StyleSheet.create({
   backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    justifyContent: 'flex-start',
-    paddingTop: 280,
-    paddingHorizontal: 16,
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, .2)',
   },
   dropdownContainer: {
+    position: 'absolute',
+    top: '32%',
+    left: '5%',
+    right: 16,
+  
     alignItems: 'flex-start',
   },
   dropdownWrapper: {

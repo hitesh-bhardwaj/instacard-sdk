@@ -178,6 +178,8 @@ export function CardActionsDrawer({
           <BlurView
             intensity={90}
             tint="light"
+            experimentalBlurMethod='dimezisBlurView'
+            blurReductionFactor={6}
             style={[style, styles.blurBackground]}
           />
         )}

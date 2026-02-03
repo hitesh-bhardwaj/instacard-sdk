@@ -1,10 +1,13 @@
+import { InstacardColors } from '@/constants/colors';
+import { BlurView } from 'expo-blur';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as Haptics from 'expo-haptics';
+import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { ChevronLeft, Flashlight, FlashlightOff, Image, X } from 'lucide-react-native';
+import { ChevronLeft, Flashlight, FlashlightOff, Image } from 'lucide-react-native';
 import { useState } from 'react';
-import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Linking, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -12,20 +15,19 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
-import { InstacardColors } from '@/constants/colors';
-import * as ImagePicker from 'expo-image-picker';
 
-
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const CAMERA_HEIGHT = SCREEN_HEIGHT * 0.85;
 
 export default function ScanScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [flashOn, setFlashOn] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [image, setImage] = useState<string | null>(null);
-  
+
   // Scanning line animation
   const scanLinePosition = useSharedValue(0);
-  
+
   // Start scanning animation
   useState(() => {
     scanLinePosition.value = withRepeat(
@@ -49,19 +51,19 @@ export default function ScanScreen() {
 
   const handleGalleryPress = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    
+
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
+
     if (!permissionResult.granted) {
       return;
     }
-    
+
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: false,
       quality: 1,
     });
-    
+
     if (!result.canceled && result.assets && result.assets.length > 0) {
       setImage(result.assets[0].uri);
       console.log('Selected image:', result.assets[0].uri);
@@ -114,35 +116,33 @@ export default function ScanScreen() {
     <View style={styles.container}>
       <StatusBar style="light" />
 
-      {/* Camera View */}
-      <CameraView
-        style={StyleSheet.absoluteFillObject}
-        facing="back"
-        enableTorch={flashOn}
-        barcodeScannerSettings={{
-          barcodeTypes: ['qr'],
-        }}
-        onBarcodeScanned={(result) => {
-          setResult(result.data);
-        }}
-      />
-
-      {/* Dark Overlay with Cutout */}
-      <View style={styles.overlay}>
-        {/* Top Section */}
-        <View style={styles.overlaySection}>
-          <View style={styles.header}>
-            <TouchableOpacity activeOpacity={0.8} style={styles.closeButton} onPress={handleClose}>
-              <X size={20} color={InstacardColors.white} strokeWidth={2} />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Scan QR Code</Text>
-            <View style={styles.placeholder} />
-          </View>
+      {/* Header - Background Layer (z-index: 0) */}
+      <View style={styles.headerBackground}>
+        <View style={styles.header}>
+          <TouchableOpacity activeOpacity={0.8} style={styles.closeButton} onPress={handleClose}>
+            <ChevronLeft size={20} color={InstacardColors.white} strokeWidth={2.5} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Scan QR Code</Text>
+          <View style={styles.placeholder} />
         </View>
+      </View>
 
-        {/* Middle Section with Scanner Frame */}
-        <View style={styles.middleSection}>
-          {/* <View style={styles.sideOverlay} /> */}
+      {/* Camera View - Middle Layer with rounded top */}
+      <View style={styles.cameraContainer}>
+        <CameraView
+          style={styles.camera}
+          facing="back"
+          enableTorch={flashOn}
+          barcodeScannerSettings={{
+            barcodeTypes: ['qr'],
+          }}
+          onBarcodeScanned={(result) => {
+            setResult(result.data);
+          }}
+        />
+
+        {/* Scanner Frame Overlay */}
+        <View style={styles.scannerOverlay}>
           <View style={styles.scannerFrame}>
             {/* Corner Brackets */}
             <View style={[styles.corner, styles.topLeft]} />
@@ -151,22 +151,45 @@ export default function ScanScreen() {
             <View style={[styles.corner, styles.bottomRight]} />
 
             {result && (
-                <TouchableOpacity activeOpacity={0.8} style={styles.resultText} onPress={() => {
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.resultContainer}
+                onPress={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                   Linking.openURL(result);
-                }}>
-                  <Text style={{color: InstacardColors.white, textAlign: 'center'}} numberOfLines={1} ellipsizeMode="tail">{truncateText(result)}</Text>
-                </TouchableOpacity>
-            )}  
-            
+                }}
+              >
+                <BlurView
+                  intensity={90}
+                  tint="light"
+                  experimentalBlurMethod={Platform.OS === 'android' ? 'dimezisBlurView' : 'none'}
+                  blurReductionFactor={Platform.OS === 'android' ? 6 : 4}
+                  style={StyleSheet.absoluteFillObject}
+                />
+                <View style={styles.resultContent}>
+                  <Text style={styles.resultText} numberOfLines={1} ellipsizeMode="tail">
+                    {truncateText(result)}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
+
             {/* Scanning Line */}
             <Animated.View style={[styles.scanLine, scanLineStyle]} />
           </View>
-          {/* <View style={styles.sideOverlay} /> */}
         </View>
+      </View>
 
-        {/* Bottom Section */}
-        <View style={styles.overlaySection}>
+      {/* Bottom Section - Top Layer (z-index: 2) */}
+      <View style={styles.bottomSection}>
+        <BlurView
+          intensity={90}
+          tint="light"
+          experimentalBlurMethod='dimezisBlurView'
+          blurReductionFactor={Platform.OS === 'android' ? 6 : 4}
+          style={StyleSheet.absoluteFillObject}
+        />
+        <View style={styles.bottomContent}>
           <Text style={styles.instructionText}>
             Align the QR code within the frame to scan
           </Text>
@@ -191,7 +214,7 @@ export default function ScanScreen() {
             >
               <View style={[styles.actionButtonInner, flashOn && styles.actionButtonActive]}>
                 {flashOn ? (
-                  <Flashlight size={24} color={InstacardColors.primary} strokeWidth={1.5} />
+                  <Flashlight size={24} color={InstacardColors.white} strokeWidth={1.5} />
                 ) : (
                   <FlashlightOff size={24} color={InstacardColors.white} strokeWidth={1.5} />
                 )}
@@ -207,61 +230,75 @@ export default function ScanScreen() {
   );
 }
 
-const SCANNER_SIZE = 250;
-const CORNER_SIZE = 40;
+const SCANNER_SIZE = 260;
+const CORNER_SIZE = 45;
 const CORNER_BORDER_WIDTH = 4;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // backgroundColor: InstacardColors.primary,
   },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'space-between',
-  },
-  overlaySection: {
-    backgroundColor: `${InstacardColors.primary}`,
-    alignItems: 'center',
-    paddingHorizontal: 24,
+  headerBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 0,
+    backgroundColor: InstacardColors.primary,
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
+    paddingBottom: 100,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    paddingTop: 60,
-    paddingBottom: 20,
+    paddingHorizontal: 20,
   },
   closeButton: {
-    width: 35,
-    height: 35,
-    borderRadius: 22,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   headerTitle: {
     fontSize: 18,
+    fontWeight: '600',
     color: InstacardColors.white,
+    letterSpacing: 0.3,
   },
   placeholder: {
-    width: 44,
+    width: 40,
   },
-  middleSection: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    display: 'flex',
-    height: SCANNER_SIZE,
+  cameraContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'black',
+    height: CAMERA_HEIGHT,
+    zIndex: 1,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    overflow: 'hidden',
   },
-  sideOverlay: {
+  camera: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  scannerOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    marginBottom:"40%",
+    alignItems: 'center',
   },
   scannerFrame: {
     width: SCANNER_SIZE,
     height: SCANNER_SIZE,
     position: 'relative',
+    zIndex: 10,
   },
   corner: {
     position: 'absolute',
@@ -274,7 +311,7 @@ const styles = StyleSheet.create({
     borderTopWidth: CORNER_BORDER_WIDTH,
     borderLeftWidth: CORNER_BORDER_WIDTH,
     borderColor: InstacardColors.white,
-    borderTopLeftRadius: 16,
+    borderTopLeftRadius: 20,
   },
   topRight: {
     top: 0,
@@ -282,7 +319,7 @@ const styles = StyleSheet.create({
     borderTopWidth: CORNER_BORDER_WIDTH,
     borderRightWidth: CORNER_BORDER_WIDTH,
     borderColor: InstacardColors.white,
-    borderTopRightRadius: 16,
+    borderTopRightRadius: 20,
   },
   bottomLeft: {
     bottom: 0,
@@ -290,7 +327,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: CORNER_BORDER_WIDTH,
     borderLeftWidth: CORNER_BORDER_WIDTH,
     borderColor: InstacardColors.white,
-    borderBottomLeftRadius: 16,
+    borderBottomLeftRadius: 20,
   },
   bottomRight: {
     bottom: 0,
@@ -298,64 +335,79 @@ const styles = StyleSheet.create({
     borderBottomWidth: CORNER_BORDER_WIDTH,
     borderRightWidth: CORNER_BORDER_WIDTH,
     borderColor: InstacardColors.white,
-    borderBottomRightRadius: 16,
+    borderBottomRightRadius: 20,
   },
   scanLine: {
     position: 'absolute',
-    left: 20,
-    right: 20,
-    height: 2,
+    left: 24,
+    right: 24,
+    height: 3,
     backgroundColor: InstacardColors.white,
-    borderRadius: 1,
-    shadowColor: InstacardColors.primary,
+    borderRadius: 2,
+    shadowColor: InstacardColors.white,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-    top: 20,
+    shadowOpacity: 1,
+    shadowRadius: 12,
+    top: 24,
+  },
+  bottomSection: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 2,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    overflow: 'hidden',
+  },
+  bottomContent: {
+    alignItems: 'center',
+    paddingTop: 32,
+    paddingBottom: Platform.OS === 'ios' ? 50 : 40,
   },
   instructionText: {
     fontSize: 15,
-    color: 'rgba(255, 255, 255, 0.8)',
+    fontWeight: '500',
+    color: InstacardColors.textPrimary,
     textAlign: 'center',
-    marginTop: 40,
-    marginBottom: 32,
+    marginBottom: 28,
+    opacity: 0.8,
   },
   actionButtons: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 48,
-    paddingBottom: 60,
+    gap: 56,
   },
   actionButton: {
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
   },
   actionButtonInner: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: InstacardColors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   actionButtonActive: {
-    backgroundColor: InstacardColors.white,
-    borderColor: InstacardColors.white,
+    backgroundColor: InstacardColors.primaryLight,
   },
   actionButtonLabel: {
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 13,
+    fontWeight: '500',
+    color: InstacardColors.textPrimary,
   },
   permissionContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 32,
+    backgroundColor: '#000',
   },
   permissionTitle: {
-    fontSize: 22,
+    fontSize: 24,
+    fontWeight: '600',
     color: InstacardColors.white,
     marginBottom: 12,
     textAlign: 'center',
@@ -365,37 +417,48 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.7)',
     textAlign: 'center',
     marginBottom: 32,
+    lineHeight: 22,
   },
   permissionButton: {
     backgroundColor: InstacardColors.primary,
     paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
+    paddingHorizontal: 40,
+    borderRadius: 16,
+    shadowColor: InstacardColors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   permissionButtonText: {
     fontSize: 16,
+    fontWeight: '600',
     color: InstacardColors.white,
   },
   backLink: {
-    marginTop: 20,
+    marginTop: 24,
     padding: 12,
   },
   backLinkText: {
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.6)',
   },
- 
-  resultText: {
+  resultContainer: {
     position: 'absolute',
-    top: '120%',
-    left: 0,
-    right: 0,
-    backgroundColor: `${InstacardColors.primary}95`,
-    paddingHorizontal: 30,
-    paddingVertical: 10,
-    borderRadius: 100,
+    top: '110%',
+    left: -10,
+    right: -10,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  resultContent: {
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  resultText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: InstacardColors.textPrimary,
     textAlign: 'center',
-    fontSize: 12,
-    color: InstacardColors.white,
   },
 });
