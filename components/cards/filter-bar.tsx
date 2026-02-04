@@ -7,7 +7,7 @@ import { InstacardColors } from '@/constants/colors';
 import { hapticLight } from '@/lib/haptics';
 
 import { CardFilterType, FilterDropdown } from './filter-dropdown';
-import { Filter } from 'react-native-svg';
+import { AnimatedToggle } from '../ui/animated-toggle';
 
 // Re-export for convenience
 export type { CardFilterType };
@@ -42,11 +42,15 @@ interface FilterBarProps {
   cardFilters?: CardFilterType[];
   /** Called when user changes filter selection */
   onCardFiltersChange?: (filters: CardFilterType[]) => void;
+  mode: 'virtual' | 'universal';
+  onModeChange: (mode: 'virtual' | 'universal') => void;
 }
 
 export function FilterBar({
   cardFilters = ['all'],
   onCardFiltersChange,
+  mode,
+  onModeChange,
 }: FilterBarProps) {
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
@@ -63,46 +67,43 @@ export function FilterBar({
 
   return (
     <View style={styles.container} accessibilityRole="tablist">
-      <TouchableOpacity
-        style={styles.tab}
-        onPress={handleFilterTabPress}
-        accessibilityRole="tab"
-        accessibilityLabel={filterLabel}
-        accessibilityHint="Opens card type filter dropdown"
-        activeOpacity={0.7}
-      >
-        <FilterIcon
-          width={16}
-          height={16}
-          color={InstacardColors.textPrimary}
-        />
-        <Text
-          style={styles.tabText}
-          numberOfLines={1}
+      <View style={styles.toggleContainer}>
+        <AnimatedToggle value={mode} onChange={onModeChange} />
+      </View>
+      <View style={styles.tabsContainer}>
+      <Text style={styles.tabText}>Filters</Text>
+        
+        <TouchableOpacity
+          style={styles.tab}
+          onPress={handleFilterTabPress}
+          accessibilityRole="tab"
+          accessibilityLabel={filterLabel}
+          accessibilityHint="Opens card type filter dropdown"
+          activeOpacity={0.7}
         >
-          {filterLabel}
-        </Text>
-      </TouchableOpacity>
+          <FilterIcon
+            width={16}
+            height={16}
+            color={InstacardColors.textPrimary}
+          />
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.tab}
-        onPress={() => {
-          hapticLight();
-        }}
-        accessibilityRole="tab"
-        accessibilityLabel="Recently Used"
-        activeOpacity={0.7}
-      >
-        <SortIcon
-          width={16}
-          height={16}
-          color={InstacardColors.textPrimary}
-        />
-        <Text style={styles.tabText}>
-          Recently Used
-        </Text>
-      </TouchableOpacity>
-
+        <TouchableOpacity
+          style={styles.tab}
+          onPress={() => {
+            hapticLight();
+          }}
+          accessibilityRole="tab"
+          accessibilityLabel="Recently Used"
+          activeOpacity={0.7}
+        >
+          <SortIcon
+            width={16}
+            height={16}
+            color={InstacardColors.textPrimary}
+          />
+        </TouchableOpacity>
+      </View>
       <FilterDropdown
         visible={dropdownVisible}
         selectedFilters={cardFilters}
@@ -118,25 +119,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
+    paddingRight:16,
     paddingVertical: 8,
     gap: 8,
+  },
+  toggleContainer: {
+     width: 'auto',
+  },
+  tabsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
   },
   tab: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '50%',
+    justifyContent: 'center',
     gap: 6,
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderWidth: 1,
     borderRadius: 50,
     borderColor: `${InstacardColors.textPrimary}10`,
-   
     backgroundColor: InstacardColors.white,
   },
   tabText: {
     fontSize: 14,
+    marginRight: 5,
     color: InstacardColors.textPrimary,
   },
 });

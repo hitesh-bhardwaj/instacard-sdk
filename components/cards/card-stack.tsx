@@ -223,6 +223,7 @@ const styles = StyleSheet.create({
   },
   stackContainer: {
     flex: 1,
+    marginTop: 25,
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingHorizontal: 16,

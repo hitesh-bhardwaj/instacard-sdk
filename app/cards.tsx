@@ -1,8 +1,3 @@
-import { BlurView } from 'expo-blur';
-import { router } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { useCallback, useMemo, useState } from 'react';
-import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 import { CardActionsDrawer } from '@/components/cards/card-actions-drawer';
 import { CardStack } from '@/components/cards/card-stack';
 import { CardsHeader } from '@/components/cards/cards-header';
@@ -13,6 +8,11 @@ import { PWAWebViewModal } from '@/components/pwa/pwa-webview-modal';
 import { CardData, mockCards } from '@/constants/cards';
 import { InstacardColors } from '@/constants/colors';
 import { DEV_SDK_CONFIG, SDKResult } from '@/lib/instacard-sdk';
+import { BlurView } from 'expo-blur';
+import { router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { useCallback, useMemo, useState } from 'react';
+import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 
 export default function CardsScreen() {
   const [cardFilters, setCardFilters] = useState<CardFilterType[]>(['all']);
@@ -45,18 +45,22 @@ export default function CardsScreen() {
     setDrawerVisible(true);
   };
 
-  // Filter cards based on selected filters
+  // Filter cards based on selected filters and card mode (virtual/universal)
   const filteredCards = useMemo(() => {
-    // If 'all' is selected or no filters, show all cards
+    // First filter by card form (virtual/universal)
+    let cards = mockCards.filter((card) => card.cardForm === cardMode);
+
+    // Then filter by card type filters
+    // If 'all' is selected or no filters, show all cards of the selected form
     if (cardFilters.includes('all') || cardFilters.length === 0) {
-      return mockCards;
+      return cards;
     }
 
     // Filter cards by selected types
-    return mockCards.filter((card) =>
+    return cards.filter((card) =>
       cardFilters.includes(card.cardType as CardFilterType)
     );
-  }, [cardFilters]);
+  }, [cardFilters, cardMode]);
 
   // Reset selected card if it's no longer in filtered results
   const handleCardFiltersChange = useCallback((filters: CardFilterType[]) => {
@@ -71,19 +75,12 @@ export default function CardsScreen() {
 
       <CardsHeader
         subtitle={drawerVisible ? 'Manage Card' : 'Digital Instacard Wallet'}
-        onSearchPress={() => {
-          // TODO: Implement search functionality
-        }}
-        onHelpPress={() => {
-          // TODO: Implement help/support screen
-        }}
-        onAvatarPress={() => {
-          // TODO: Navigate to profile screen
-        }}
+     
       />
 
       <View style={styles.content}>
         {/* Card stack positioned behind the UI elements */}
+
         <View style={styles.cardStackContainer}>
           <CardStack
             cards={filteredCards}
@@ -104,18 +101,27 @@ export default function CardsScreen() {
             experimentalBlurMethod={Platform.OS === 'android' ? 'dimezisBlurView' : 'none'}
             blurReductionFactor={Platform.OS === 'android' ? 6 : 4}
             style={StyleSheet.absoluteFillObject}
-            
+
           />
           <GreetingBar
             userName="Nirdesh Malik"
-            mode={cardMode}
-            onModeChange={setCardMode}
+            onSearchPress={() => {
+              // TODO: Implement search functionality
+            }}
+            onHelpPress={() => {
+              // TODO: Implement help/support screen
+            }}
+            onAvatarPress={() => {
+              // TODO: Navigate to profile screen
+            }}
           />
           <FilterBar
+            mode={cardMode}
+            onModeChange={setCardMode}
             cardFilters={cardFilters}
             onCardFiltersChange={handleCardFiltersChange}
           />
-          
+
         </View>
 
         <Text style={styles.stackHint}>
@@ -139,9 +145,6 @@ export default function CardsScreen() {
         selectedCardId={selectedCardId ?? filteredCards[0]?.id}
         onClose={() => setDrawerVisible(false)}
         onSelectCard={(card) => setSelectedCardId(card.id)}
-        onActionPress={() => {
-          // TODO: Handle card action (manage, payment, etc.)
-        }}
       />
 
       <PWAWebViewModal
@@ -176,14 +179,14 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     overflow: 'hidden',
-    paddingBottom: 20,
+    paddingBottom: 5,
     paddingHorizontal: 5,
   },
   stackHint: {
     position: 'absolute',
     left: 0,
     right: 0,
-    top: 480,
+    top: 510,
     // bottom: 170,
     textAlign: 'center',
     fontSize: 13,

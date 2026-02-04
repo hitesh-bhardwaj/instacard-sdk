@@ -5,13 +5,8 @@ import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import { ScrollView } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import CreditCardIcon from '@/assets/svg/manage-card.svg';
-import DocTextIcon from '@/assets/svg/card-detail.svg';
-import GlobeIcon from '@/assets/svg/phone.svg';
-import GiftIcon from '@/assets/svg/gift-card.svg';
-import HandTapIcon from '@/assets/svg/contactlesspayment.svg';
-import LinkIcon from '@/assets/svg/sigma.svg';
 import { CardData, CardImages } from '@/constants/cards';
+import { ACTIONS, type ActionItem } from '@/constants/CARDS_ACTIONS';
 import { InstacardColors } from '@/constants/colors';
 import { hapticLight, hapticSelection } from '@/lib/haptics';
 import { DEV_SDK_CONFIG } from '@/lib/instacard-sdk';
@@ -25,91 +20,6 @@ const CARD_THUMB_WIDTH = 100;
 const CARD_THUMB_HEIGHT = CARD_THUMB_WIDTH / CARD_ASPECT;
 const CARD_GAP = 10;
 const ACTION_GAP = 10;
-
-interface FAQData {
-  heading: string;
-  bulletPoints: string[];
-}
-
-const ACTION_FAQ_DATA: Record<string, FAQData> = {
-  'manage': {
-    heading: 'Manage Card',
-    bulletPoints: [
-      'View and update your card settings and preferences.',
-      'Set spending limits and transaction controls.', 
-      'Enable or disable online and international transactions.',
-      'Update your PIN or request a new card.',
-      'View your card statement and transaction history.',
-    ],
-  },
-  'card-details': {
-    heading: 'Card Details View',
-    bulletPoints: [
-      'View your complete card information including card number, expiry date, and CVV.',
-      'Copy card details securely for online transactions.',
-      'Card details are protected and require authentication to view.',
-      'You can view details for any of your linked virtual cards.',
-    ],
-  },
-  'online-payment': {
-    heading: 'Make Online Payment',
-    bulletPoints: [
-      'Use your virtual card for secure online purchases.',
-      'Generate a one-time virtual card number for added security.',
-      'Set transaction limits for online payments.',
-      'Track all your online transactions in real-time.',
-    ],
-  },
-  'add-gift': {
-    heading: 'Add a Gift-card',
-    bulletPoints: [
-      'Add gift cards from various retailers to your wallet.',
-      'Manage all your gift cards in one place.',
-      'Check gift card balances and transaction history.',
-      'Use gift cards for in-store and online purchases.',
-    ],
-  },
-  'contactless-default': {
-    heading: 'Make Default for Contactless Payments',
-    bulletPoints: [
-      'Set this card as your default for tap-to-pay transactions.',
-      'Use your phone or smartwatch for contactless payments.',
-      'Enjoy faster checkout at supported terminals.',
-      'Change your default card anytime from settings.',
-    ],
-  },
-  'link-physical': {
-    heading: 'Link to a Physical Universal or Sigma Instacard',
-    bulletPoints: [
-      'You can purchase a Universal Card or a Sigma card from your Bank or any Agent, Marketplace or order online.',
-      'Universal Card or Sigma Card offer unified card experience such that you can link any Virtual Instacard to them to start using the virtual Instacard on any POS/ATM through the linked Universal or Sigma Instacard.',
-      'Sigma Card is a physical card variant of Instacard that is issued by a Bank/ FinTech to allow users to link any Virtual Instacard issued by them for making Domestic as well as International payments.',
-      'Universal Card is another physical card variant of Instacard that users can link any virtual Instacard issued by any Bank/ FinTech in your country for making Domestic Payments through a single Physical Card.',
-      'You can simply link any one Virtual Instacard to a Universal or Sigma Cards to start using the linked Virtual Instacard from the physical card. When you link a new Virtual Instacard to a Universal or Sigma card, previously linked Virtual Instacard is de-linked and you can start using the newly linked Virtual Card from the physical Universal / Sigma card.',
-    ],
-  },
-};
-
-const ACTION_ICONS: Record<string, React.FC<{ width: number; height: number; color: string }>> = {
-  'manage': CreditCardIcon,
-  'card-details': DocTextIcon,
-  'online-payment': GlobeIcon,
-  'add-gift': GiftIcon,
-  'contactless-default': HandTapIcon,
-  'link-physical': LinkIcon,
-};
-
-const ACTIONS = [
-  { id: 'manage', title: 'Manage Card' },
-  { id: 'card-details', title: 'Card Details View' },
-  { id: 'online-payment', title: 'Make Online Payment' },
-  { id: 'add-gift', title: 'Add a Gift-card' },
-  { id: 'contactless-default', title: 'Make default for Contactless Payments' },
-  {
-    id: 'link-physical',
-    title: 'Link to Physical Universal or Sigma Instacard',
-  },
-] as const;
 
 interface CardActionsDrawerProps {
   visible: boolean;
@@ -131,7 +41,7 @@ export function CardActionsDrawer({
   const insets = useSafeAreaInsets();
   const sheetRef = useRef<BottomSheetModal>(null);
   const [faqModalVisible, setFaqModalVisible] = useState<boolean>(false);
-  const [currentFaqData, setCurrentFaqData] = useState<FAQData | undefined>(undefined);
+  const [currentFaqData, setCurrentFaqData] = useState<ActionItem['faqData'] | undefined>(undefined);
   const [viewCardDetail, setViewCardDetail] = useState<boolean>(false);
   const [viewManageCard, setViewManageCard] = useState<boolean>(false);
   const [linkPhysicalVisible, setLinkPhysicalVisible] = useState<boolean>(false);
@@ -145,6 +55,60 @@ export function CardActionsDrawer({
     return cards.find((card) => card.id === selectedCardId) ?? cards[0];
   }, [cards, selectedCardId]);
 
+  const selectedCardType = useMemo(() => selectedCard?.cardType ?? 'debit', [selectedCard]);
+
+  const routes = useMemo(() => {
+    return {
+      manage: `/manage-card-${selectedCardType}`,
+      details: `/card-detail-${selectedCardType}`,
+      linkPhysical: `/link-physical-card-${selectedCardType}`,
+    };
+  }, [selectedCardType]);
+
+  const handleActionOpen = useCallback(
+    (actionId: string) => {
+      if (!selectedCard) return;
+
+      onActionPress?.(actionId, selectedCard);
+
+      // Only log + open for actions that have a PWA modal here.
+      switch (actionId) {
+        case 'manage': {
+          console.log('[CardActionsDrawer] open route', routes.manage, {
+            actionId,
+            cardId: selectedCard.id,
+            cardType: selectedCard.cardType,
+          });
+          setViewManageCard(true);
+          return;
+        }
+        case 'card-details': {
+          console.log('[CardActionsDrawer] open route', routes.details, {
+            actionId,
+            cardId: selectedCard.id,
+            cardType: selectedCard.cardType,
+          });
+          setViewCardDetail(true);
+          return;
+        }
+        case 'link-physical': {
+          console.log('[CardActionsDrawer] open route', routes.linkPhysical, {
+            actionId,
+            cardId: selectedCard.id,
+            cardType: selectedCard.cardType,
+          });
+          setLinkPhysicalVisible(true);
+          return;
+        }
+        default: {
+          // Other actions exist in the UI but don't open a PWA modal yet.
+          return;
+        }
+      }
+    },
+    [onActionPress, routes.details, routes.linkPhysical, routes.manage, selectedCard]
+  );
+
   useEffect(() => {
     if (visible) {
       sheetRef.current?.present();
@@ -157,8 +121,8 @@ export function CardActionsDrawer({
     onClose();
   }, [onClose]);
 
-  const handleFaqPress = useCallback((actionId: string) => {
-    setCurrentFaqData(ACTION_FAQ_DATA[actionId]);
+  const handleFaqPress = useCallback((action: ActionItem) => {
+    setCurrentFaqData(action.faqData);
     setFaqModalVisible(true);
   }, []);
 
@@ -224,7 +188,7 @@ export function CardActionsDrawer({
 
           <View style={styles.actionsGrid}>
             {ACTIONS.map((action) => {
-              const IconComponent = ACTION_ICONS[action.id];
+              const IconComponent = action.icon;
               return (
                 <TouchableOpacity
                   key={action.id}
@@ -232,18 +196,7 @@ export function CardActionsDrawer({
                   activeOpacity={0.9}
                   onPress={() => {
                     hapticLight();
-                    if (selectedCard) {
-                      onActionPress?.(action.id, selectedCard);
-                    }
-                    if (action.id === 'link-physical') {
-                      setLinkPhysicalVisible(true);
-                    }
-                    if (action.id === 'card-details') {
-                      setViewCardDetail(true);
-                    }
-                    if (action.id === 'manage') {
-                      setViewManageCard(true);
-                    }
+                    handleActionOpen(action.id);
                   }}
                   accessibilityRole="button"
                   accessibilityLabel={action.title}
@@ -260,7 +213,7 @@ export function CardActionsDrawer({
                       onPress={(e) => {
                         e.stopPropagation();
                         hapticLight();
-                        handleFaqPress(action.id);
+                        handleFaqPress(action);
                       }}
                       hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                       style={{ backgroundColor: InstacardColors.primary, borderRadius: 10, width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}
@@ -283,27 +236,21 @@ export function CardActionsDrawer({
       />
       <PWAWebViewModal
         visible={viewCardDetail}
-        config={DEV_SDK_CONFIG}
-        route="/card-detail"
-        onClose={() =>
-          setViewCardDetail(false)
-        }
+        config={{ ...DEV_SDK_CONFIG, cardType: selectedCard?.cardType }}
+        route={routes.details}
+        onClose={() => setViewCardDetail(false)}
       />
       <PWAWebViewModal
         visible={viewManageCard}
-        config={DEV_SDK_CONFIG}
-        route="/manage-card"
-        onClose={() =>
-          setViewManageCard(false)
-        }
+        config={{ ...DEV_SDK_CONFIG, cardType: selectedCard?.cardType }}
+        route={routes.manage}
+        onClose={() => setViewManageCard(false)}
       />
       <PWAWebViewModal
         visible={linkPhysicalVisible}
-        config={DEV_SDK_CONFIG}
-        route="/link-physical-card"
-        onClose={() =>
-          setLinkPhysicalVisible(false)
-        }
+        config={{ ...DEV_SDK_CONFIG, cardType: selectedCard?.cardType }}
+        route={routes.linkPhysical}
+        onClose={() => setLinkPhysicalVisible(false)}
       />
     </>
 
@@ -347,14 +294,16 @@ const styles = StyleSheet.create({
     width: CARD_THUMB_WIDTH,
     height: CARD_THUMB_HEIGHT,
     borderRadius: 12,
-    backgroundColor: InstacardColors.cardBackground,
-    padding: 4,
+    // backgroundColor: InstacardColors.cardBackground,
+    padding: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
   cardThumbSelected: {
-    borderWidth: 2,
-    borderColor: InstacardColors.primary,
+    shadowColor: InstacardColors.textPrimary,
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: .5,
+    elevation: 5,
   },
   cardThumbImage: {
     width: '100%',

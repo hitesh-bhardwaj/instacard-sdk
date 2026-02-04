@@ -18,32 +18,154 @@ export type CardImageId = 1 | 2 | 3 | 4 | 5;
 /** All supported card types */
 export type CardType = "debit" | "credit" | "prepaid" | "gift";
 
+/** Card form type */
+export type CardForm = "universal" | "virtual";
+
 export interface CardData {
   id: string;
   imageId: CardImageId;
   name: string;
   cardNumber: string;
   cardType: CardType;
+  cardForm: CardForm;
+  recentlyUsed: boolean;
 }
 
-/** Card type distribution for mock data */
-const CARD_TYPES: CardType[] = ["debit", "credit", "prepaid", "gift"];
-const CARD_NAMES: Record<CardType, string[]> = {
-  debit: ["FCMB Debit", "GTB Debit", "Access Debit"],
-  credit: ["FCMB Magic", "GTB Credit", "Access Credit"],
-  prepaid: ["Prepaid Card", "Travel Card", "Student Card"],
-  gift: ["Gift Card", "Reward Card", "Shopping Card"],
-};
-
-// Generate 15 mock cards with varied types
-export const mockCards: CardData[] = Array.from({ length: 15 }, (_, index) => {
-  const cardType = CARD_TYPES[index % CARD_TYPES.length];
-  const nameOptions = CARD_NAMES[cardType];
-  return {
-    id: `card-${index + 1}`,
-    imageId: ((index % 5) + 1) as CardImageId,
-    name: nameOptions[index % nameOptions.length],
-    cardNumber: `**** **** **** ${1234 + index}`,
-    cardType,
-  };
-});
+// Plain array of card objects
+export const mockCards: CardData[] = [
+  {
+    id: "card-1",
+    imageId: 1,
+    name: "FCMB Debit",
+    cardNumber: "**** **** **** 1234",
+    cardType: "debit",
+    cardForm: "virtual",
+    recentlyUsed: true,
+  },
+  {
+    id: "card-2",
+    imageId: 2,
+    name: "GTB Credit",
+    cardNumber: "**** **** **** 1235",
+    cardType: "credit",
+    cardForm: "virtual",
+    recentlyUsed: true,
+  },
+  {
+    id: "card-3",
+    imageId: 3,
+    name: "Access Debit",
+    cardNumber: "**** **** **** 1236",
+    cardType: "debit",
+    cardForm: "virtual",
+    recentlyUsed: true,
+  },
+  {
+    id: "card-4",
+    imageId: 4,
+    name: "Prepaid Card",
+    cardNumber: "**** **** **** 1237",
+    cardType: "prepaid",
+    cardForm: "universal",
+    recentlyUsed: true,
+  },
+  {
+    id: "card-5",
+    imageId: 5,
+    name: "Gift Card",
+    cardNumber: "**** **** **** 1238",
+    cardType: "gift",
+    cardForm: "universal",
+    recentlyUsed: true,
+  },
+  {
+    id: "card-6",
+    imageId: 1,
+    name: "FCMB Magic",
+    cardNumber: "**** **** **** 1239",
+    cardType: "credit",
+    cardForm: "universal",
+    recentlyUsed: false,
+  },
+  {
+    id: "card-7",
+    imageId: 2,
+    name: "GTB Debit",
+    cardNumber: "**** **** **** 1240",
+    cardType: "debit",
+    cardForm: "virtual",
+    recentlyUsed: false,
+  },
+  {
+    id: "card-8",
+    imageId: 3,
+    name: "Access Credit",
+    cardNumber: "**** **** **** 1241",
+    cardType: "credit",
+    cardForm: "virtual",
+    recentlyUsed: false,
+  },
+  {
+    id: "card-9",
+    imageId: 4,
+    name: "Travel Card",
+    cardNumber: "**** **** **** 1242",
+    cardType: "prepaid",
+    cardForm: "virtual",
+    recentlyUsed: false,
+  },
+  {
+    id: "card-10",
+    imageId: 5,
+    name: "Reward Card",
+    cardNumber: "**** **** **** 1243",
+    cardType: "gift",
+    cardForm: "virtual",
+    recentlyUsed: false,
+  },
+  {
+    id: "card-11",
+    imageId: 1,
+    name: "Student Card",
+    cardNumber: "**** **** **** 1244",
+    cardType: "prepaid",
+    cardForm: "virtual",
+    recentlyUsed: false,
+  },
+  {
+    id: "card-12",
+    imageId: 2,
+    name: "Shopping Card",
+    cardNumber: "**** **** **** 1245",
+    cardType: "gift",
+    cardForm: "virtual",
+    recentlyUsed: false,
+  },
+  {
+    id: "card-13",
+    imageId: 3,
+    name: "FCMB Debit",
+    cardNumber: "**** **** **** 1246",
+    cardType: "debit",
+    cardForm: "virtual",
+    recentlyUsed: false,
+  },
+  {
+    id: "card-14",
+    imageId: 4,
+    name: "GTB Credit",
+    cardNumber: "**** **** **** 1247",
+    cardType: "credit",
+    cardForm: "virtual",
+    recentlyUsed: false,
+  },
+  {
+    id: "card-15",
+    imageId: 5,
+    name: "Access Debit",
+    cardNumber: "**** **** **** 1248",
+    cardType: "debit",
+    cardForm: "universal",
+    recentlyUsed: false,
+  },
+];

@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     position: 'absolute',
-    top: '32%',
+    top: '30%',
     left: '5%',
     right: 16,
   

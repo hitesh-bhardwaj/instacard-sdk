@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1770124846818" clover="3.2.0">
-  <project timestamp="1770124846818" name="All files">
+<coverage generated="1770183677394" clover="3.2.0">
+  <project timestamp="1770183677394" name="All files">
     <metrics statements="548" coveredstatements="87" conditionals="281" coveredconditionals="43" methods="180" coveredmethods="26" elements="1009" coveredelements="156" complexity="0" loc="548" ncloc="548" packages="9" files="43" classes="43"/>
     <package name="app">
       <metrics statements="135" coveredstatements="0" conditionals="92" coveredconditionals="0" methods="64" coveredmethods="0"/>
-      <file name="_layout.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/app/_layout.tsx">
+      <file name="_layout.tsx" path="/Users/dikshayadav/Code/instacard-sdk/app/_layout.tsx">
         <metrics statements="6" coveredstatements="0" conditionals="4" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="14" count="0" type="stmt"/>
         <line num="19" count="0" type="stmt"/>
@@ -13,7 +13,7 @@
         <line num="29" count="0" type="stmt"/>
         <line num="32" count="0" type="stmt"/>
       </file>
-      <file name="add-instacard-debit.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/app/add-instacard-debit.tsx">
+      <file name="add-instacard-debit.tsx" path="/Users/dikshayadav/Code/instacard-sdk/app/add-instacard-debit.tsx">
         <metrics statements="13" coveredstatements="0" conditionals="12" coveredconditionals="0" methods="10" coveredmethods="0"/>
         <line num="9" count="0" type="stmt"/>
         <line num="11" count="0" type="stmt"/>
@@ -29,7 +29,7 @@
         <line num="104" count="0" type="stmt"/>
         <line num="117" count="0" type="stmt"/>
       </file>
-      <file name="add-instacard-otp.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/app/add-instacard-otp.tsx">
+      <file name="add-instacard-otp.tsx" path="/Users/dikshayadav/Code/instacard-sdk/app/add-instacard-otp.tsx">
         <metrics statements="23" coveredstatements="0" conditionals="18" coveredconditionals="0" methods="13" coveredmethods="0"/>
         <line num="8" count="0" type="stmt"/>
         <line num="10" count="0" type="stmt"/>
@@ -55,7 +55,7 @@
         <line num="113" count="0" type="stmt"/>
         <line num="129" count="0" type="stmt"/>
       </file>
-      <file name="add-instacard-type.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/app/add-instacard-type.tsx">
+      <file name="add-instacard-type.tsx" path="/Users/dikshayadav/Code/instacard-sdk/app/add-instacard-type.tsx">
         <metrics statements="9" coveredstatements="0" conditionals="6" coveredconditionals="0" methods="7" coveredmethods="0"/>
         <line num="9" count="0" type="stmt"/>
         <line num="17" count="0" type="stmt"/>
@@ -67,7 +67,7 @@
         <line num="73" count="0" type="stmt"/>
         <line num="85" count="0" type="stmt"/>
       </file>
-      <file name="card-detail.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/app/card-detail.tsx">
+      <file name="card-detail.tsx" path="/Users/dikshayadav/Code/instacard-sdk/app/card-detail.tsx">
         <metrics statements="13" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="7" coveredmethods="0"/>
         <line num="19" count="0" type="stmt"/>
         <line num="35" count="0" type="stmt"/>
@@ -83,7 +83,7 @@
         <line num="114" count="0" type="stmt"/>
         <line num="141" count="0" type="stmt"/>
       </file>
-      <file name="cards.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/app/cards.tsx">
+      <file name="cards.tsx" path="/Users/dikshayadav/Code/instacard-sdk/app/cards.tsx">
         <metrics statements="29" coveredstatements="0" conditionals="18" coveredconditionals="0" methods="16" coveredmethods="0"/>
         <line num="18" count="0" type="stmt"/>
         <line num="19" count="0" type="stmt"/>
@@ -115,12 +115,12 @@
         <line num="141" count="0" type="stmt"/>
         <line num="157" count="0" type="stmt"/>
       </file>
-      <file name="modal.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/app/modal.tsx">
+      <file name="modal.tsx" path="/Users/dikshayadav/Code/instacard-sdk/app/modal.tsx">
         <metrics statements="2" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="8" count="0" type="stmt"/>
         <line num="18" count="0" type="stmt"/>
       </file>
-      <file name="scan.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/app/scan.tsx">
+      <file name="scan.tsx" path="/Users/dikshayadav/Code/instacard-sdk/app/scan.tsx">
         <metrics statements="40" coveredstatements="0" conditionals="32" coveredconditionals="0" methods="9" coveredmethods="0"/>
         <line num="19" count="0" type="stmt"/>
         <line num="20" count="0" type="stmt"/>
@@ -166,19 +166,19 @@
     </package>
     <package name="app.(tabs)">
       <metrics statements="10" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="6" coveredmethods="0"/>
-      <file name="_layout.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/app/(tabs)/_layout.tsx">
+      <file name="_layout.tsx" path="/Users/dikshayadav/Code/instacard-sdk/app/(tabs)/_layout.tsx">
         <metrics statements="4" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="3" coveredmethods="0"/>
         <line num="10" count="0" type="stmt"/>
         <line num="12" count="0" type="stmt"/>
         <line num="23" count="0" type="stmt"/>
         <line num="30" count="0" type="stmt"/>
       </file>
-      <file name="explore.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/app/(tabs)/explore.tsx">
+      <file name="explore.tsx" path="/Users/dikshayadav/Code/instacard-sdk/app/(tabs)/explore.tsx">
         <metrics statements="2" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="13" count="0" type="stmt"/>
         <line num="101" count="0" type="stmt"/>
       </file>
-      <file name="index.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/app/(tabs)/index.tsx">
+      <file name="index.tsx" path="/Users/dikshayadav/Code/instacard-sdk/app/(tabs)/index.tsx">
         <metrics statements="4" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
         <line num="7" count="0" type="stmt"/>
         <line num="9" count="0" type="stmt"/>
@@ -188,25 +188,25 @@
     </package>
     <package name="components">
       <metrics statements="23" coveredstatements="5" conditionals="17" coveredconditionals="11" methods="9" coveredmethods="2"/>
-      <file name="external-link.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/external-link.tsx">
+      <file name="external-link.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/external-link.tsx">
         <metrics statements="4" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
         <line num="8" count="0" type="stmt"/>
         <line num="14" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="16" count="0" type="stmt"/>
         <line num="18" count="0" type="stmt"/>
       </file>
-      <file name="haptic-tab.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/haptic-tab.tsx">
+      <file name="haptic-tab.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/haptic-tab.tsx">
         <metrics statements="4" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
         <line num="6" count="0" type="stmt"/>
         <line num="10" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="12" count="0" type="stmt"/>
         <line num="14" count="0" type="stmt"/>
       </file>
-      <file name="hello-wave.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/hello-wave.tsx">
+      <file name="hello-wave.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/hello-wave.tsx">
         <metrics statements="1" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="4" count="0" type="stmt"/>
       </file>
-      <file name="parallax-scroll-view.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/parallax-scroll-view.tsx">
+      <file name="parallax-scroll-view.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/parallax-scroll-view.tsx">
         <metrics statements="9" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
         <line num="14" count="0" type="stmt"/>
         <line num="26" count="0" type="stmt"/>
@@ -218,13 +218,13 @@
         <line num="47" count="0" type="stmt"/>
         <line num="65" count="0" type="stmt"/>
       </file>
-      <file name="themed-text.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/themed-text.tsx">
+      <file name="themed-text.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/themed-text.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="11" coveredconditionals="11" methods="1" coveredmethods="1"/>
         <line num="18" count="7" type="stmt"/>
         <line num="20" count="7" type="stmt"/>
         <line num="36" count="1" type="stmt"/>
       </file>
-      <file name="themed-view.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/themed-view.tsx">
+      <file name="themed-view.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/themed-view.tsx">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="11" count="31" type="stmt"/>
         <line num="13" count="31" type="stmt"/>
@@ -232,7 +232,7 @@
     </package>
     <package name="components.Modals">
       <metrics statements="13" coveredstatements="0" conditionals="3" coveredconditionals="0" methods="6" coveredmethods="0"/>
-      <file name="FAQModal.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/Modals/FAQModal.tsx">
+      <file name="FAQModal.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/Modals/FAQModal.tsx">
         <metrics statements="13" coveredstatements="0" conditionals="3" coveredconditionals="0" methods="6" coveredmethods="0"/>
         <line num="13" count="0" type="stmt"/>
         <line num="31" count="0" type="stmt"/>
@@ -251,7 +251,7 @@
     </package>
     <package name="components.cards">
       <metrics statements="245" coveredstatements="47" conditionals="100" coveredconditionals="22" methods="60" coveredmethods="16"/>
-      <file name="animated-card.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/cards/animated-card.tsx">
+      <file name="animated-card.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/cards/animated-card.tsx">
         <metrics statements="40" coveredstatements="0" conditionals="12" coveredconditionals="0" methods="2" coveredmethods="0"/>
         <line num="12" count="0" type="stmt"/>
         <line num="15" count="0" type="stmt"/>
@@ -294,7 +294,7 @@
         <line num="195" count="0" type="stmt"/>
         <line num="202" count="0" type="stmt"/>
       </file>
-      <file name="card-actions-drawer.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/cards/card-actions-drawer.tsx">
+      <file name="card-actions-drawer.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/cards/card-actions-drawer.tsx">
         <metrics statements="57" coveredstatements="0" conditionals="20" coveredconditionals="0" methods="18" coveredmethods="0"/>
         <line num="21" count="0" type="stmt"/>
         <line num="22" count="0" type="stmt"/>
@@ -354,20 +354,20 @@
         <line num="305" count="0" type="stmt"/>
         <line num="315" count="0" type="stmt"/>
       </file>
-      <file name="card-item.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/cards/card-item.tsx">
+      <file name="card-item.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/cards/card-item.tsx">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="13" count="75" type="stmt"/>
         <line num="17" count="9" type="stmt"/>
         <line num="18" count="9" type="stmt"/>
         <line num="36" count="2" type="stmt"/>
       </file>
-      <file name="card-list.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/cards/card-list.tsx">
+      <file name="card-list.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/cards/card-list.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="13" count="21" type="stmt"/>
         <line num="20" count="65" type="stmt"/>
         <line num="29" count="1" type="stmt"/>
       </file>
-      <file name="card-stack.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/cards/card-stack.tsx">
+      <file name="card-stack.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/cards/card-stack.tsx">
         <metrics statements="75" coveredstatements="0" conditionals="41" coveredconditionals="0" methods="12" coveredmethods="0"/>
         <line num="17" count="0" type="stmt"/>
         <line num="20" count="0" type="stmt"/>
@@ -445,7 +445,7 @@
         <line num="210" count="0" type="stmt"/>
         <line num="220" count="0" type="stmt"/>
       </file>
-      <file name="cards-header.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/cards/cards-header.tsx">
+      <file name="cards-header.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/cards/cards-header.tsx">
         <metrics statements="14" coveredstatements="0" conditionals="4" coveredconditionals="0" methods="5" coveredmethods="0"/>
         <line num="26" count="0" type="stmt"/>
         <line num="27" count="0" type="stmt"/>
@@ -462,7 +462,7 @@
         <line num="93" count="0" type="stmt"/>
         <line num="110" count="0" type="stmt"/>
       </file>
-      <file name="filter-bar.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/cards/filter-bar.tsx">
+      <file name="filter-bar.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/cards/filter-bar.tsx">
         <metrics statements="19" coveredstatements="17" conditionals="9" coveredconditionals="9" methods="6" coveredmethods="4"/>
         <line num="18" count="1" type="stmt"/>
         <line num="28" count="41" type="cond" truecount="4" falsecount="0"/>
@@ -484,7 +484,7 @@
         <line num="110" count="0" type="stmt"/>
         <line num="116" count="1" type="stmt"/>
       </file>
-      <file name="filter-dropdown.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/cards/filter-dropdown.tsx">
+      <file name="filter-dropdown.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/cards/filter-dropdown.tsx">
         <metrics statements="22" coveredstatements="21" conditionals="14" coveredconditionals="13" methods="8" coveredmethods="7"/>
         <line num="27" count="2" type="stmt"/>
         <line num="48" count="64" type="stmt"/>
@@ -509,7 +509,7 @@
         <line num="139" count="7" type="stmt"/>
         <line num="172" count="2" type="stmt"/>
       </file>
-      <file name="floating-bottom-bar.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/cards/floating-bottom-bar.tsx">
+      <file name="floating-bottom-bar.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/cards/floating-bottom-bar.tsx">
         <metrics statements="9" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="0"/>
         <line num="21" count="0" type="stmt"/>
         <line num="23" count="0" type="stmt"/>
@@ -521,7 +521,7 @@
         <line num="54" count="0" type="stmt"/>
         <line num="64" count="0" type="stmt"/>
       </file>
-      <file name="greeting-bar.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/cards/greeting-bar.tsx">
+      <file name="greeting-bar.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/cards/greeting-bar.tsx">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="13" count="11" type="stmt"/>
         <line num="23" count="1" type="stmt"/>
@@ -529,7 +529,7 @@
     </package>
     <package name="components.pwa">
       <metrics statements="54" coveredstatements="0" conditionals="33" coveredconditionals="0" methods="13" coveredmethods="0"/>
-      <file name="pwa-webview-modal.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/pwa/pwa-webview-modal.tsx">
+      <file name="pwa-webview-modal.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/pwa/pwa-webview-modal.tsx">
         <metrics statements="54" coveredstatements="0" conditionals="33" coveredconditionals="0" methods="13" coveredmethods="0"/>
         <line num="40" count="0" type="stmt"/>
         <line num="41" count="0" type="stmt"/>
@@ -589,7 +589,7 @@
     </package>
     <package name="components.ui">
       <metrics statements="43" coveredstatements="18" conditionals="28" coveredconditionals="6" methods="18" coveredmethods="6"/>
-      <file name="animated-toggle.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/ui/animated-toggle.tsx">
+      <file name="animated-toggle.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/ui/animated-toggle.tsx">
         <metrics statements="18" coveredstatements="18" conditionals="6" coveredconditionals="6" methods="6" coveredmethods="6"/>
         <line num="20" count="2" type="stmt"/>
         <line num="25" count="2" type="stmt"/>
@@ -610,7 +610,7 @@
         <line num="63" count="11" type="stmt"/>
         <line num="79" count="2" type="stmt"/>
       </file>
-      <file name="collapsible.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/ui/collapsible.tsx">
+      <file name="collapsible.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/ui/collapsible.tsx">
         <metrics statements="5" coveredstatements="0" conditionals="8" coveredconditionals="0" methods="3" coveredmethods="0"/>
         <line num="11" count="0" type="stmt"/>
         <line num="12" count="0" type="cond" truecount="0" falsecount="2"/>
@@ -618,7 +618,7 @@
         <line num="18" count="0" type="stmt"/>
         <line num="35" count="0" type="stmt"/>
       </file>
-      <file name="error-boundary.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/ui/error-boundary.tsx">
+      <file name="error-boundary.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/ui/error-boundary.tsx">
         <metrics statements="13" coveredstatements="0" conditionals="9" coveredconditionals="0" methods="5" coveredmethods="0"/>
         <line num="22" count="0" type="stmt"/>
         <line num="23" count="0" type="stmt"/>
@@ -634,21 +634,21 @@
         <line num="71" count="0" type="stmt"/>
         <line num="75" count="0" type="stmt"/>
       </file>
-      <file name="icon-symbol.ios.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/ui/icon-symbol.ios.tsx">
+      <file name="icon-symbol.ios.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/ui/icon-symbol.ios.tsx">
         <metrics statements="1" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="17" count="0" type="stmt"/>
       </file>
-      <file name="icon-symbol.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/ui/icon-symbol.tsx">
+      <file name="icon-symbol.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/ui/icon-symbol.tsx">
         <metrics statements="2" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="16" count="0" type="stmt"/>
         <line num="57" count="0" type="stmt"/>
       </file>
-      <file name="loading-screen.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/ui/loading-screen.tsx">
+      <file name="loading-screen.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/ui/loading-screen.tsx">
         <metrics statements="2" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="14" count="0" type="stmt"/>
         <line num="28" count="0" type="stmt"/>
       </file>
-      <file name="sheet-container.tsx" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/components/ui/sheet-container.tsx">
+      <file name="sheet-container.tsx" path="/Users/dikshayadav/Code/instacard-sdk/components/ui/sheet-container.tsx">
         <metrics statements="2" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="16" count="0" type="stmt"/>
         <line num="19" count="0" type="stmt"/>
@@ -656,7 +656,7 @@
     </package>
     <package name="constants">
       <metrics statements="13" coveredstatements="12" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="cards.ts" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/constants/cards.ts">
+      <file name="cards.ts" path="/Users/dikshayadav/Code/instacard-sdk/constants/cards.ts">
         <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="8" count="2" type="stmt"/>
         <line num="30" count="2" type="stmt"/>
@@ -666,15 +666,15 @@
         <line num="41" count="30" type="stmt"/>
         <line num="42" count="30" type="stmt"/>
       </file>
-      <file name="colors.ts" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/constants/colors.ts">
+      <file name="colors.ts" path="/Users/dikshayadav/Code/instacard-sdk/constants/colors.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="6" count="5" type="stmt"/>
       </file>
-      <file name="fonts.ts" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/constants/fonts.ts">
+      <file name="fonts.ts" path="/Users/dikshayadav/Code/instacard-sdk/constants/fonts.ts">
         <metrics statements="1" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="0" type="stmt"/>
       </file>
-      <file name="theme.ts" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/constants/theme.ts">
+      <file name="theme.ts" path="/Users/dikshayadav/Code/instacard-sdk/constants/theme.ts">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="8" count="3" type="stmt"/>
         <line num="9" count="3" type="stmt"/>
@@ -684,10 +684,10 @@
     </package>
     <package name="hooks">
       <metrics statements="12" coveredstatements="5" conditionals="6" coveredconditionals="4" methods="3" coveredmethods="1"/>
-      <file name="use-color-scheme.ts" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/hooks/use-color-scheme.ts">
+      <file name="use-color-scheme.ts" path="/Users/dikshayadav/Code/instacard-sdk/hooks/use-color-scheme.ts">
         <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       </file>
-      <file name="use-color-scheme.web.ts" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/hooks/use-color-scheme.web.ts">
+      <file name="use-color-scheme.web.ts" path="/Users/dikshayadav/Code/instacard-sdk/hooks/use-color-scheme.web.ts">
         <metrics statements="7" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
         <line num="8" count="0" type="stmt"/>
         <line num="10" count="0" type="stmt"/>
@@ -697,7 +697,7 @@
         <line num="17" count="0" type="stmt"/>
         <line num="20" count="0" type="stmt"/>
       </file>
-      <file name="use-theme-color.ts" path="/Users/hiteshbhardwaj/Documents/GitHub/native-demo/native-demo/hooks/use-theme-color.ts">
+      <file name="use-theme-color.ts" path="/Users/dikshayadav/Code/instacard-sdk/hooks/use-theme-color.ts">
         <metrics statements="5" coveredstatements="5" conditionals="4" coveredconditionals="4" methods="1" coveredmethods="1"/>
         <line num="13" count="19" type="cond" truecount="2" falsecount="0"/>
         <line num="14" count="19" type="stmt"/>
