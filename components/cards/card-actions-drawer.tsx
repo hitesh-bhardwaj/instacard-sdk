@@ -59,9 +59,10 @@ export function CardActionsDrawer({
 
   const routes = useMemo(() => {
     return {
-      manage: `/manage-card-${selectedCardType}`,
-      details: `/card-detail-${selectedCardType}`,
-      linkPhysical: `/link-physical-card-${selectedCardType}`,
+      manage: `/manage-card/${selectedCardType}`,
+      details: `/card-detail/${selectedCardType}`,
+      // linkPhysical: `/link-physical-card-${selectedCardType}`,
+      linkPhysical: `/link-physical-card`,
     };
   }, [selectedCardType]);
 

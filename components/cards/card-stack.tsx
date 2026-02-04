@@ -71,7 +71,7 @@ export function CardStack({
   // Animate focus when drawer opens/closes
   useEffect(() => {
     focusProgress.value = withTiming(isDrawerOpen ? 1 : 0, {
-      duration: 320,
+      duration: 250,
       easing: Easing.out(Easing.cubic),
     });
   }, [focusProgress, isDrawerOpen]);
