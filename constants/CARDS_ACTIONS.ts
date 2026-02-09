@@ -89,7 +89,7 @@ export const ACTIONS: ActionItem[] = [
   },
   {
     id: "link-physical",
-    title: "Link to Physical Universal or Sigma Instacard",
+    title: "Link to Physical Card",
     icon: LinkIcon,
     faqData: {
       heading: "Link to a Physical Universal or Sigma Instacard",

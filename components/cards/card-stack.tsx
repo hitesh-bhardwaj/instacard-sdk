@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   Easing,
@@ -11,7 +11,6 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { CardData } from '@/constants/cards';
-import { InstacardColors } from '@/constants/colors';
 import { AnimatedCard, STACK_CONFIG } from './animated-card';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -75,6 +74,26 @@ export function CardStack({
       easing: Easing.out(Easing.cubic),
     });
   }, [focusProgress, isDrawerOpen]);
+
+  // Reset stack position when the cards set changes (e.g. filters updated)
+  useEffect(() => {
+    isSwiping.value = false;
+    isAnimatingBack.value = false;
+    currentIndex.value = 0;
+    translationX.value = 0;
+    stackProgress.value = 0;
+    slideBackX.value = 0;
+    selectedIndex.value = 0;
+  }, [
+    cards,
+    currentIndex,
+    isAnimatingBack,
+    isSwiping,
+    selectedIndex,
+    slideBackX,
+    stackProgress,
+    translationX,
+  ]);
 
   // Update selected index when card is selected in drawer
   useEffect(() => {
@@ -152,19 +171,24 @@ export function CardStack({
       const swipingLeft = translationX.value < 0 || event.velocityX < 0;
       const swipingRight = translationX.value > 0 || event.velocityX > 0;
 
-      if (swipeThresholdMet && swipingLeft && cards.length > 1) {
+      const canSwipeLeft =
+        swipingLeft && cards.length > 1 && currentIndex.value < cards.length - 1;
+      const canSwipeRight =
+        swipingRight && cards.length > 1 && currentIndex.value > 0;
+
+      if (swipeThresholdMet && canSwipeLeft) {
         isSwiping.value = true;
         // Swipe left - current card slides out, next card comes forward
         translationX.value = withTiming(-SWIPE_OUT_DISTANCE, SLIDE_OUT_CONFIG);
         stackProgress.value = withTiming(1, DECK_FORWARD_CONFIG, (finished) => {
           if (finished) {
-            currentIndex.value = (currentIndex.value + 1) % cards.length;
+            currentIndex.value = currentIndex.value + 1;
             translationX.value = 0;
             stackProgress.value = 0;
           }
           isSwiping.value = false;
         });
-      } else if (swipeThresholdMet && swipingRight && cards.length > 1) {
+      } else if (swipeThresholdMet && canSwipeRight) {
         isSwiping.value = true;
         // Swipe right - previous card slides back in from left
         translationX.value = 0;
@@ -172,7 +196,7 @@ export function CardStack({
 
         isAnimatingBack.value = true;
         slideBackX.value = -SCREEN_WIDTH;
-        currentIndex.value = (currentIndex.value - 1 + cards.length) % cards.length;
+        currentIndex.value = currentIndex.value - 1;
 
         slideBackX.value = withTiming(0, SLIDE_BACK_CONFIG, (finished) => {
           if (finished) {
@@ -181,7 +205,7 @@ export function CardStack({
           isSwiping.value = false;
         });
       } else {
-        // Snap back with soft spring
+        // Snap back with soft spring (including when at the ends)
         translationX.value = withSpring(0, SPRING_CONFIG);
         stackProgress.value = withTiming(0, SLIDE_BACK_CONFIG);
       }

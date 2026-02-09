@@ -6,8 +6,8 @@ import SortIcon from '@/assets/svg/sort.svg';
 import { InstacardColors } from '@/constants/colors';
 import { hapticLight } from '@/lib/haptics';
 
-import { CardFilterType, FilterDropdown } from './filter-dropdown';
 import { AnimatedToggle } from '../ui/animated-toggle';
+import { CardFilterType, FilterDropdown } from './filter-dropdown';
 
 // Re-export for convenience
 export type { CardFilterType };
@@ -42,6 +42,10 @@ interface FilterBarProps {
   cardFilters?: CardFilterType[];
   /** Called when user changes filter selection */
   onCardFiltersChange?: (filters: CardFilterType[]) => void;
+  /** Whether "Recently Used" filter is active */
+  recentFilterActive?: boolean;
+  /** Called when user taps Recently Used / Sort icon */
+  onRecentFilterPress?: () => void;
   mode: 'virtual' | 'universal';
   onModeChange: (mode: 'virtual' | 'universal') => void;
 }
@@ -49,6 +53,8 @@ interface FilterBarProps {
 export function FilterBar({
   cardFilters = ['all'],
   onCardFiltersChange,
+  recentFilterActive = false,
+  onRecentFilterPress,
   mode,
   onModeChange,
 }: FilterBarProps) {
@@ -89,18 +95,20 @@ export function FilterBar({
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.tab}
+          style={[styles.tab, recentFilterActive && styles.tabActive]}
           onPress={() => {
             hapticLight();
+            onRecentFilterPress?.();
           }}
           accessibilityRole="tab"
-          accessibilityLabel="Recently Used"
+          accessibilityLabel={recentFilterActive ? 'Recently Used (active)' : 'Recently Used'}
+          accessibilityState={{ selected: recentFilterActive }}
           activeOpacity={0.7}
         >
           <SortIcon
             width={16}
             height={16}
-            color={InstacardColors.textPrimary}
+            color={recentFilterActive ? InstacardColors.primary : InstacardColors.textPrimary}
           />
         </TouchableOpacity>
       </View>
@@ -143,6 +151,10 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderColor: `${InstacardColors.textPrimary}10`,
     backgroundColor: InstacardColors.white,
+  },
+  tabActive: {
+    borderColor: InstacardColors.primary,
+    backgroundColor: `${InstacardColors.primary}12`,
   },
   tabText: {
     fontSize: 14,

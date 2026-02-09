@@ -1,9 +1,9 @@
 import { Dimensions, StyleSheet } from 'react-native';
 import Animated, {
-  Extrapolation,
-  interpolate,
-  SharedValue,
-  useAnimatedStyle,
+    Extrapolation,
+    interpolate,
+    SharedValue,
+    useAnimatedStyle,
 } from 'react-native-reanimated';
 
 import { CardData } from '@/constants/cards';
@@ -48,10 +48,9 @@ export function AnimatedCard({
   onPress,
 }: AnimatedCardProps) {
   const animatedStyle = useAnimatedStyle(() => {
-    // Calculate stack position relative to current front card (circular)
-    const total = totalCards;
+    // Calculate stack position relative to current front card (non-circular)
     const rawPosition = index - currentIndex.value;
-    const stackPosition = ((rawPosition % total) + total) % total;
+    const stackPosition = rawPosition;
 
     // Focus mode calculations (when drawer is open)
     const selectionDistance = Math.abs(index - selectedIndex.value);
@@ -86,8 +85,9 @@ export function AnimatedCard({
       Extrapolation.CLAMP
     );
 
-    // Hide cards beyond visible limit
-    if (stackPosition >= STACK_CONFIG.VISIBLE_CARDS) {
+    // Hide cards that are behind the front card (already swiped past)
+    // or beyond the visible limit ahead of the front card
+    if (stackPosition < 0 || stackPosition >= STACK_CONFIG.VISIBLE_CARDS) {
       return {
         opacity: 0,
         transform: [{ scale: 0.5 }],
@@ -183,7 +183,12 @@ export function AnimatedCard({
     }
 
     // Subtle depth effect
-    const depthOpacity = interpolate(stackPosition, [0, 10], [1, 0.9], Extrapolation.CLAMP);
+    const depthOpacity = interpolate(
+      stackPosition,
+      [0, 10],
+      [1, 0.9],
+      Extrapolation.CLAMP
+    );
 
     return {
       opacity: depthOpacity * focusOpacity,

@@ -16,10 +16,12 @@ import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 
 export default function CardsScreen() {
   const [cardFilters, setCardFilters] = useState<CardFilterType[]>(['all']);
+  const [recentFilterActive, setRecentFilterActive] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [pwaVisible, setPwaVisible] = useState(false);
   const [cardMode, setCardMode] = useState<'virtual' | 'universal'>('virtual');
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
   const handleAddNewPress = () => {
     setPwaVisible(true);
@@ -45,10 +47,21 @@ export default function CardsScreen() {
     setDrawerVisible(true);
   };
 
-  // Filter cards based on selected filters and card mode (virtual/universal)
+  const handleModeChange = useCallback((mode: 'virtual' | 'universal') => {
+    setCardMode(mode);
+    setSelectedCardId(null);
+    setCurrentCardIndex(0);
+  }, []);
+
+  // Filter cards based on selected filters, card mode, and recently used
   const filteredCards = useMemo(() => {
     // First filter by card form (virtual/universal)
     let cards = mockCards.filter((card) => card.cardForm === cardMode);
+
+    // Filter by recently used when sort/recent tab is active
+    if (recentFilterActive) {
+      cards = cards.filter((card) => card.recentlyUsed);
+    }
 
     // Then filter by card type filters
     // If 'all' is selected or no filters, show all cards of the selected form
@@ -60,13 +73,14 @@ export default function CardsScreen() {
     return cards.filter((card) =>
       cardFilters.includes(card.cardType as CardFilterType)
     );
-  }, [cardFilters, cardMode]);
+  }, [cardFilters, cardMode, recentFilterActive]);
 
   // Reset selected card if it's no longer in filtered results
   const handleCardFiltersChange = useCallback((filters: CardFilterType[]) => {
     setCardFilters(filters);
     // Reset selection to avoid stale state
     setSelectedCardId(null);
+    setCurrentCardIndex(0);
   }, []);
 
   return (
@@ -82,15 +96,21 @@ export default function CardsScreen() {
         {/* Card stack positioned behind the UI elements */}
 
         <View style={styles.cardStackContainer}>
-          <CardStack
-            cards={filteredCards}
-            onCardPress={handleCardPress}
-            onCardChange={() => {
-              // Card index changed - can be used for analytics or UI updates
-            }}
-            isDrawerOpen={drawerVisible}
-            selectedCardId={selectedCardId}
-          />
+          {filteredCards.length > 0 ? (
+            <CardStack
+              cards={filteredCards}
+              onCardPress={handleCardPress}
+              onCardChange={(index) => {
+                setCurrentCardIndex(index);
+              }}
+              isDrawerOpen={drawerVisible}
+              selectedCardId={selectedCardId}
+            />
+          ) : (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyStateText}>No card available</Text>
+            </View>
+          )}
         </View>
 
         {/* UI overlay on top of cards with gradient + blur */}
@@ -117,16 +137,38 @@ export default function CardsScreen() {
           />
           <FilterBar
             mode={cardMode}
-            onModeChange={setCardMode}
+            onModeChange={handleModeChange}
             cardFilters={cardFilters}
             onCardFiltersChange={handleCardFiltersChange}
+            recentFilterActive={recentFilterActive}
+            onRecentFilterPress={() => {
+              setRecentFilterActive((prev) => !prev);
+              setSelectedCardId(null);
+              setCurrentCardIndex(0);
+            }}
           />
 
         </View>
 
-        <Text style={styles.stackHint}>
-          <Text style={{ fontWeight: '700' }}>Tap</Text> to view details & <Text style={{ fontWeight: '700' }}>Swipe </Text>left to see next cards
-        </Text>
+        {filteredCards.length === 1 && (
+          <Text style={styles.stackHint}>
+            <Text style={{ fontWeight: '700' }}>Tap</Text> to view card details
+          </Text>
+        )}
+
+        {filteredCards.length > 1 &&
+          (currentCardIndex === filteredCards.length - 1 ? (
+            <Text style={styles.stackHint}>
+              <Text style={{ fontWeight: '700' }}>Swipe back</Text> to see previous
+              cards
+            </Text>
+          ) : (
+            <Text style={styles.stackHint}>
+              <Text style={{ fontWeight: '700' }}>Tap</Text> to view details &{' '}
+              <Text style={{ fontWeight: '700' }}>Swipe </Text>
+              left to see next cards
+            </Text>
+          ))}
       </View>
 
       <FloatingBottomBar
@@ -181,6 +223,15 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     paddingBottom: 5,
     paddingHorizontal: 5,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyStateText: {
+    fontSize: 16,
+    color: InstacardColors.textSecondary,
   },
   stackHint: {
     position: 'absolute',

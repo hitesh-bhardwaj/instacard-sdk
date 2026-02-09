@@ -6,14 +6,13 @@ import { ImageSourcePropType } from "react-native";
 
 // Card image mapping
 export const CardImages: Record<number, ImageSourcePropType> = {
-  1: require("@/assets/images/cards/Instacard_1.png"),
-  2: require("@/assets/images/cards/Instacard_2.png"),
-  3: require("@/assets/images/cards/Instacard_3.png"),
-  4: require("@/assets/images/cards/Instacard_4.png"),
-  5: require("@/assets/images/cards/Instacard_5.png"),
+  1: require("@/assets/images/cards/debit.png"),
+  2: require("@/assets/images/cards/credit.png"),
+  3: require("@/assets/images/cards/prepaid.png"),
+  4: require("@/assets/images/cards/gift.png"),
 };
 
-export type CardImageId = 1 | 2 | 3 | 4 | 5;
+export type CardImageId = 1 | 2 | 3 | 4;
 
 /** All supported card types */
 export type CardType = "debit" | "credit" | "prepaid" | "gift";
@@ -53,7 +52,7 @@ export const mockCards: CardData[] = [
   },
   {
     id: "card-3",
-    imageId: 3,
+    imageId: 1,
     name: "Access Debit",
     cardNumber: "**** **** **** 1236",
     cardType: "debit",
@@ -62,7 +61,7 @@ export const mockCards: CardData[] = [
   },
   {
     id: "card-4",
-    imageId: 4,
+    imageId: 3,
     name: "Prepaid Card",
     cardNumber: "**** **** **** 1237",
     cardType: "prepaid",
@@ -71,7 +70,7 @@ export const mockCards: CardData[] = [
   },
   {
     id: "card-5",
-    imageId: 5,
+    imageId: 4,
     name: "Gift Card",
     cardNumber: "**** **** **** 1238",
     cardType: "gift",
@@ -80,7 +79,7 @@ export const mockCards: CardData[] = [
   },
   {
     id: "card-6",
-    imageId: 1,
+    imageId: 2,
     name: "FCMB Magic",
     cardNumber: "**** **** **** 1239",
     cardType: "credit",
@@ -89,7 +88,7 @@ export const mockCards: CardData[] = [
   },
   {
     id: "card-7",
-    imageId: 2,
+    imageId: 1,
     name: "GTB Debit",
     cardNumber: "**** **** **** 1240",
     cardType: "debit",
@@ -98,7 +97,7 @@ export const mockCards: CardData[] = [
   },
   {
     id: "card-8",
-    imageId: 3,
+    imageId: 2,
     name: "Access Credit",
     cardNumber: "**** **** **** 1241",
     cardType: "credit",
@@ -107,7 +106,7 @@ export const mockCards: CardData[] = [
   },
   {
     id: "card-9",
-    imageId: 4,
+    imageId: 3,
     name: "Travel Card",
     cardNumber: "**** **** **** 1242",
     cardType: "prepaid",
@@ -116,7 +115,7 @@ export const mockCards: CardData[] = [
   },
   {
     id: "card-10",
-    imageId: 5,
+    imageId: 4,
     name: "Reward Card",
     cardNumber: "**** **** **** 1243",
     cardType: "gift",
@@ -125,7 +124,7 @@ export const mockCards: CardData[] = [
   },
   {
     id: "card-11",
-    imageId: 1,
+    imageId: 3,
     name: "Student Card",
     cardNumber: "**** **** **** 1244",
     cardType: "prepaid",
@@ -134,7 +133,7 @@ export const mockCards: CardData[] = [
   },
   {
     id: "card-12",
-    imageId: 2,
+    imageId: 4,
     name: "Shopping Card",
     cardNumber: "**** **** **** 1245",
     cardType: "gift",
@@ -143,7 +142,7 @@ export const mockCards: CardData[] = [
   },
   {
     id: "card-13",
-    imageId: 3,
+    imageId: 1,
     name: "FCMB Debit",
     cardNumber: "**** **** **** 1246",
     cardType: "debit",
@@ -152,7 +151,7 @@ export const mockCards: CardData[] = [
   },
   {
     id: "card-14",
-    imageId: 4,
+    imageId: 2,
     name: "GTB Credit",
     cardNumber: "**** **** **** 1247",
     cardType: "credit",
@@ -161,7 +160,7 @@ export const mockCards: CardData[] = [
   },
   {
     id: "card-15",
-    imageId: 5,
+    imageId: 1,
     name: "Access Debit",
     cardNumber: "**** **** **** 1248",
     cardType: "debit",
