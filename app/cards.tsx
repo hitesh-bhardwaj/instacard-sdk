@@ -169,6 +169,14 @@ export default function CardsScreen() {
               left to see next cards
             </Text>
           ))}
+
+        {filteredCards.length > 0 && (
+          <Text style={styles.stackHintCounter}>
+            {`${(currentCardIndex + 1).toString().padStart(2, '0')}/${filteredCards.length
+              .toString()
+              .padStart(2, '0')}`}
+          </Text>
+        )}
       </View>
 
       <FloatingBottomBar
@@ -241,6 +249,16 @@ const styles = StyleSheet.create({
     // bottom: 170,
     textAlign: 'center',
     fontSize: 13,
+    color: InstacardColors.textSecondary,
+  },
+  stackHintCounter: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 535,
+    fontWeight: '700',
+    textAlign: 'center',
+    fontSize: 11,
     color: InstacardColors.textSecondary,
   },
 });
