@@ -148,8 +148,8 @@ export function generateDevToken(): string {
  * Default SDK configuration for development
  */
 export const DEV_SDK_CONFIG: SDKConfig = {
-  // pwaBaseUrl: 'http://localhost:3000',
-  pwaBaseUrl: "http://10.5.50.16:3000",
+  // pwaBaseUrl: 'http://localhost:3000', 
+  pwaBaseUrl: "http://10.5.50.151:3000",
   // pwaBaseUrl: "https://instacard-pwa.vercel.app/",
   userToken: generateDevToken(),
   environment: "development",

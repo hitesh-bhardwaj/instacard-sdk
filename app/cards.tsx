@@ -4,6 +4,7 @@ import { CardsHeader } from '@/components/cards/cards-header';
 import { CardFilterType, FilterBar } from '@/components/cards/filter-bar';
 import { FloatingBottomBar } from '@/components/cards/floating-bottom-bar';
 import { GreetingBar } from '@/components/cards/greeting-bar';
+import { SwipeIndicator } from '@/components/cards/swipe-indicator';
 import { PWAWebViewModal } from '@/components/pwa/pwa-webview-modal';
 import { CardData, mockCards } from '@/constants/cards';
 import { InstacardColors } from '@/constants/colors';
@@ -89,7 +90,7 @@ export default function CardsScreen() {
 
       <CardsHeader
         subtitle={drawerVisible ? 'Manage Card' : 'Digital Instacard Wallet'}
-     
+        showHomeIcon={false}
       />
 
       <View style={styles.content}>
@@ -150,32 +151,11 @@ export default function CardsScreen() {
 
         </View>
 
-        {filteredCards.length === 1 && (
-          <Text style={styles.stackHint}>
-            <Text style={{ fontWeight: '700' }}>Tap</Text> to view card details
-          </Text>
-        )}
-
-        {filteredCards.length > 1 &&
-          (currentCardIndex === filteredCards.length - 1 ? (
-            <Text style={styles.stackHint}>
-              <Text style={{ fontWeight: '700' }}>Swipe back</Text> to see previous
-              cards
-            </Text>
-          ) : (
-            <Text style={styles.stackHint}>
-              <Text style={{ fontWeight: '700' }}>Tap</Text> to view details &{' '}
-              <Text style={{ fontWeight: '700' }}>Swipe </Text>
-              left to see next cards
-            </Text>
-          ))}
-
         {filteredCards.length > 0 && (
-          <Text style={styles.stackHintCounter}>
-            {`${(currentCardIndex + 1).toString().padStart(2, '0')}/${filteredCards.length
-              .toString()
-              .padStart(2, '0')}`}
-          </Text>
+          <SwipeIndicator
+            currentIndex={currentCardIndex}
+            totalCount={filteredCards.length}
+          />
         )}
       </View>
 
@@ -239,26 +219,6 @@ const styles = StyleSheet.create({
   },
   emptyStateText: {
     fontSize: 16,
-    color: InstacardColors.textSecondary,
-  },
-  stackHint: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 510,
-    // bottom: 170,
-    textAlign: 'center',
-    fontSize: 13,
-    color: InstacardColors.textSecondary,
-  },
-  stackHintCounter: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 535,
-    fontWeight: '700',
-    textAlign: 'center',
-    fontSize: 11,
     color: InstacardColors.textSecondary,
   },
 });

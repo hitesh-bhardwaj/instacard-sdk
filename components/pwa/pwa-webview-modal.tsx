@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -7,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { WebView, WebViewMessageEvent, WebViewNavigation } from 'react-native-webview';
 
@@ -24,6 +25,7 @@ import {
   SDKConfig,
   SDKResult,
 } from '@/lib/instacard-sdk';
+import { ConfirmDialog } from './confirm-dialog';
 
 interface PWAWebViewModalProps {
   visible: boolean;
@@ -36,20 +38,19 @@ interface PWAWebViewModalProps {
   route?: string;
 }
 
+
+
 export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewModalProps) {
   const webViewRef = useRef<WebView>(null);
   const canGoBackRef = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currentScreen, setCurrentScreen] = useState('Instacard');
   const [error, setError] = useState<string | null>(null);
+  const [showHomeConfirm, setShowHomeConfirm] = useState(false);
+  const router = useRouter();
 
   const pwaUrl = buildPWAUrl({ ...config, route });
 
-  /**
-   * Handle Android hardware back button press
-   * - If WebView can go back, navigate back within the WebView
-   * - If not, send USER_CANCELLED event and allow modal to close
-   */
   useEffect(() => {
     if (!visible || Platform.OS !== 'android') {
       return;
@@ -57,24 +58,17 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
 
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       if (canGoBackRef.current && webViewRef.current) {
-        // WebView has navigation history - go back within PWA
         webViewRef.current.goBack();
-        return true; // Prevent default behavior (closing modal)
+        return true;
       }
 
-      // No more PWA history - send cancellation event to PWA
       webViewRef.current?.postMessage(createWebViewMessage('USER_CANCELLED'));
-
-      // Allow modal to close
       return false;
     });
 
     return () => backHandler.remove();
   }, [visible]);
 
-  /**
-   * Track WebView navigation state to know if we can go back
-   */
   const handleNavigationStateChange = useCallback((navState: WebViewNavigation) => {
     canGoBackRef.current = navState.canGoBack;
   }, []);
@@ -136,23 +130,35 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
     [onClose]
   );
 
-  /**
-   * Handle close/back action from header or modal dismiss
-   * Uses same logic as hardware back: go back in WebView if possible
-   */
   const handleClose = useCallback(() => {
     if (canGoBackRef.current && webViewRef.current) {
-      // WebView has navigation history - go back within PWA
       webViewRef.current.goBack();
       return;
     }
 
-    // No more PWA history - close the modal
     onClose({
       success: false,
       cancelled: true,
     });
   }, [onClose]);
+
+  const handleHomePress = useCallback(() => {
+    hapticLight();
+    setShowHomeConfirm(true);
+  }, []);
+
+  const handleHomeCancel = useCallback(() => {
+    setShowHomeConfirm(false);
+  }, []);
+
+  const handleHomeConfirm = useCallback(() => {
+    setShowHomeConfirm(false);
+    onClose({
+      success: false,
+      cancelled: true,
+    });
+    router.replace('/cards');
+  }, [onClose, router]);
 
   const handleRetry = useCallback(() => {
     hapticLight();
@@ -173,24 +179,15 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
       presentationStyle="pageSheet"
       onRequestClose={handleClose}
     >
-      
       <View style={styles.container}>
         <CardsHeader
           subtitle={currentScreen}
           onBackPress={handleClose}
-          onSearchPress={() => {
-            // TODO: Implement search inside PWA
-          }}
-          onHelpPress={() => {
-            // TODO: Implement help/support inside PWA
-          }}
-          onAvatarPress={() => {
-            // TODO: Implement profile inside PWA
-          }}
+          showHomeIcon={true}
+          onHomePress={handleHomePress}
         />
 
         <SheetContainer>
-          {/* WebView Container */}
           <View style={styles.webViewContainer}>
             {error ? (
               <View style={styles.errorContainer}>
@@ -226,7 +223,6 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
                 allowsInlineMediaPlayback
                 mediaPlaybackRequiresUserAction={false}
                 originWhitelist={['*']}
-                // Inject CSS to hide any native scrollbars
                 injectedJavaScript={`
                   document.body.style.overscrollBehavior = 'none';
                   true;
@@ -234,7 +230,6 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
               />
             )}
 
-            {/* Loading Overlay */}
             {isLoading && !error && (
               <View style={styles.loadingOverlay}>
                 <ActivityIndicator size="large" color={InstacardColors.primary} />
@@ -244,6 +239,14 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
           </View>
         </SheetContainer>
       </View>
+
+      <ConfirmDialog
+        visible={showHomeConfirm}
+        title="Go to Home"
+        message="Are you sure you want to leave this screen and go to back?"
+        onCancel={handleHomeCancel}
+        onConfirm={handleHomeConfirm}
+      />
     </Modal>
   );
 }

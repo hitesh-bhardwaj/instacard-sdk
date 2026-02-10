@@ -6,6 +6,8 @@ import ScanIcon from '@/assets/svg/scan.svg';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { InstacardColors } from '@/constants/colors';
 import { hapticLight, hapticMedium } from '@/lib/haptics';
+import { Plus } from 'lucide-react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 interface FloatingBottomBarProps {
   onHomePress?: () => void;
@@ -18,11 +20,20 @@ export function FloatingBottomBar({
   onScanPress,
   onAddPress,
 }: FloatingBottomBarProps) {
+  const plusrotation = useSharedValue(0);
+  const rotationStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${plusrotation.value}deg` }],
+  }));
+  const rotatePlus = () => {
+    plusrotation.value = withTiming(plusrotation.value + 90, {
+      duration: 1000,
+    });
+  };
   const insets = useSafeAreaInsets();
 
   return (
     <View style={[styles.bottomBar, { bottom: insets.bottom + 16 }]}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.bottomAction}
         onPress={() => {
           hapticLight();
@@ -31,21 +42,25 @@ export function FloatingBottomBar({
         >
           <HomeIcon width={25} height={25} color={InstacardColors.textOnPrimary} />
         <Text style={styles.bottomText}>Home</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
-      <View style={styles.centerSlot} />
+      {/* <View style={styles.centerSlot} /> */}
 
       <TouchableOpacity
         style={styles.bottomAction}
         onPress={() => {
           hapticLight();
-          onAddPress?.();
+          rotatePlus();
+          setTimeout(() => {
+            onAddPress?.();
+          }, 500);
         }}
       >
-        <AddIcon width={25} height={25} color={InstacardColors.textOnPrimary} />
+        <Animated.View style={rotationStyle}>
+          <Plus width={25} height={25} color={InstacardColors.textOnPrimary} />
+        </Animated.View>
         <Text style={styles.bottomText}>Add Instacard</Text>
       </TouchableOpacity>
-
       <View style={styles.centerButtonWrap}>
         <TouchableOpacity
           style={styles.centerButton}
@@ -54,9 +69,11 @@ export function FloatingBottomBar({
             onScanPress?.();
           }}
         >
-          <ScanIcon width={35} height={35} color={InstacardColors.textOnPrimary} />
+          <ScanIcon width={30} height={30} color={InstacardColors.textOnPrimary} />
         </TouchableOpacity>
       </View>
+
+
     </View>
   );
 }
@@ -64,15 +81,17 @@ export function FloatingBottomBar({
 const styles = StyleSheet.create({
   bottomBar: {
     position: 'absolute',
-    left: 28,
-    right: 28,
+    alignSelf: 'center',
+    left: '50%',
+    transform: [{ translateX: '-50%' }],
     height: 70,
+    gap: 20,
     backgroundColor: InstacardColors.primary,
     borderRadius: 50,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 40,
+    justifyContent: 'center',
+    paddingHorizontal: 10,
     shadowColor: InstacardColors.shadow,
     shadowOpacity: 0.25,
     shadowRadius: 10,
@@ -81,25 +100,27 @@ const styles = StyleSheet.create({
   },
   bottomAction: {
     alignItems: 'center',
+    flexDirection: 'row',
+    paddingLeft: 10,
     gap: 4,
   },
   bottomText: {
     color: InstacardColors.textOnPrimary,
-    fontSize: 12,
+    fontSize: 16,
   },
   centerSlot: {
     width: 64,
   },
   centerButtonWrap: {
-    position: 'absolute',
-    top: -26,
-    left: 0,
-    right: 0,
+    // position: 'absolute',
+    // top: -26,
+    // left: 0,
+    // right: 0,
     alignItems: 'center',
   },
   centerButton: {
-    width: 70,
-    height: 70,
+    width: 55,
+    height: 55,
     borderRadius: 50,
     backgroundColor: InstacardColors.primary,
     alignItems: 'center',

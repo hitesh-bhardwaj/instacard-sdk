@@ -2,18 +2,24 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import HomeIcon from '@/assets/svg/home.svg';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { InstacardColors } from '@/constants/colors';
 import { hapticLight } from '@/lib/haptics';
+import { ChevronsLeft, CornerDownLeft, CornerLeftDown, CornerLeftUp, LogOut } from 'lucide-react-native';
 
 interface CardsHeaderProps {
   onBackPress?: () => void;
   subtitle?: string;
+  showHomeIcon?: boolean;
+  onHomePress?: () => void;
 }
 
 export function CardsHeader({
   onBackPress,
   subtitle,
+  showHomeIcon = false,
+  onHomePress = () => {},
 }: CardsHeaderProps) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -22,7 +28,7 @@ export function CardsHeader({
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.topRow}>
+      <View style={styles.topRow} >
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => {
@@ -41,10 +47,14 @@ export function CardsHeader({
         <View style={styles.brandSection} accessibilityRole="header">
           <Text style={styles.brandName}>Instacard</Text>
         </View>
-        <View style={styles.placeholder} />
+        {!showHomeIcon && <View style={styles.placeholder} />}
+        {showHomeIcon && (
+          <TouchableOpacity onPress={onHomePress} accessibilityRole="button" accessibilityLabel="Go home">
+            <LogOut width={24} height={24} color={InstacardColors.textOnPrimary} />
+          </TouchableOpacity>
+        )}
       </View>
 
-      {/* <Text style={styles.subtitle}>{subtitleText}</Text> */}
     </View>
   );
 }
@@ -58,6 +68,7 @@ const styles = StyleSheet.create({
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    width: '100%',
     justifyContent: 'space-between',
     paddingVertical: 5,
   },
