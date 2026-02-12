@@ -45,6 +45,7 @@ export function CardActionsDrawer({
   const [viewCardDetail, setViewCardDetail] = useState<boolean>(false);
   const [viewManageCard, setViewManageCard] = useState<boolean>(false);
   const [linkPhysicalVisible, setLinkPhysicalVisible] = useState<boolean>(false);
+  const [viewAddGift, setViewAddGift] = useState<boolean>(false);
 
   const snapPoints = useMemo(() => [DRAWER_HEIGHT], []);
 
@@ -63,6 +64,7 @@ export function CardActionsDrawer({
       details: `/card-detail/${selectedCardType}`,
       // linkPhysical: `/link-physical-card-${selectedCardType}`,
       linkPhysical: `/link-physical-card`,
+      addGift: `/add-a-gift-card`,
     };
   }, [selectedCardType]);
 
@@ -101,13 +103,22 @@ export function CardActionsDrawer({
           setLinkPhysicalVisible(true);
           return;
         }
+        case 'add-gift': {
+          console.log('[CardActionsDrawer] open route', routes.addGift, {
+            actionId,
+            cardId: selectedCard.id,
+            cardType: selectedCard.cardType,
+          });
+          setViewAddGift(true);
+          return;
+        }
         default: {
           // Other actions exist in the UI but don't open a PWA modal yet.
           return;
         }
       }
     },
-    [onActionPress, routes.details, routes.linkPhysical, routes.manage, selectedCard]
+    [onActionPress, routes.addGift, routes.details, routes.linkPhysical, routes.manage, selectedCard]
   );
 
   useEffect(() => {
@@ -246,6 +257,12 @@ export function CardActionsDrawer({
         config={{ ...DEV_SDK_CONFIG, cardType: selectedCard?.cardType }}
         route={routes.manage}
         onClose={() => setViewManageCard(false)}
+      />
+      <PWAWebViewModal
+        visible={viewAddGift}
+        config={{ ...DEV_SDK_CONFIG, cardType: selectedCard?.cardType }}
+        route={routes.addGift}
+        onClose={() => setViewAddGift(false)}
       />
       <PWAWebViewModal
         visible={linkPhysicalVisible}
