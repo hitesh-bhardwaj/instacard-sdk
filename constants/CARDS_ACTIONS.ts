@@ -33,10 +33,10 @@ export const ACTIONS: ActionItem[] = [
   },
   {
     id: "card-details",
-    title: "Card Details View",
+    title: "View Card Details",
     icon: DocTextIcon,
     faqData: {
-      heading: "Card Details View",
+      heading: "View Card Details",
       bulletPoints: [
         "View your complete card information including card number, expiry date, and CVV.",
         "Copy card details securely for online transactions.",
@@ -46,7 +46,7 @@ export const ACTIONS: ActionItem[] = [
     },
   },
   {
-    id: "online-payment",
+    id: "make-online-payments",
     title: "Make Online Payment",
     icon: GlobeIcon,
     faqData: {

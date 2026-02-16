@@ -46,6 +46,9 @@ export default function FAQModal({ visible, onClose, data = DEFAULT_FAQ_DATA }: 
             snapPoints={snapPoints}
             enablePanDownToClose
             enableDismissOnClose
+            animationConfigs={{
+                duration: 300,
+            }}
             handleIndicatorStyle={styles.handleIndicator}
             backgroundStyle={styles.sheetBackground}
             backdropComponent={() => null}

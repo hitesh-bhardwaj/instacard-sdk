@@ -5,6 +5,8 @@ import { CardFilterType, FilterBar } from '@/components/cards/filter-bar';
 import { FloatingBottomBar } from '@/components/cards/floating-bottom-bar';
 import { GreetingBar } from '@/components/cards/greeting-bar';
 import { SwipeIndicator } from '@/components/cards/swipe-indicator';
+import { ProfileContent } from '@/components/Profile-Drawer/profile-content';
+import { ProfileDrawer } from '@/components/Profile-Drawer/profile-drawer';
 import { PWAWebViewModal } from '@/components/pwa/pwa-webview-modal';
 import { CardData, mockCards } from '@/constants/cards';
 import { InstacardColors } from '@/constants/colors';
@@ -19,6 +21,7 @@ export default function CardsScreen() {
   const [cardFilters, setCardFilters] = useState<CardFilterType[]>(['all']);
   const [recentFilterActive, setRecentFilterActive] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [profileDrawerVisible, setProfileDrawerVisible] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [pwaVisible, setPwaVisible] = useState(false);
   const [cardMode, setCardMode] = useState<'virtual' | 'universal'>('virtual');
@@ -85,105 +88,118 @@ export default function CardsScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="light" />
+    <>
+      <View style={styles.container}>
+        <StatusBar style="light" />
 
-      <CardsHeader
-        subtitle={drawerVisible ? 'Manage Card' : 'Digital Instacard Wallet'}
-        showHomeIcon={false}
-      />
+        <CardsHeader
+          subtitle={drawerVisible ? 'Manage Card' : 'Digital Instacard Wallet'}
+          showHomeIcon={false}
+        />
 
-      <View style={styles.content}>
-        {/* Card stack positioned behind the UI elements */}
+        <View style={styles.content}>
+          {/* Card stack positioned behind the UI elements */}
 
-        <View style={styles.cardStackContainer}>
-          {filteredCards.length > 0 ? (
-            <CardStack
-              cards={filteredCards}
-              onCardPress={handleCardPress}
-              onCardChange={(index) => {
-                setCurrentCardIndex(index);
-              }}
-              isDrawerOpen={drawerVisible}
-              selectedCardId={selectedCardId}
+          <View style={styles.cardStackContainer}>
+            {filteredCards.length > 0 ? (
+              <CardStack
+                cards={filteredCards}
+                onCardPress={handleCardPress}
+                onCardChange={(index) => {
+                  setCurrentCardIndex(index);
+                }}
+                isDrawerOpen={drawerVisible}
+                selectedCardId={selectedCardId}
+              />
+            ) : (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyStateText}>No card available</Text>
+              </View>
+            )}
+          </View>
+
+          {/* UI overlay on top of cards with gradient + blur */}
+          <View style={styles.overlay}>
+            <BlurView
+              intensity={90}
+              tint="light"
+              experimentalBlurMethod={Platform.OS === 'android' ? 'dimezisBlurView' : 'none'}
+              blurReductionFactor={Platform.OS === 'android' ? 6 : 4}
+              style={StyleSheet.absoluteFillObject}
+
             />
-          ) : (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyStateText}>No card available</Text>
-            </View>
+            <GreetingBar
+              userName="Nirdesh Malik"
+              onSearchPress={() => {
+                // TODO: Implement search functionality
+              }}
+              onHelpPress={() => {
+                // TODO: Implement help/support screen
+              }}
+              onAvatarPress={() => {
+                setProfileDrawerVisible(true);
+              }}
+            />
+            <FilterBar
+              mode={cardMode}
+              onModeChange={handleModeChange}
+              cardFilters={cardFilters}
+              onCardFiltersChange={handleCardFiltersChange}
+              recentFilterActive={recentFilterActive}
+              onRecentFilterPress={() => {
+                setRecentFilterActive((prev) => !prev);
+                setSelectedCardId(null);
+                setCurrentCardIndex(0);
+              }}
+            />
+
+          </View>
+
+          {filteredCards.length > 0 && (
+            <SwipeIndicator
+              currentIndex={currentCardIndex}
+              totalCount={filteredCards.length}
+            />
           )}
         </View>
 
-        {/* UI overlay on top of cards with gradient + blur */}
-        <View style={styles.overlay}>
-          <BlurView
-            intensity={90}
-            tint="light"
-            experimentalBlurMethod={Platform.OS === 'android' ? 'dimezisBlurView' : 'none'}
-            blurReductionFactor={Platform.OS === 'android' ? 6 : 4}
-            style={StyleSheet.absoluteFillObject}
+        <FloatingBottomBar
+          onHomePress={() => {
+            // TODO: Navigate to home
+          }}
+          onScanPress={() => {
+            router.push('/scan');
+          }}
+          onAddPress={handleAddNewPress}
+        />
 
-          />
-          <GreetingBar
-            userName="Nirdesh Malik"
-            onSearchPress={() => {
-              // TODO: Implement search functionality
-            }}
-            onHelpPress={() => {
-              // TODO: Implement help/support screen
-            }}
-            onAvatarPress={() => {
-              // TODO: Navigate to profile screen
-            }}
-          />
-          <FilterBar
-            mode={cardMode}
-            onModeChange={handleModeChange}
-            cardFilters={cardFilters}
-            onCardFiltersChange={handleCardFiltersChange}
-            recentFilterActive={recentFilterActive}
-            onRecentFilterPress={() => {
-              setRecentFilterActive((prev) => !prev);
-              setSelectedCardId(null);
-              setCurrentCardIndex(0);
-            }}
-          />
+        <CardActionsDrawer
+          visible={drawerVisible}
+          cards={filteredCards}
+          selectedCardId={selectedCardId ?? filteredCards[0]?.id}
+          onClose={() => setDrawerVisible(false)}
+          onSelectCard={(card) => setSelectedCardId(card.id)}
+        />
 
-        </View>
+        <PWAWebViewModal
+          visible={pwaVisible}
+          config={DEV_SDK_CONFIG}
+          route="/"
+          onClose={handlePWAClose}
+        />
 
-        {filteredCards.length > 0 && (
-          <SwipeIndicator
-            currentIndex={currentCardIndex}
-            totalCount={filteredCards.length}
-          />
-        )}
       </View>
-
-      <FloatingBottomBar
-        onHomePress={() => {
-          // TODO: Navigate to home
-        }}
-        onScanPress={() => {
-          router.push('/scan');
-        }}
-        onAddPress={handleAddNewPress}
-      />
-
-      <CardActionsDrawer
-        visible={drawerVisible}
-        cards={filteredCards}
-        selectedCardId={selectedCardId ?? filteredCards[0]?.id}
-        onClose={() => setDrawerVisible(false)}
-        onSelectCard={(card) => setSelectedCardId(card.id)}
-      />
-
-      <PWAWebViewModal
-        visible={pwaVisible}
-        config={DEV_SDK_CONFIG}
-        route="/"
-        onClose={handlePWAClose}
-      />
-    </View>
+      
+      <ProfileDrawer
+        visible={profileDrawerVisible}
+        onClose={() => setProfileDrawerVisible(false)}
+      >
+        <ProfileContent
+          userName="Nirdesh Malik"
+          onClose={() => setProfileDrawerVisible(false)}
+        />
+      </ProfileDrawer>
+    </>
   );
 }
 

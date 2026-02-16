@@ -53,7 +53,8 @@
         {
           "photosPermission": "Allow Instacart to access your photos to let you share them with your friends."
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true,

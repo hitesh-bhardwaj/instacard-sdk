@@ -18,13 +18,13 @@ export function ConfirmDialog({ visible, title, message, onCancel, onConfirm }: 
 
   if (!visible) return null;
 
-  const handleInstacard = () => {
+  const handleHome = () => {
     hapticLight();
     onConfirm();
     router.replace('/');
   };
 
-  const handleHome = () => {
+  const handleInstacard = () => {
     hapticLight();
     onConfirm();
     router.replace('/cards');

@@ -1,7 +1,7 @@
 import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { BlurView } from 'expo-blur';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -46,6 +46,7 @@ export function CardActionsDrawer({
   const [viewManageCard, setViewManageCard] = useState<boolean>(false);
   const [linkPhysicalVisible, setLinkPhysicalVisible] = useState<boolean>(false);
   const [viewAddGift, setViewAddGift] = useState<boolean>(false);
+  const [makeOnlinePaymentsVisible, setMakeOnlinePaymentsVisible] = useState<boolean>(false);
 
   const snapPoints = useMemo(() => [DRAWER_HEIGHT], []);
 
@@ -63,6 +64,7 @@ export function CardActionsDrawer({
       manage: `/manage-card/${selectedCardType}`,
       details: `/card-detail/${selectedCardType}`,
       // linkPhysical: `/link-physical-card-${selectedCardType}`,
+      makeOnlinePayments: `/make-online-payments`,
       linkPhysical: `/link-physical-card`,
       addGift: `/add-a-gift-card`,
     };
@@ -112,13 +114,22 @@ export function CardActionsDrawer({
           setViewAddGift(true);
           return;
         }
+        case 'make-online-payments': {
+          console.log('[CardActionsDrawer] open route', routes.makeOnlinePayments, {
+            actionId,
+            cardId: selectedCard.id,
+            cardType: selectedCard.cardType,
+          });
+          setMakeOnlinePaymentsVisible(true);
+          return;
+        }
         default: {
           // Other actions exist in the UI but don't open a PWA modal yet.
           return;
         }
       }
     },
-    [onActionPress, routes.addGift, routes.details, routes.linkPhysical, routes.manage, selectedCard]
+    [onActionPress, routes.addGift, routes.details, routes.linkPhysical, routes.manage, routes.makeOnlinePayments, selectedCard]
   );
 
   useEffect(() => {
@@ -150,6 +161,9 @@ export function CardActionsDrawer({
         backgroundStyle={styles.sheetBackground}
         backdropComponent={() => null}
         onDismiss={handleDismiss}
+        animationConfigs={{
+          duration: 300,
+        }}
         backgroundComponent={({ style }) => (
           <BlurView
             intensity={90}
@@ -269,6 +283,12 @@ export function CardActionsDrawer({
         config={{ ...DEV_SDK_CONFIG, cardType: selectedCard?.cardType }}
         route={routes.linkPhysical}
         onClose={() => setLinkPhysicalVisible(false)}
+      />
+      <PWAWebViewModal
+        visible={makeOnlinePaymentsVisible}
+        config={{ ...DEV_SDK_CONFIG, cardType: selectedCard?.cardType }}
+        route={routes.makeOnlinePayments}
+        onClose={() => setMakeOnlinePaymentsVisible(false)}
       />
     </>
 

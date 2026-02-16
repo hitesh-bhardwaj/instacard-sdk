@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   BackHandler,
@@ -48,8 +49,24 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
   const [error, setError] = useState<string | null>(null);
   const [showHomeConfirm, setShowHomeConfirm] = useState(false);
   const router = useRouter();
+  const { i18n } = useTranslation();
 
-  const pwaUrl = buildPWAUrl({ ...config, route });
+  const pwaUrl = buildPWAUrl({ ...config, route, language: i18n.language });
+  console.log('[PWA] Built URL with language:', i18n.language, pwaUrl);
+
+  const sendLanguageToPWA = useCallback(() => {
+    const payload = JSON.stringify({ type: 'SET_LANGUAGE', lang: i18n.language });
+    console.log('[PWA] Sending language to WebView:', payload);
+    webViewRef.current?.postMessage(payload);
+  }, [i18n.language]);
+
+  // Live update: send language to PWA whenever it changes
+  useEffect(() => {
+    if (visible) {
+      console.log('[PWA] Language changed or modal visible — sending to PWA:', i18n.language);
+      sendLanguageToPWA();
+    }
+  }, [i18n.language, visible, sendLanguageToPWA]);
 
   useEffect(() => {
     if (!visible || Platform.OS !== 'android') {
@@ -212,7 +229,11 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
                 source={{ uri: pwaUrl }}
                 style={styles.webView}
                 onMessage={handleMessage}
-                onLoadEnd={() => setIsLoading(false)}
+                onLoadEnd={() => {
+                  console.log('[PWA] WebView onLoadEnd — sending language');
+                  setIsLoading(false);
+                  sendLanguageToPWA();
+                }}
                 onError={handleLoadError}
                 onHttpError={handleLoadError}
                 onNavigationStateChange={handleNavigationStateChange}

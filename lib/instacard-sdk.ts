@@ -1,10 +1,3 @@
-/**
- * Instacard SDK Bridge
- *
- * This module handles communication between the native app and the PWA WebView.
- * Banks will integrate a similar SDK to open the card addition flow.
- */
-
 export type CardType = "debit" | "credit" | "prepaid" | "gift";
 
 export type InstacardEventType =
@@ -51,6 +44,8 @@ export interface SDKConfig {
   bankId?: string;
   /** Environment */
   environment?: "development" | "staging" | "production";
+  /** Current app language code (e.g. 'en', 'ar', 'fr') */
+  language?: string;
 }
 
 export interface SDKResult {
@@ -89,6 +84,9 @@ export function buildPWAUrl(config: SDKConfig): string {
   }
   if (config.environment) {
     url.searchParams.set("env", config.environment);
+  }
+  if (config.language) {
+    url.searchParams.set("lang", config.language);
   }
 
   return url.toString();
@@ -148,8 +146,8 @@ export function generateDevToken(): string {
  * Default SDK configuration for development
  */
 export const DEV_SDK_CONFIG: SDKConfig = {
-  // pwaBaseUrl: 'http://localhost:3000', 
-  pwaBaseUrl: "http://10.5.50.151:3000",
+  // pwaBaseUrl: 'http://localhost:3000',
+  pwaBaseUrl: "http://10.5.50.10:3000",
   // pwaBaseUrl: "https://instacard-pwa.vercel.app/",
   userToken: generateDevToken(),
   environment: "development",
