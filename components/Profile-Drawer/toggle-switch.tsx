@@ -11,15 +11,16 @@ import { hapticMedium } from '@/lib/haptics';
 
 interface ToggleSwitchProps {
   value: boolean;
+  isRTL?: boolean;
   onToggle: () => void;
 }
 
-export function ToggleSwitch({ value, onToggle }: ToggleSwitchProps) {
+export function ToggleSwitch({ value, onToggle, isRTL = false }: ToggleSwitchProps) {
   const translateX = useSharedValue(value ? 20 : 0);
 
   const handleToggle = () => {
     hapticMedium();
-    translateX.value = withTiming(value ? 0 : 20, {
+    translateX.value = withTiming(value ? 0 : isRTL ? -20 : 20, {
       duration: 200,
       easing: Easing.out(Easing.cubic),
     });

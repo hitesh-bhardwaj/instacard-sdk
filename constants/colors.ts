@@ -32,4 +32,5 @@ export const InstacardColors = {
   // Status colors
   success: '#34C759',
   error: '#FF3B30',
+  orange: '#FF8303',
 };

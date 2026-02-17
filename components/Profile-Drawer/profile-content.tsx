@@ -1,12 +1,14 @@
-import { ArrowRight, HelpCircle, LogOut, Moon, User } from 'lucide-react-native';
+import { InstacardColors } from '@/constants/colors';
+import { ArrowLeft, ArrowRight, HelpCircle, LogOut, Moon, User } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { InstacardColors } from '@/constants/colors';
 import { LanguageDropdown } from './language-dropdown';
-import { ToggleSwitch } from './toggle-switch';
 import { MenuRow } from './menu-row';
+import { ToggleSwitch } from './toggle-switch';
+
+const RTL_LANGUAGES = ['ar'];
 
 interface ProfileContentProps {
   userName?: string;
@@ -19,6 +21,8 @@ export function ProfileContent({ userName = 'User', onClose }: ProfileContentPro
   const [darkMode, setDarkMode] = useState(false);
   const [selectedLang, setSelectedLang] = useState(i18n.language?.split('-')[0] ?? 'en');
 
+  const isRTL = RTL_LANGUAGES.includes(selectedLang);
+
   const initials = userName
     .split(' ')
     .map((n) => n[0])
@@ -26,12 +30,14 @@ export function ProfileContent({ userName = 'User', onClose }: ProfileContentPro
     .toUpperCase()
     .slice(0, 2);
 
+  const CloseArrow = isRTL ? ArrowLeft : ArrowRight;
+
   return (
-    <View style={styles.wrapper}>
-      <View style={[styles.header, { paddingTop: insets.top + 20, paddingBottom: 36 }]}>
-        <Text style={styles.headerTitle}>{t('profile.settings')}</Text>
+    <View style={[styles.wrapper, isRTL && styles.rtl]}>
+      <View style={[styles.header, { paddingTop: insets.top + 20, paddingBottom: 36 }, isRTL && styles.rtl]}>
+        <Text style={[styles.headerTitle, isRTL && styles.rtlText]}>{t('profile.settings')}</Text>
         <TouchableOpacity onPress={onClose} hitSlop={12}>
-          <ArrowRight size={28} color={'black'} />
+          <CloseArrow size={28} color={'black'} />
         </TouchableOpacity>
       </View>
 
@@ -51,15 +57,17 @@ export function ProfileContent({ userName = 'User', onClose }: ProfileContentPro
           <Text style={styles.avatarEmail}>user@example.com</Text>
         </View>
 
-        <View style={styles.menuList}>
+        <View style={[styles.menuList, isRTL && styles.rtl]}>
           <MenuRow
             icon={<User size={20} color={InstacardColors.primary} />}
             label={t('profile.profileSettings')}
             onPress={() => {}}
+            isRTL={isRTL}
           />
           <LanguageDropdown
             selectedLang={selectedLang}
             onSelect={setSelectedLang}
+            isRTL={isRTL}
           />
           <MenuRow
             icon={<Moon size={20} color={InstacardColors.primary} />}
@@ -67,13 +75,15 @@ export function ProfileContent({ userName = 'User', onClose }: ProfileContentPro
             onPress={() => {}}
             showChevron={false}
             rightElement={
-              <ToggleSwitch value={darkMode} onToggle={() => setDarkMode((prev) => !prev)} />
+              <ToggleSwitch isRTL={isRTL} value={darkMode} onToggle={() => setDarkMode((prev) => !prev)} />
             }
+            isRTL={isRTL}
           />
           <MenuRow
             icon={<HelpCircle size={20} color={InstacardColors.primary} />}
             label={t('profile.helpSupport')}
             onPress={() => {}}
+            isRTL={isRTL}
           />
           <MenuRow
             icon={<LogOut size={20} color={InstacardColors.error} />}
@@ -81,6 +91,7 @@ export function ProfileContent({ userName = 'User', onClose }: ProfileContentPro
             onPress={() => onClose()}
             showChevron={false}
             danger
+            isRTL={isRTL}
           />
         </View>
 
@@ -93,6 +104,7 @@ export function ProfileContent({ userName = 'User', onClose }: ProfileContentPro
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
+  
   },
   header: {
     flexDirection: 'row',
@@ -154,5 +166,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 12,
     color: InstacardColors.textSecondary,
+  },
+  rtl: {
+    direction: 'rtl',
+  },
+  rtlText: {
+    writingDirection: 'rtl',
   },
 });

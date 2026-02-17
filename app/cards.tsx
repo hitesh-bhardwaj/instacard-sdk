@@ -167,8 +167,8 @@ export default function CardsScreen() {
           onHomePress={() => {
             // TODO: Navigate to home
           }}
-          onScanPress={() => {
-            router.push('/scan');
+          onScanPress={() => { 
+            router.push('/QRPayments/scan');
           }}
           onAddPress={handleAddNewPress}
         />

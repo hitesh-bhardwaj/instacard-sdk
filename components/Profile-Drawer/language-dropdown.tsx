@@ -2,10 +2,10 @@ import { Check, ChevronDown, Globe } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
 import { LayoutChangeEvent, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
-    Easing,
-    useAnimatedStyle,
-    useSharedValue,
-    withTiming,
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
 } from 'react-native-reanimated';
 
 import { InstacardColors } from '@/constants/colors';
@@ -27,9 +27,10 @@ const ANIM_EASING = Easing.bezier(0.25, 0.1, 0.25, 1);
 interface LanguageDropdownProps {
   selectedLang: string;
   onSelect: (code: string) => void;
+  isRTL?: boolean;
 }
 
-export function LanguageDropdown({ selectedLang, onSelect }: LanguageDropdownProps) {
+export function LanguageDropdown({ selectedLang, onSelect, isRTL = false }: LanguageDropdownProps) {
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const measuredHeight = useSharedValue(0);
@@ -78,7 +79,7 @@ export function LanguageDropdown({ selectedLang, onSelect }: LanguageDropdownPro
   return (
     <View>
       <TouchableOpacity
-        style={menuRowStyles.menuRow}
+        style={[menuRowStyles.menuRow, isRTL && menuRowStyles.menuRowRTL]}
         onPress={toggle}
         activeOpacity={0.6}
         accessibilityRole="button"
@@ -87,7 +88,7 @@ export function LanguageDropdown({ selectedLang, onSelect }: LanguageDropdownPro
         <View style={menuRowStyles.iconBox}>
           <Globe size={20} color={InstacardColors.primary} />
         </View>
-        <Text style={menuRowStyles.menuLabel}>{t('profile.languages')}</Text>
+        <Text style={[menuRowStyles.menuLabel, isRTL && menuRowStyles.menuLabelRTL]}>{t('profile.languages')}</Text>
         <Text style={styles.langBadge}>{currentLang.native}</Text>
         <Animated.View style={chevronStyle}>
           <ChevronDown size={18} color={InstacardColors.textSecondary} />
@@ -101,17 +102,17 @@ export function LanguageDropdown({ selectedLang, onSelect }: LanguageDropdownPro
             return (
               <TouchableOpacity
                 key={lang.code}
-                style={[styles.langOption, isSelected && styles.langOptionSelected]}
+                style={[styles.langOption, isSelected && styles.langOptionSelected, isRTL && styles.langOptionRTL]}
                 onPress={() => handleSelect(lang.code)}
                 activeOpacity={0.6}
                 accessibilityRole="radio"
                 accessibilityState={{ selected: isSelected }}
               >
                 <View style={styles.langOptionLeft}>
-                  <Text style={[styles.langName, isSelected && styles.langNameSelected]}>
+                  <Text style={[styles.langName, isSelected && styles.langNameSelected, isRTL && styles.langTextRTL]}>
                     {lang.name}
                   </Text>
-                  <Text style={styles.langNative}>{lang.native}</Text>
+                  <Text style={[styles.langNative, isRTL && styles.langTextRTL]}>{lang.native}</Text>
                 </View>
                 {isSelected && (
                   <View style={styles.langCheck}>
@@ -181,5 +182,12 @@ const styles = StyleSheet.create({
     backgroundColor: InstacardColors.primary,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  langOptionRTL: {
+    direction: 'rtl',
+  },
+  langTextRTL: {
+    writingDirection: 'rtl',
+    textAlign: 'right',
   },
 });

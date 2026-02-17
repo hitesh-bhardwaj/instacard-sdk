@@ -244,7 +244,7 @@ export function CardActionsDrawer({
                       hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                       style={{ backgroundColor: InstacardColors.primary, borderRadius: 10, width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}
                     >
-                     <Text style={{ color: InstacardColors.textOnPrimary, textAlign: 'center' }}>?</Text>
+                      <Text style={{ color: InstacardColors.textOnPrimary, textAlign: 'center' }}>?</Text>
                     </TouchableOpacity>
 
                   </View>
@@ -331,17 +331,15 @@ const styles = StyleSheet.create({
   cardThumb: {
     width: CARD_THUMB_WIDTH,
     height: CARD_THUMB_HEIGHT,
-    borderRadius: 12,
+    borderRadius: 9,
     // backgroundColor: InstacardColors.cardBackground,
-    padding: 2,
+    // padding: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
   cardThumbSelected: {
-    shadowColor: InstacardColors.textPrimary,
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: .5,
-    elevation: 5,
+    borderWidth: 2,
+    borderColor: 'gray',
   },
   cardThumbImage: {
     width: '100%',

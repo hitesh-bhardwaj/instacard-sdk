@@ -1,4 +1,4 @@
-import { ChevronRight } from 'lucide-react-native';
+import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { InstacardColors } from '@/constants/colors';
@@ -11,12 +11,15 @@ export interface MenuRowProps {
   showChevron?: boolean;
   rightElement?: React.ReactNode;
   danger?: boolean;
+  isRTL?: boolean;
 }
 
-export function MenuRow({ icon, label, onPress, showChevron = true, rightElement, danger }: MenuRowProps) {
+export function MenuRow({ icon, label, onPress, showChevron = true, rightElement, danger, isRTL = false }: MenuRowProps) {
+  const Chevron = isRTL ? ChevronLeft : ChevronRight;
+
   return (
     <TouchableOpacity
-      style={styles.menuRow}
+      style={[styles.menuRow, isRTL && styles.menuRowRTL]}
       onPress={() => {
         hapticLight();
         onPress();
@@ -28,9 +31,9 @@ export function MenuRow({ icon, label, onPress, showChevron = true, rightElement
       <View style={[styles.iconBox, danger && styles.iconBoxDanger]}>
         {icon}
       </View>
-      <Text style={[styles.menuLabel, danger && styles.menuLabelDanger]}>{label}</Text>
+      <Text style={[styles.menuLabel, danger && styles.menuLabelDanger, isRTL && styles.menuLabelRTL]}>{label}</Text>
       {rightElement || (showChevron && (
-        <ChevronRight size={18} color={InstacardColors.textSecondary} />
+        <Chevron size={18} color={InstacardColors.textSecondary} />
       ))}
     </TouchableOpacity>
   );
@@ -63,6 +66,13 @@ export const menuRowStyles = StyleSheet.create({
   },
   menuLabelDanger: {
     color: InstacardColors.error,
+  },
+  menuRowRTL: {
+    direction: 'rtl',
+  },
+  menuLabelRTL: {
+    writingDirection: 'rtl',
+    textAlign: 'right',
   },
 });
 

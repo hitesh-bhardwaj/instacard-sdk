@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ChevronLeft, Flashlight, FlashlightOff, Image } from 'lucide-react-native';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Dimensions, Linking, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -24,6 +24,7 @@ export default function ScanScreen() {
   const [flashOn, setFlashOn] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [image, setImage] = useState<string | null>(null);
+  const hasScanned = useRef(false);
 
   // Scanning line animation
   const scanLinePosition = useSharedValue(0);
@@ -80,6 +81,18 @@ export default function ScanScreen() {
     return text.substring(0, maxLength) + '...';
   };
 
+  const handleBarcodeScanned = (data: string) => {
+    if (hasScanned.current) return;
+    hasScanned.current = true;
+    
+    setResult(data);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    
+    setTimeout(() => {
+      router.push('/QRPayments/payment-amount');
+    }, 1500);
+  };
+
 
   if (!permission) {
     return (
@@ -94,7 +107,7 @@ export default function ScanScreen() {
 
   if (!permission.granted) {
     return (
-      <View style={styles.container}>
+      <View  style={styles.container}>
         <StatusBar style="light" />
         <View style={styles.permissionContainer}>
           <Text style={styles.permissionTitle}>Camera Access Required</Text>
@@ -137,7 +150,7 @@ export default function ScanScreen() {
             barcodeTypes: ['qr'],
           }}
           onBarcodeScanned={(result) => {
-            setResult(result.data);
+            handleBarcodeScanned(result.data);
           }}
         />
 
@@ -199,7 +212,10 @@ export default function ScanScreen() {
             <TouchableOpacity
               activeOpacity={0.8}
               style={styles.actionButton}
-              onPress={handleGalleryPress}
+              // onPress={handleGalleryPress}
+              onPress={()=>{
+                router.push('/QRPayments/payment-amount');
+              }}
             >
               <View style={styles.actionButtonInner}>
                 <Image size={24} color={InstacardColors.white} strokeWidth={1.5} />
@@ -291,7 +307,7 @@ const styles = StyleSheet.create({
   scannerOverlay: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
-    marginBottom:"40%",
+    marginBottom: "40%",
     alignItems: 'center',
   },
   scannerFrame: {
