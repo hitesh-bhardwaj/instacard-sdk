@@ -6,18 +6,28 @@ import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ChevronLeft, Flashlight, FlashlightOff, Image } from 'lucide-react-native';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Dimensions, Linking, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
+  Easing,
+  useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
+import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const CAMERA_HEIGHT = SCREEN_HEIGHT * 0.85;
+
+// Camera container corner radius
+const CAMERA_CORNER_RADIUS = 24;
+const STROKE_WIDTH = 5;
+const TRAIL_LENGTH = 0.15; // 15% of the perimeter
+
+const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
 export default function ScanScreen() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -29,8 +39,29 @@ export default function ScanScreen() {
   // Scanning line animation
   const scanLinePosition = useSharedValue(0);
 
+  // Snake trail animation progress (0 to 1 represents full loop around the camera edges)
+  const snakeProgress = useSharedValue(0);
+
+  // Calculate total perimeter length for the rounded rect
+  const calculatePerimeter = () => {
+    const w = SCREEN_WIDTH - STROKE_WIDTH;
+    const h = CAMERA_HEIGHT - STROKE_WIDTH;
+    const r = Math.max(0, CAMERA_CORNER_RADIUS - STROKE_WIDTH / 2);
+    // Two straight edges on top (minus corners) + two full vertical edges + bottom edge + two quarter circles
+    const straightTop = w - 2 * r;
+    const straightBottom = w;
+    const straightLeft = h - r;
+    const straightRight = h - r;
+    const curvedCorners = 2 * (Math.PI * r / 2);
+    return straightTop + straightBottom + straightLeft + straightRight + curvedCorners;
+  };
+
+  const perimeter = calculatePerimeter();
+  const trailDashLength = perimeter * TRAIL_LENGTH;
+  const gapLength = perimeter - trailDashLength;
+
   // Start scanning animation
-  useState(() => {
+  useEffect(() => {
     scanLinePosition.value = withRepeat(
       withSequence(
         withTiming(1, { duration: 2000 }),
@@ -39,11 +70,29 @@ export default function ScanScreen() {
       -1,
       false
     );
-  });
+  }, []);
+
+  // Snake trail animation - runs continuously around the camera edges
+  useEffect(() => {
+    snakeProgress.value = 0;
+    snakeProgress.value = withRepeat(
+      withTiming(1, { duration: 3000, easing: Easing.linear }),
+      -1,
+      false
+    );
+  }, []);
 
   const scanLineStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: scanLinePosition.value * 200 }],
   }));
+
+  // Animated props for the snake trail rect
+  const animatedRectProps = useAnimatedProps(() => {
+    const offset = -snakeProgress.value * perimeter;
+    return {
+      strokeDashoffset: offset,
+    };
+  });
 
   const handleFlashToggle = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -125,6 +174,13 @@ export default function ScanScreen() {
     );
   }
 
+  // Calculate rect dimensions for SVG
+  const rectX = STROKE_WIDTH / 2;
+  const rectY = STROKE_WIDTH / 2;
+  const rectWidth = SCREEN_WIDTH - STROKE_WIDTH;
+  const rectHeight = CAMERA_HEIGHT - STROKE_WIDTH;
+  const rectRx = Math.max(0, CAMERA_CORNER_RADIUS - STROKE_WIDTH / 2);
+
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
@@ -142,6 +198,26 @@ export default function ScanScreen() {
 
       {/* Camera View - Middle Layer with rounded top */}
       <View style={styles.cameraContainer}>
+        {/* SVG Snake Trail Effect - Camera Edge Animation */}
+        <View style={styles.svgContainer} pointerEvents="none">
+          <Svg width={SCREEN_WIDTH} height={CAMERA_HEIGHT}>
+            <AnimatedRect
+              x={rectX}
+              y={rectY}
+              width={rectWidth}
+              height={rectHeight}
+              rx={rectRx}
+              ry={rectRx}
+              fill="none"
+              stroke={InstacardColors.white}
+              strokeWidth={STROKE_WIDTH}
+              strokeLinecap="round"
+              strokeDasharray={`${trailDashLength} ${gapLength}`}
+              animatedProps={animatedRectProps}
+            />
+          </Svg>
+        </View>
+
         <CameraView
           style={styles.camera}
           facing="back"
@@ -300,6 +376,16 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     overflow: 'hidden',
+  },
+  // SVG container for snake trail - positioned over camera
+  svgContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 100,
+    
   },
   camera: {
     flex: 1,

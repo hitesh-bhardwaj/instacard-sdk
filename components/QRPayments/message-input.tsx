@@ -3,7 +3,7 @@ import { AppFonts } from '@/constants/fonts';
 import { hapticLight } from '@/lib/haptics';
 import { Ionicons } from '@expo/vector-icons';
 import { useRef, useState } from 'react';
-import { Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -17,7 +17,18 @@ interface MessageInputProps {
 }
 
 const COLLAPSED_HEIGHT = 40;
-const EXPANDED_HEIGHT = 120;
+const EXPANDED_HEIGHT = 160;
+
+const MESSAGE_SUGGESTIONS = [
+  'Dinner 🍽️',
+  'Rent',
+  'Thanks',
+  'Gift 🎁',
+  'Coffee ☕',
+  'Groceries 🛒',
+  'Utilities',
+  'Birthday 🎂',
+];
 
 export function MessageInput({ value, onChangeText }: MessageInputProps) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -57,6 +68,11 @@ export function MessageInput({ value, onChangeText }: MessageInputProps) {
   const handleSubmitEditing = () => {
     hapticLight();
     collapse();
+  };
+
+  const handleSuggestionPress = (suggestion: string) => {
+    hapticLight();
+    onChangeText(suggestion);
   };
 
   const containerStyle = useAnimatedStyle(() => ({
@@ -113,6 +129,34 @@ export function MessageInput({ value, onChangeText }: MessageInputProps) {
                 onSubmitEditing={handleSubmitEditing}
                 returnKeyType="done"
               />
+            </Animated.View>
+            <Animated.View style={[styles.suggestionsContainer, inputStyle]}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.suggestionsContent}
+              >
+                {MESSAGE_SUGGESTIONS.map((suggestion) => (
+                  <TouchableOpacity
+                    key={suggestion}
+                    style={[
+                      styles.suggestionChip,
+                      value === suggestion && styles.suggestionChipActive,
+                    ]}
+                    onPress={() => handleSuggestionPress(suggestion)}
+                    activeOpacity={0.7}
+                  >
+                    <Text
+                      style={[
+                        styles.suggestionText,
+                        value === suggestion && styles.suggestionTextActive,
+                      ]}
+                    >
+                      {suggestion}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
             </Animated.View>
           </View>
         )}
@@ -176,7 +220,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   inputContainer: {
-    height: 60,
+    height: 50,
   },
   textInput: {
     height: '100%',
@@ -184,5 +228,38 @@ const styles = StyleSheet.create({
     fontFamily: AppFonts.regular,
     color: InstacardColors.textPrimary,
     textAlignVertical: 'top',
+  },
+  suggestionsContainer: {
+    marginTop: 8,
+  },
+  suggestionsContent: {
+    gap: 8,
+    paddingRight: 8,
+  },
+  suggestionChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  suggestionChipActive: {
+    backgroundColor: InstacardColors.primary,
+    borderColor: InstacardColors.primary,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  suggestionText: {
+    fontSize: 13,
+    fontFamily: AppFonts.regular,
+    color: InstacardColors.textSecondary,
+  },
+  suggestionTextActive: {
+    color: '#FFFFFF',
   },
 });

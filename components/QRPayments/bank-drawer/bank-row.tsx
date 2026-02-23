@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   bankRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: InstacardColors.white,
+    backgroundColor: `${InstacardColors.white}90`,
     borderRadius: 16,
     padding: 12,
     borderWidth: 1,

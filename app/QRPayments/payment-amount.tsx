@@ -27,9 +27,48 @@ export default function PaymentAmounts() {
   };
 
   const banks: BankItem[] = [
-    { id: 'debit1', name: 'Debit Card', subtitle: 'Visa •••• 4521', balance: 'N 12,450.10' },
-    { id: 'credit1', name: 'Credit Card', subtitle: 'Mastercard •••• 8834', balance: 'N 50,000.00' },
-    { id: 'gift1', name: 'Gift Card', subtitle: 'Instacard •••• 1122', balance: 'N 5,000.00' },
+    {
+      id: 'debit1',
+      name: 'Axis Bank Debit',
+      subtitle: 'Visa •••• 4521',
+      balance: 'N 12,450.10',
+      cardType: 'debit',
+    },
+    {
+      id: 'debit2',
+      name: 'HDFC Bank Debit',
+      subtitle: 'RuPay •••• 9912',
+      balance: 'N 8,200.50',
+      cardType: 'debit',
+    },
+    {
+      id: 'credit1',
+      name: 'HDFC Regalia',
+      subtitle: 'Mastercard •••• 8834',
+      balance: 'N 50,000.00',
+      cardType: 'credit',
+    },
+    {
+      id: 'credit2',
+      name: 'SBI SimplyClick',
+      subtitle: 'Visa •••• 1129',
+      balance: 'N 35,600.75',
+      cardType: 'credit',
+    },
+    {
+      id: 'prepaid1',
+      name: 'Instacard Prepaid',
+      subtitle: 'Virtual •••• 7788',
+      balance: 'N 9,500.00',
+      cardType: 'prepaid',
+    },
+    {
+      id: 'gift1',
+      name: 'Instacard Gift',
+      subtitle: 'Gift Card •••• 1122',
+      balance: 'N 5,000.00',
+      cardType: 'gift',
+    },
   ];
 
   const initials = recipientData.name

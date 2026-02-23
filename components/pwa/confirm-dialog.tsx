@@ -195,7 +195,7 @@ const dialogStyles = StyleSheet.create({
   },
   cancelText: {
     fontSize: 16,
-    color: InstacardColors.error,
+    color: InstacardColors.textPrimary,
     fontWeight: '600',
   },
 });
