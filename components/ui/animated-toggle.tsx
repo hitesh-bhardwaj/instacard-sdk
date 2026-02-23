@@ -7,7 +7,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { hapticMedium } from '@/lib/haptics';
 
 type ToggleValue = 'virtual' | 'universal';
@@ -48,6 +48,8 @@ export function AnimatedToggle({ value, onChange }: AnimatedToggleProps) {
     width: segmentWidth,
     transform: [{ translateX: translateX.value }],
   }));
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
 
   return (
     <View style={styles.container} onLayout={handleLayout} accessibilityRole="tablist">
@@ -76,12 +78,12 @@ export function AnimatedToggle({ value, onChange }: AnimatedToggleProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: InstacardColors.white,
-    borderColor:`${InstacardColors.border}80`,
+    backgroundColor: colors.white,
+    borderColor:`${colors.border}80`,
     borderRadius: 9999,
     padding: PADDING,
     gap: GAP,
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
     left: 5,
     top: 5,
     bottom: 5,
-    backgroundColor: InstacardColors.primary,
+    backgroundColor: colors.primary,
     borderRadius: 9999,
   },
   option: {
@@ -106,10 +108,10 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: 12,
     fontWeight: '500',
-    color: InstacardColors.textSecondary,
+    color: colors.textSecondary,
   },
   optionTextActive: {
-    color: InstacardColors.textOnPrimary,
+    color: colors.textOnPrimary,
    
   },
 });

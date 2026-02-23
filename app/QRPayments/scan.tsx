@@ -20,7 +20,7 @@ import Animated, {
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const CAMERA_HEIGHT = SCREEN_HEIGHT * 0.85;
+const CAMERA_HEIGHT = SCREEN_WIDTH * 1.85;
 
 // Camera container corner radius
 const CAMERA_CORNER_RADIUS = 24;
@@ -138,7 +138,7 @@ export default function ScanScreen() {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     
     setTimeout(() => {
-      router.push('/QRPayments/payment-amount');
+      router.replace('/QRPayments/payment-amount');
     }, 1500);
   };
 
@@ -196,10 +196,9 @@ export default function ScanScreen() {
         </View>
       </View>
 
-      {/* Camera View - Middle Layer with rounded top */}
+      Camera View - Middle Layer with rounded top
       <View style={styles.cameraContainer}>
-        {/* SVG Snake Trail Effect - Camera Edge Animation */}
-        <View style={styles.svgContainer} pointerEvents="none">
+        {/* <View style={styles.svgContainer} pointerEvents="none">
           <Svg width={SCREEN_WIDTH} height={CAMERA_HEIGHT}>
             <AnimatedRect
               x={rectX}
@@ -216,7 +215,7 @@ export default function ScanScreen() {
               animatedProps={animatedRectProps}
             />
           </Svg>
-        </View>
+        </View> */}
 
         <CameraView
           style={styles.camera}
@@ -251,8 +250,8 @@ export default function ScanScreen() {
                 <BlurView
                   intensity={90}
                   tint="light"
-                  experimentalBlurMethod={Platform.OS === 'android' ? 'dimezisBlurView' : 'none'}
-                  blurReductionFactor={Platform.OS === 'android' ? 6 : 4}
+                  experimentalBlurMethod='dimezisBlurView'
+                  blurReductionFactor={6}
                   style={StyleSheet.absoluteFillObject}
                 />
                 <View style={styles.resultContent}>
@@ -270,12 +269,12 @@ export default function ScanScreen() {
       </View>
 
       {/* Bottom Section - Top Layer (z-index: 2) */}
-      <View style={styles.bottomSection}>
-        <BlurView
-          intensity={90}
+      <BlurView  intensity={90}
           tint="light"
           experimentalBlurMethod='dimezisBlurView'
-          blurReductionFactor={Platform.OS === 'android' ? 6 : 4}
+          blurReductionFactor={6} style={styles.bottomSection}>
+        <View
+         
           style={StyleSheet.absoluteFillObject}
         />
         <View style={styles.bottomContent}>
@@ -317,7 +316,7 @@ export default function ScanScreen() {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </BlurView>
     </View>
   );
 }
@@ -329,7 +328,7 @@ const CORNER_BORDER_WIDTH = 4;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: InstacardColors.primary,
+    backgroundColor: InstacardColors.primary,
   },
   headerBackground: {
     position: 'absolute',
@@ -395,6 +394,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: "40%",
     alignItems: 'center',
+    // backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
   scannerFrame: {
     width: SCANNER_SIZE,
@@ -465,6 +465,7 @@ const styles = StyleSheet.create({
   bottomContent: {
     alignItems: 'center',
     paddingTop: 32,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     paddingBottom: Platform.OS === 'ios' ? 50 : 40,
   },
   instructionText: {

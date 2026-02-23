@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import FilterIcon from '@/assets/svg/filter.svg';
 import SortIcon from '@/assets/svg/sort.svg';
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { hapticLight } from '@/lib/haptics';
 
 import { AnimatedToggle } from '../ui/animated-toggle';
@@ -48,6 +48,7 @@ interface FilterBarProps {
   onRecentFilterPress?: () => void;
   mode: 'virtual' | 'universal';
   onModeChange: (mode: 'virtual' | 'universal') => void;
+  isDarkMode?: boolean;
 }
 
 export function FilterBar({
@@ -57,13 +58,17 @@ export function FilterBar({
   onRecentFilterPress,
   mode,
   onModeChange,
-}: FilterBarProps) {
+  isDarkMode,
+}: FilterBarProps) {  
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const handleFilterTabPress = () => {
     hapticLight();
     setDropdownVisible(true);
   };
+
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
 
   const handleFiltersChange = (filters: CardFilterType[]) => {
     onCardFiltersChange?.(filters);
@@ -90,7 +95,7 @@ export function FilterBar({
           <FilterIcon
             width={16}
             height={16}
-            color={InstacardColors.textPrimary}
+            color={colors.textPrimary}
           />
         </TouchableOpacity>
 
@@ -108,7 +113,7 @@ export function FilterBar({
           <SortIcon
             width={16}
             height={16}
-            color={recentFilterActive ? InstacardColors.primary : InstacardColors.textPrimary}
+            color={recentFilterActive ? colors.primary : colors.textPrimary}
           />
         </TouchableOpacity>
       </View>
@@ -122,7 +127,7 @@ export function FilterBar({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -149,16 +154,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderWidth: 1,
     borderRadius: 50,
-    borderColor: `${InstacardColors.textPrimary}10`,
-    backgroundColor: InstacardColors.white,
+    borderColor: `${colors.textPrimary}10`,
+    backgroundColor: colors.white,
   },
   tabActive: {
-    borderColor: InstacardColors.primary,
-    backgroundColor: `${InstacardColors.primary}12`,
+    borderColor: colors.primary,
+    backgroundColor: `${colors.primary}12`,
   },
   tabText: {
     fontSize: 14,
     marginRight: 5,
-    color: InstacardColors.textPrimary,
+    color: colors.textPrimary,
   },
 });

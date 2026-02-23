@@ -26,7 +26,7 @@ export function AmountDisplay({ amount }: AmountDisplayProps) {
     <View style={styles.amountSection}>
       <View style={[styles.amountContainer]}>
         <View style={styles.amountRow}>
-          <Text style={styles.rupeeSymbol}>N</Text>
+          <Text style={[styles.amountText, { textDecorationLine: 'line-through', marginRight: 4 }]}>N</Text>
           <Text style={styles.amountText}>{formattedAmount}</Text>
         </View>
         <Text style={styles.amountInWords}>{amountInWords}</Text>

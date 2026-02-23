@@ -1,4 +1,5 @@
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
+import { useThemeStore } from '@/hooks/use-theme-store';
 import { ArrowLeft, ArrowRight, HelpCircle, LogOut, Moon, User } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,10 +19,17 @@ interface ProfileContentProps {
 export function ProfileContent({ userName = 'User', onClose }: ProfileContentProps) {
   const insets = useSafeAreaInsets();
   const { t, i18n } = useTranslation();
-  const [darkMode, setDarkMode] = useState(false);
+  const { isDarkMode, toggleTheme } = useThemeStore();
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
   const [selectedLang, setSelectedLang] = useState(i18n.language?.split('-')[0] ?? 'en');
 
   const isRTL = RTL_LANGUAGES.includes(selectedLang);
+
+  const handleDarkModeToggle = () => {
+    toggleTheme();
+    console.log('Dark mode toggled:', !isDarkMode);
+  };
 
   const initials = userName
     .split(' ')
@@ -37,7 +45,7 @@ export function ProfileContent({ userName = 'User', onClose }: ProfileContentPro
       <View style={[styles.header, { paddingTop: insets.top + 20, paddingBottom: 36 }, isRTL && styles.rtl]}>
         <Text style={[styles.headerTitle, isRTL && styles.rtlText]}>{t('profile.settings')}</Text>
         <TouchableOpacity onPress={onClose} hitSlop={12}>
-          <CloseArrow size={28} color={'black'} />
+          <CloseArrow size={28} color={colors.textPrimary} />
         </TouchableOpacity>
       </View>
 
@@ -59,7 +67,7 @@ export function ProfileContent({ userName = 'User', onClose }: ProfileContentPro
 
         <View style={[styles.menuList, isRTL && styles.rtl]}>
           <MenuRow
-            icon={<User size={20} color={InstacardColors.primary} />}
+            icon={<User size={20} color={isDarkMode ? '#ffffff' : colors.primary} />}
             label={t('profile.profileSettings')}
             onPress={() => {}}
             isRTL={isRTL}
@@ -68,19 +76,20 @@ export function ProfileContent({ userName = 'User', onClose }: ProfileContentPro
             selectedLang={selectedLang}
             onSelect={setSelectedLang}
             isRTL={isRTL}
+            isDarkMode={isDarkMode}
           />
           <MenuRow
-            icon={<Moon size={20} color={InstacardColors.primary} />}
+            icon={<Moon size={20} color={isDarkMode ? '#ffffff' : colors.primary}  />}
             label={t('profile.darkMode')}
             onPress={() => {}}
             showChevron={false}
             rightElement={
-              <ToggleSwitch isRTL={isRTL} value={darkMode} onToggle={() => setDarkMode((prev) => !prev)} />
+              <ToggleSwitch isRTL={isRTL} value={isDarkMode} onToggle={handleDarkModeToggle} />
             }
             isRTL={isRTL}
           />
           <MenuRow
-            icon={<HelpCircle size={20} color={InstacardColors.primary} />}
+            icon={<HelpCircle size={20} color={isDarkMode ? '#ffffff' : colors.primary} />}
             label={t('profile.helpSupport')}
             onPress={() => {}}
             isRTL={isRTL}
@@ -101,11 +110,12 @@ export function ProfileContent({ userName = 'User', onClose }: ProfileContentPro
   );
 }
 
-const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-  
-  },
+const createStyles = (colors: typeof InstacardColors) =>
+  StyleSheet.create({
+    wrapper: {
+      flex: 1,
+      backgroundColor: colors.cardBackground,
+    },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -117,11 +127,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     zIndex: 10,
   },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: 'black',
-  },
+    headerTitle: {
+      fontSize: 24,
+      fontWeight: '600',
+      color: colors.textPrimary,
+    },
   scrollView: {
     flex: 1,
   },
@@ -132,45 +142,45 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 32,
   },
-  avatar: {
-    width: 200,
-    height: 200,
-    borderRadius: 40,
-    backgroundColor: '#6b6b6b',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
-  },
-  avatarText: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: InstacardColors.textOnPrimary,
-  },
-  avatarName: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: InstacardColors.textPrimary,
-    marginBottom: 4,
-  },
-  avatarEmail: {
-    fontSize: 14,
-    color: InstacardColors.textSecondary,
-  },
-  menuList: {
-    backgroundColor: InstacardColors.white,
-    borderRadius: 16,
-    overflow: 'hidden',
-    marginBottom: 32,
-  },
-  versionText: {
-    textAlign: 'center',
-    fontSize: 12,
-    color: InstacardColors.textSecondary,
-  },
-  rtl: {
-    direction: 'rtl',
-  },
-  rtlText: {
-    writingDirection: 'rtl',
-  },
-});
+    avatar: {
+      width: 200,
+      height: 200,
+      borderRadius: 40,
+      backgroundColor: colors.shadow,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 12,
+    },
+    avatarText: {
+      fontSize: 28,
+      fontWeight: '700',
+      color: colors.textOnPrimary,
+    },
+    avatarName: {
+      fontSize: 20,
+      fontWeight: '600',
+      color: colors.textPrimary,
+      marginBottom: 4,
+    },
+    avatarEmail: {
+      fontSize: 14,
+      color: colors.textSecondary,
+    },
+    menuList: {
+      // backgroundColor: colors.white,
+      borderRadius: 16,
+      overflow: 'hidden',
+      marginBottom: 32,
+    },
+    versionText: {
+      textAlign: 'center',
+      fontSize: 12,
+      color: colors.textSecondary,
+    },
+    rtl: {
+      direction: 'rtl',
+    },
+    rtlText: {
+      writingDirection: 'rtl',
+    },
+  });

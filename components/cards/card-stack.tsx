@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { forwardRef, useCallback, useEffect, useImperativeHandle } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -43,6 +43,11 @@ const SLIDE_BACK_CONFIG = {
 const STACK_DRAG_DISTANCE = STACK_CONFIG.SWIPE_THRESHOLD * 1.6;
 const SWIPE_OUT_DISTANCE = SCREEN_WIDTH * 1.2;
 
+export interface CardStackRef {
+  goToNext: () => void;
+  goToPrevious: () => void;
+}
+
 interface CardStackProps {
   cards: CardData[];
   onCardPress?: (card: CardData) => void;
@@ -51,13 +56,16 @@ interface CardStackProps {
   selectedCardId?: string | null;
 }
 
-export function CardStack({
-  cards,
-  onCardPress,
-  onCardChange,
-  isDrawerOpen = false,
-  selectedCardId = null,
-}: CardStackProps) {
+export const CardStack = forwardRef<CardStackRef, CardStackProps>(function CardStack(
+  {
+    cards,
+    onCardPress,
+    onCardChange,
+    isDrawerOpen = false,
+    selectedCardId = null,
+  },
+  ref
+) {
   const currentIndex = useSharedValue(0);
   const translationX = useSharedValue(0);
   const slideBackX = useSharedValue(0);
@@ -66,6 +74,48 @@ export function CardStack({
   const focusProgress = useSharedValue(0);
   const selectedIndex = useSharedValue(0);
   const isSwiping = useSharedValue(false);
+
+  const goToNext = useCallback(() => {
+    if (cards.length <= 1 || currentIndex.value >= cards.length - 1) return;
+    if (isSwiping.value) return;
+    isSwiping.value = true;
+    translationX.value = withTiming(-SWIPE_OUT_DISTANCE, SLIDE_OUT_CONFIG);
+    stackProgress.value = withTiming(1, DECK_FORWARD_CONFIG, (finished) => {
+      if (finished) {
+        currentIndex.value = currentIndex.value + 1;
+        translationX.value = 0;
+        stackProgress.value = 0;
+      }
+      isSwiping.value = false;
+    });
+  }, [cards.length, currentIndex, isSwiping, stackProgress, translationX]);
+
+  const goToPrevious = useCallback(() => {
+    if (cards.length <= 1 || currentIndex.value <= 0) return;
+    if (isSwiping.value) return;
+    isSwiping.value = true;
+    translationX.value = 0;
+    stackProgress.value = 0;
+    isAnimatingBack.value = true;
+    slideBackX.value = -SCREEN_WIDTH;
+    currentIndex.value = currentIndex.value - 1;
+    slideBackX.value = withTiming(0, SLIDE_BACK_CONFIG, (finished) => {
+      if (finished) {
+        isAnimatingBack.value = false;
+      }
+      isSwiping.value = false;
+    });
+  }, [
+    cards.length,
+    currentIndex,
+    isAnimatingBack,
+    isSwiping,
+    slideBackX,
+    stackProgress,
+    translationX,
+  ]);
+
+  useImperativeHandle(ref, () => ({ goToNext, goToPrevious }), [goToNext, goToPrevious]);
 
   // Animate focus when drawer opens/closes
   useEffect(() => {
@@ -239,7 +289,7 @@ export function CardStack({
 
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {

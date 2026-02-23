@@ -1,5 +1,5 @@
 import { CardActionsDrawer } from '@/components/cards/card-actions-drawer';
-import { CardStack } from '@/components/cards/card-stack';
+import { CardStack, CardStackRef } from '@/components/cards/card-stack';
 import { CardsHeader } from '@/components/cards/cards-header';
 import { CardFilterType, FilterBar } from '@/components/cards/filter-bar';
 import { FloatingBottomBar } from '@/components/cards/floating-bottom-bar';
@@ -9,12 +9,13 @@ import { ProfileContent } from '@/components/Profile-Drawer/profile-content';
 import { ProfileDrawer } from '@/components/Profile-Drawer/profile-drawer';
 import { PWAWebViewModal } from '@/components/pwa/pwa-webview-modal';
 import { CardData, mockCards } from '@/constants/cards';
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
+import { useThemeStore } from '@/hooks/use-theme-store';
 import { DEV_SDK_CONFIG, SDKResult } from '@/lib/instacard-sdk';
 import { BlurView } from 'expo-blur';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 
 export default function CardsScreen() {
@@ -26,6 +27,7 @@ export default function CardsScreen() {
   const [pwaVisible, setPwaVisible] = useState(false);
   const [cardMode, setCardMode] = useState<'virtual' | 'universal'>('virtual');
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const cardStackRef = useRef<CardStackRef>(null);
 
   const handleAddNewPress = () => {
     setPwaVisible(true);
@@ -41,23 +43,40 @@ export default function CardsScreen() {
         [{ text: 'OK' }]
       );
     } else if (result.error) {
+      // An error occurred during card addition
       Alert.alert('Error', result.error.message, [{ text: 'OK' }]);
     }
     // If cancelled, just close silently
   }, []);
 
+  /**
+   * Handles card press to open the card actions drawer
+   */
   const handleCardPress = (card: CardData) => {
     setSelectedCardId(card.id);
     setDrawerVisible(true);
   };
 
+  /**
+   * Handles switching between virtual and universal card modes.
+   * Resets selection state when mode changes.
+   */
   const handleModeChange = useCallback((mode: 'virtual' | 'universal') => {
     setCardMode(mode);
     setSelectedCardId(null);
     setCurrentCardIndex(0);
   }, []);
 
-  // Filter cards based on selected filters, card mode, and recently used
+  // ============================================
+  // Computed Values
+  // ============================================
+
+  /**
+   * Filters cards based on:
+   * 1. Card form (virtual/universal)
+   * 2. Recently used filter
+   * 3. Card type filters (debit, credit, prepaid, gift)
+   */
   const filteredCards = useMemo(() => {
     // First filter by card form (virtual/universal)
     let cards = mockCards.filter((card) => card.cardForm === cardMode);
@@ -79,7 +98,10 @@ export default function CardsScreen() {
     );
   }, [cardFilters, cardMode, recentFilterActive]);
 
-  // Reset selected card if it's no longer in filtered results
+  /**
+   * Handles card filter changes and resets selection state
+   * to avoid stale references to cards that may no longer be visible
+   */
   const handleCardFiltersChange = useCallback((filters: CardFilterType[]) => {
     setCardFilters(filters);
     // Reset selection to avoid stale state
@@ -87,22 +109,31 @@ export default function CardsScreen() {
     setCurrentCardIndex(0);
   }, []);
 
+  // ============================================
+  // Render
+  // ============================================
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
+  const { isDarkMode } = useThemeStore();
+
   return (
     <>
       <View style={styles.container}>
+        {/* Status bar with light text for dark header background */}
         <StatusBar style="light" />
 
+        {/* Header with dynamic subtitle based on drawer state */}
         <CardsHeader
           subtitle={drawerVisible ? 'Manage Card' : 'Digital Instacard Wallet'}
           showHomeIcon={false}
         />
 
         <View style={styles.content}>
-          {/* Card stack positioned behind the UI elements */}
-
+          {/* Card stack positioned behind the UI elements (z-index: 0) */}
           <View style={styles.cardStackContainer}>
             {filteredCards.length > 0 ? (
               <CardStack
+                ref={cardStackRef}
                 cards={filteredCards}
                 onCardPress={handleCardPress}
                 onCardChange={(index) => {
@@ -112,26 +143,30 @@ export default function CardsScreen() {
                 selectedCardId={selectedCardId}
               />
             ) : (
+              // Empty state when no cards match the current filters
               <View style={styles.emptyState}>
                 <Text style={styles.emptyStateText}>No card available</Text>
               </View>
             )}
           </View>
 
-          {/* UI overlay on top of cards with gradient + blur */}
+          {/* UI overlay on top of cards with gradient + blur effect */}
           <View style={styles.overlay}>
+            {/* Blur effect for the overlay background */}
             <BlurView
               intensity={90}
-              tint="light"
+              tint={isDarkMode ? 'dark' : 'light'}
               experimentalBlurMethod={Platform.OS === 'android' ? 'dimezisBlurView' : 'none'}
               blurReductionFactor={Platform.OS === 'android' ? 6 : 4}
               style={StyleSheet.absoluteFillObject}
-
             />
+            
+            {/* Greeting bar with user info and action buttons */}
             <GreetingBar
               userName="Nirdesh Malik"
+              isDarkMode={isDarkMode}
               onSearchPress={() => {
-                // TODO: Implement search functionality
+                router.push('/search');
               }}
               onHelpPress={() => {
                 // TODO: Implement help/support screen
@@ -140,7 +175,10 @@ export default function CardsScreen() {
                 setProfileDrawerVisible(true);
               }}
             />
+            
+            {/* Filter bar for card mode and type filtering */}
             <FilterBar
+            isDarkMode={isDarkMode}
               mode={cardMode}
               onModeChange={handleModeChange}
               cardFilters={cardFilters}
@@ -152,17 +190,20 @@ export default function CardsScreen() {
                 setCurrentCardIndex(0);
               }}
             />
-
           </View>
 
+          {/* Swipe indicator showing current card position */}
           {filteredCards.length > 0 && (
             <SwipeIndicator
               currentIndex={currentCardIndex}
               totalCount={filteredCards.length}
+              onPreviousPress={() => cardStackRef.current?.goToPrevious()}
+              onNextPress={() => cardStackRef.current?.goToNext()}
             />
           )}
         </View>
 
+        {/* Floating bottom navigation bar */}
         <FloatingBottomBar
           onHomePress={() => {
             // TODO: Navigate to home
@@ -173,6 +214,7 @@ export default function CardsScreen() {
           onAddPress={handleAddNewPress}
         />
 
+        {/* Card actions drawer for managing selected card */}
         <CardActionsDrawer
           visible={drawerVisible}
           cards={filteredCards}
@@ -181,15 +223,16 @@ export default function CardsScreen() {
           onSelectCard={(card) => setSelectedCardId(card.id)}
         />
 
+        {/* PWA WebView modal for adding new cards via SDK */}
         <PWAWebViewModal
           visible={pwaVisible}
           config={DEV_SDK_CONFIG}
           route="/"
           onClose={handlePWAClose}
         />
-
       </View>
       
+      {/* Profile drawer with user settings and options */}
       <ProfileDrawer
         visible={profileDrawerVisible}
         onClose={() => setProfileDrawerVisible(false)}
@@ -203,23 +246,31 @@ export default function CardsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+// ============================================
+// Styles
+// ============================================
+
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
+  // Main container with primary background color
   container: {
     flex: 1,
-    backgroundColor: InstacardColors.primary,
+    backgroundColor: colors.primary,
   },
+  // Content area with white background and rounded top corners
   content: {
     flex: 1,
-    marginTop: -16,
-    backgroundColor: InstacardColors.white,
+    marginTop: -16, // Overlap with header for seamless transition
+    backgroundColor: colors.white,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     overflow: 'hidden',
   },
+  // Card stack container positioned absolutely behind other elements
   cardStackContainer: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 0,
   },
+  // Overlay container for greeting bar and filters
   overlay: {
     zIndex: 10,
     borderTopLeftRadius: 24,
@@ -228,13 +279,15 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingHorizontal: 5,
   },
+  // Empty state container when no cards are available
   emptyState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  // Empty state text styling
   emptyStateText: {
     fontSize: 16,
-    color: InstacardColors.textSecondary,
+    color: colors.textSecondary,
   },
 });

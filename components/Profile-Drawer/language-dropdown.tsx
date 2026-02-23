@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { hapticLight } from '@/lib/haptics';
 import { useTranslation } from 'react-i18next';
 import { menuRowStyles } from './menu-row';
@@ -28,10 +28,13 @@ interface LanguageDropdownProps {
   selectedLang: string;
   onSelect: (code: string) => void;
   isRTL?: boolean;
+  isDarkMode?: boolean;
 }
 
-export function LanguageDropdown({ selectedLang, onSelect, isRTL = false }: LanguageDropdownProps) {
+export function LanguageDropdown({ selectedLang, onSelect, isRTL = false, isDarkMode }: LanguageDropdownProps) {
   const { t, i18n } = useTranslation();
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
   const [isOpen, setIsOpen] = useState(false);
   const measuredHeight = useSharedValue(0);
   const animHeight = useSharedValue(0);
@@ -59,6 +62,8 @@ export function LanguageDropdown({ selectedLang, onSelect, isRTL = false }: Lang
     });
   }, [isOpen, animHeight, measuredHeight, chevronRotate]);
 
+
+
   const handleSelect = useCallback((code: string) => {
     hapticLight();
     i18n.changeLanguage(code);
@@ -85,13 +90,21 @@ export function LanguageDropdown({ selectedLang, onSelect, isRTL = false }: Lang
         accessibilityRole="button"
         accessibilityLabel="Languages"
       >
-        <View style={menuRowStyles.iconBox}>
-          <Globe size={20} color={InstacardColors.primary} />
+        <View style={[menuRowStyles.iconBox, { backgroundColor: `${colors.lightGray}` }]}>
+          <Globe size={20} color={isDarkMode ? '#ffffff' : colors.primary} />
         </View>
-        <Text style={[menuRowStyles.menuLabel, isRTL && menuRowStyles.menuLabelRTL]}>{t('profile.languages')}</Text>
+        <Text
+          style={[
+            menuRowStyles.menuLabel,
+            isRTL && menuRowStyles.menuLabelRTL,
+            { color: colors.textPrimary },
+          ]}
+        >
+          {t('profile.languages')}
+        </Text>
         <Text style={styles.langBadge}>{currentLang.native}</Text>
         <Animated.View style={chevronStyle}>
-          <ChevronDown size={18} color={InstacardColors.textSecondary} />
+          <ChevronDown size={18} color={colors.textSecondary} />
         </Animated.View>
       </TouchableOpacity>
 
@@ -128,66 +141,67 @@ export function LanguageDropdown({ selectedLang, onSelect, isRTL = false }: Lang
   );
 }
 
-const styles = StyleSheet.create({
-  langClip: {
-    overflow: 'hidden',
-  },
-  langInner: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#f9f9f9',
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  langBadge: {
-    fontSize: 13,
-    color: InstacardColors.textSecondary,
-    marginRight: 2,
-  },
-  langOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    marginHorizontal: 12,
-    marginVertical: 2,
-    borderRadius: 12,
-  },
-  langOptionSelected: {
-    backgroundColor: `${InstacardColors.primary}10`,
-  },
-  langOptionLeft: {
-    gap: 2,
-  },
-  langName: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: InstacardColors.textPrimary,
-  },
-  langNameSelected: {
-    color: InstacardColors.primary,
-    fontWeight: '600',
-  },
-  langNative: {
-    fontSize: 12,
-    color: InstacardColors.textSecondary,
-  },
-  langCheck: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: InstacardColors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  langOptionRTL: {
-    direction: 'rtl',
-  },
-  langTextRTL: {
-    writingDirection: 'rtl',
-    textAlign: 'right',
-  },
-});
+const createStyles = (colors: typeof InstacardColors) =>
+  StyleSheet.create({
+    langClip: {
+      overflow: 'hidden',
+    },
+    langInner: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: colors.lightGray,
+      paddingVertical: 6,
+      borderRadius: 12,
+    },
+    langBadge: {
+      fontSize: 13,
+      color: colors.textSecondary,
+      marginRight: 2,
+    },
+    langOption: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      marginHorizontal: 12,
+      marginVertical: 2,
+      borderRadius: 12,
+    },
+    langOptionSelected: {
+      backgroundColor: `${colors.primary}10`,
+    },
+    langOptionLeft: {
+      gap: 2,
+    },
+    langName: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: colors.textPrimary,
+    },
+    langNameSelected: {
+      color: colors.textPrimary,
+      fontWeight: '600',
+    },
+    langNative: {
+      fontSize: 12,
+      color: colors.textSecondary,
+    },
+    langCheck: {
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      backgroundColor: colors.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    langOptionRTL: {
+      direction: 'rtl',
+    },
+    langTextRTL: {
+      writingDirection: 'rtl',
+      textAlign: 'right',
+    },
+  });

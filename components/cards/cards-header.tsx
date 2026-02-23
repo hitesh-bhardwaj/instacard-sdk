@@ -25,6 +25,7 @@ export function CardsHeader({
   const router = useRouter();
   const handleBackPress = onBackPress ?? router.back;
   const subtitleText = subtitle ?? 'Digital Instacard Wallet';
+  
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>

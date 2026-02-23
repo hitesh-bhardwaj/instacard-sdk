@@ -10,6 +10,7 @@ interface GreetingBarProps {
   onSearchPress?: () => void;
   onHelpPress?: () => void;
   onAvatarPress?: () => void;
+  isDarkMode?: boolean;
 }
 
 export function GreetingBar({
@@ -17,10 +18,12 @@ export function GreetingBar({
   onSearchPress,
   onHelpPress,
   onAvatarPress,
+  isDarkMode,
 }: GreetingBarProps) {
+
   return (
     <View style={styles.container}>
-      <Text style={styles.greeting} accessibilityRole="text">
+      <Text style={[styles.greeting, { color: isDarkMode ? InstacardColors.white : InstacardColors.textPrimary }]} accessibilityRole="text">
         Hello, {userName}
       </Text>
 
@@ -37,7 +40,7 @@ export function GreetingBar({
           <IconSymbol
             name="magnifyingglass"
             size={27}
-            color={InstacardColors.textPrimary}
+            color={isDarkMode ? InstacardColors.white : InstacardColors.textPrimary}
           />
         </TouchableOpacity>
         <TouchableOpacity
@@ -52,7 +55,7 @@ export function GreetingBar({
           <IconSymbol
             name="questionmark.circle"
             size={27}
-            color={InstacardColors.textPrimary}
+            color={isDarkMode ? InstacardColors.white : InstacardColors.textPrimary}
           />
         </TouchableOpacity>
         <TouchableOpacity
