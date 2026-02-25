@@ -14,8 +14,9 @@ import FilterIcon from '@/assets/svg/filter.svg';
 import { Check, X } from 'lucide-react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { hapticLight, hapticSelection } from '@/lib/haptics';
+import { useThemeStore } from '@/hooks/use-theme-store';
 
 export type CardFilterType = 'all' | 'debit' | 'credit' | 'prepaid' | 'gift';
 
@@ -45,6 +46,8 @@ export function FilterDropdown({
   onSelectionChange,
   onClose,
 }: FilterDropdownProps) {
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
   const handleToggle = useCallback(
     (filter: CardFilterType) => {
       hapticSelection();
@@ -75,6 +78,7 @@ export function FilterDropdown({
     [selectedFilters, onSelectionChange]
   );
 
+  const { isDarkMode } = useThemeStore();
   if (!visible) return null;
 
   return (
@@ -94,8 +98,8 @@ export function FilterDropdown({
             <View style={styles.dropdownWrapper}>
               <BlurView
                 intensity={90}
-                tint="light"
-                experimentalBlurMethod={Platform.OS === 'android' ? 'dimezisBlurView' : 'none'}
+                tint={isDarkMode ? 'dark' : 'light'}
+                experimentalBlurMethod={Platform.OS === 'android' ? 'dimezisBlurView' : 'dimezisBlurView'}
                 style={StyleSheet.absoluteFillObject}
               />
               <View style={styles.dropdownContent}>
@@ -105,7 +109,7 @@ export function FilterDropdown({
                    <FilterIcon
                     width={16}
                     height={16}
-                    color={InstacardColors.textPrimary}
+                    color={isDarkMode ? 'black' : colors.textPrimary}
                   />
                     <Text style={styles.headerText}>Filters</Text>
                   </View>
@@ -121,7 +125,7 @@ export function FilterDropdown({
                     <X
                    
                       size={22}
-                      color={InstacardColors.textPrimary}
+                      color={isDarkMode ? 'black' : colors.textPrimary}
                     />
                   </TouchableOpacity>
                 </View>
@@ -151,7 +155,7 @@ export function FilterDropdown({
                           {isSelected && (
                             <Check
                               size={14}
-                              color={InstacardColors.white}
+                              color={isDarkMode ? 'white' : colors.white}
                               strokeWidth={3}
                             />
                           )}
@@ -169,7 +173,7 @@ export function FilterDropdown({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, .2)',
@@ -227,7 +231,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 15,
-    color: InstacardColors.textPrimary,
+    // color: colors.textPrimary,
   },
   checkbox: {
     width: 20,

@@ -193,7 +193,7 @@ export default function PaymentSuccess() {
               {/* Main Circle */}
               <Animated.View style={[styles.successCircle, circleAnimatedStyle]}>
                 <LinearGradient
-                  colors={['#66BB6A', '#43A047']}
+                  colors={['#04DA6A', '#04DA6A']}
                   style={styles.circleGradient}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -284,7 +284,6 @@ export default function PaymentSuccess() {
             onPress={handleShareReceipt}
             activeOpacity={0.7}
           >
-            <Ionicons name="share-outline" size={20} color={InstacardColors.primary} />
             <Text style={styles.shareButtonText}>Share Receipt</Text>
           </TouchableOpacity>
 
@@ -340,7 +339,7 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     borderWidth: 3,
-    borderColor: '#4CAF50',
+    borderColor: '#04DA6A',
   },
   successCircle: {
     width: 100,
@@ -363,14 +362,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   successTitle: {
-    fontSize: 26,
+    fontSize: 24,
     fontFamily: AppFonts.bold,
     color: InstacardColors.textPrimary,
     marginBottom: 4,
   },
   successSubtitle: {
     fontSize: 14,
-    fontFamily: AppFonts.regular,
     color: InstacardColors.textSecondary,
   },
   amountCard: {
@@ -381,7 +379,7 @@ const styles = StyleSheet.create({
   amountLabel: {
     fontSize: 14,
     fontFamily: AppFonts.regular,
-    color: 'rgba(0, 0, 0, 0.8)',
+    color: InstacardColors.textSecondary,
     marginBottom: 4,
   },
   amountRow: {
@@ -391,7 +389,7 @@ const styles = StyleSheet.create({
   currencySymbol: {
     fontSize: 24,
     fontFamily: AppFonts.bold,
-    color: 'black',
+    color: InstacardColors.textPrimary,
     marginTop: 6,
     marginRight: 4,
     textDecorationLine: 'line-through',
@@ -399,7 +397,7 @@ const styles = StyleSheet.create({
   amountText: {
     fontSize: 40,
     fontFamily: AppFonts.bold,
-    color: 'black',
+    color: InstacardColors.textPrimary,
   },
   messageText: {
     fontSize: 14,
@@ -414,9 +412,11 @@ const styles = StyleSheet.create({
   },
   detailsCard: {
     width: '100%',
-    backgroundColor: '#F8F9FA',
+    // backgroundColor: '#F8F9FA',
     borderRadius: 20,
     padding: 16,
+    borderWidth: 1,
+    borderColor: InstacardColors.border,
   },
   detailRow: {
     flexDirection: 'row',
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: 'rgba(0, 122, 255, 0.1)',
+    backgroundColor: `${InstacardColors.primary}10`,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -437,13 +437,11 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 12,
-    fontFamily: AppFonts.regular,
     color: InstacardColors.textSecondary,
     marginBottom: 2,
   },
   detailValue: {
     fontSize: 15,
-    fontFamily: AppFonts.medium,
     color: InstacardColors.textPrimary,
   },
   detailValueSmall: {
@@ -453,7 +451,7 @@ const styles = StyleSheet.create({
   },
   detailDivider: {
     height: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.06)',
+    backgroundColor: InstacardColors.border,
     marginLeft: 48,
   },
   buttonSection: {
@@ -466,15 +464,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: InstacardColors.lightGray,
+    // backgroundColor: InstacardColors.lightGray,
+    borderWidth: 1,
+    borderColor: InstacardColors.textPrimary,
     borderRadius: 25,
     paddingVertical: 14,
     gap: 8,
   },
   shareButtonText: {
     fontSize: 16,
-    fontFamily: AppFonts.medium,
-    color: InstacardColors.primary,
+    color: InstacardColors.textPrimary,
   },
   doneButton: {
     backgroundColor: InstacardColors.primary,

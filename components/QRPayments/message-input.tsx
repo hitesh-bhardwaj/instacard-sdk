@@ -1,7 +1,8 @@
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { AppFonts } from '@/constants/fonts';
 import { hapticLight } from '@/lib/haptics';
 import { Ionicons } from '@expo/vector-icons';
+import { PlusIcon } from 'lucide-react-native';
 import { useRef, useState } from 'react';
 import { Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, {
@@ -31,6 +32,8 @@ const MESSAGE_SUGGESTIONS = [
 ];
 
 export function MessageInput({ value, onChangeText }: MessageInputProps) {
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
   const [isExpanded, setIsExpanded] = useState(false);
   const height = useSharedValue(COLLAPSED_HEIGHT);
   const opacity = useSharedValue(0);
@@ -83,7 +86,7 @@ export function MessageInput({ value, onChangeText }: MessageInputProps) {
     opacity: opacity.value,
   }));
 
-  const displayText = value.trim() ? value : '+ Add Message';
+  const displayText = value.trim() ? value : 'Add Message';
   const hasMessage = value.trim().length > 0;
 
   return (
@@ -95,6 +98,9 @@ export function MessageInput({ value, onChangeText }: MessageInputProps) {
             style={[styles.addMessageButton, hasMessage && styles.messageButtonWithText]}
             activeOpacity={0.7}
           >
+            <View style={styles.iconContainer}>
+              <PlusIcon width={14} height={14} color={colors.textSecondary} />
+            </View>
             <Text
               style={[styles.addMessageText, hasMessage && styles.messageText]}
               numberOfLines={1}
@@ -112,7 +118,7 @@ export function MessageInput({ value, onChangeText }: MessageInputProps) {
                 style={styles.closeButton}
                 activeOpacity={0.7}
               >
-                <Ionicons name="close" size={18} color={InstacardColors.textSecondary} />
+                <Ionicons name="close" size={18} color={colors.textSecondary} />
               </TouchableOpacity>
             </View>
             <Animated.View style={[styles.inputContainer, inputStyle]}>
@@ -120,7 +126,7 @@ export function MessageInput({ value, onChangeText }: MessageInputProps) {
                 ref={inputRef}
                 style={styles.textInput}
                 placeholder="Enter message (optional)"
-                placeholderTextColor={InstacardColors.textSecondary}
+                placeholderTextColor={colors.textSecondary}
                 value={value}
                 onChangeText={onChangeText}
                 multiline
@@ -165,7 +171,7 @@ export function MessageInput({ value, onChangeText }: MessageInputProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   messageSection: {
     alignItems: 'center',
     paddingVertical: 16,
@@ -177,30 +183,44 @@ const styles = StyleSheet.create({
   },
   addMessageButton: {
     paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    paddingVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
     alignSelf: 'center',
     maxWidth: '80%',
   },
   messageButtonWithText: {
-    backgroundColor: '#F5F5F5',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  iconContainer: {
+    width: 14,
+    height: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   addMessageText: {
     fontSize: 14,
     fontFamily: AppFonts.regular,
-    color: InstacardColors.textSecondary,
+    color: colors.textSecondary,
+    lineHeight: 18,
   },
   messageText: {
-    color: InstacardColors.textPrimary,
+    color: colors.textPrimary,
   },
   expandedContainer: {
     height: '100%',
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
-    backgroundColor: '#FAFAFA',
+    borderColor: colors.border,
+    backgroundColor: colors.white,
     padding: 12,
   },
   expandedHeader: {
@@ -212,7 +232,7 @@ const styles = StyleSheet.create({
   messageLabel: {
     fontSize: 12,
     fontFamily: AppFonts.medium,
-    color: InstacardColors.textSecondary,
+    color: colors.textPrimary,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
@@ -226,7 +246,7 @@ const styles = StyleSheet.create({
     height: '100%',
     fontSize: 14,
     fontFamily: AppFonts.regular,
-    color: InstacardColors.textPrimary,
+    color: colors.textPrimary,
     textAlignVertical: 'top',
   },
   suggestionsContainer: {
@@ -240,26 +260,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
   },
   suggestionChipActive: {
-    backgroundColor: InstacardColors.primary,
-    borderColor: InstacardColors.primary,
-    display: 'flex',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
   suggestionText: {
     fontSize: 13,
     fontFamily: AppFonts.regular,
-    color: InstacardColors.textSecondary,
+    color: colors.textSecondary,
   },
   suggestionTextActive: {
-    color: '#FFFFFF',
+    color: colors.white,
   },
 });

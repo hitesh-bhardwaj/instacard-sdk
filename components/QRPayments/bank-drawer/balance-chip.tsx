@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { AppFonts } from '@/constants/fonts';
 import { hapticLight } from '@/lib/haptics';
 
@@ -11,7 +11,9 @@ interface BalanceChipProps {
   maskedText?: string;
 }
 
-export function BalanceChip({ maskedText = 'Tap to show balance', revealedText }: BalanceChipProps) {
+export function BalanceChip({ maskedText = 'Check Balance', revealedText }: BalanceChipProps) {
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
   const [revealed, setRevealed] = useState(false);
   const maskedOpacity = useSharedValue(1);
   const revealedOpacity = useSharedValue(0);
@@ -47,7 +49,7 @@ export function BalanceChip({ maskedText = 'Tap to show balance', revealedText }
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   balanceChip: {
     height: 28,
     borderRadius: 999,
@@ -57,14 +59,13 @@ const styles = StyleSheet.create({
   },
   balanceChipText: {
     fontSize: 12,
-    fontFamily: AppFonts.regular,
-    color: InstacardColors.textSecondary,
+    color: colors.primary,
   },
   balanceChipTextRevealed: {
     position: 'absolute',
     left: 0,
     right: 0,
-    color: InstacardColors.textPrimary,
-    fontFamily: AppFonts.medium,
+    color: colors.primary,
+    fontWeight: '500',
   },
 });

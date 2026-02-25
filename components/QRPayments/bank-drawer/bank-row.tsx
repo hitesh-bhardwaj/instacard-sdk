@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { AppFonts } from '@/constants/fonts';
 import { hapticSelection } from '@/lib/haptics';
 import { BalanceChip } from './balance-chip';
@@ -13,6 +13,8 @@ interface BankRowProps {
 }
 
 export function BankRow({ bank, selected, onSelect }: BankRowProps) {
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
   return (
     <TouchableOpacity
       style={[styles.bankRow, selected && styles.bankRowSelected]}
@@ -49,33 +51,32 @@ export function BankRow({ bank, selected, onSelect }: BankRowProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   bankRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: `${InstacardColors.white}90`,
-    borderRadius: 16,
+    backgroundColor: `${colors.white}90`,
     padding: 12,
-    borderWidth: 1,
-    borderColor: InstacardColors.border,
+    // borderWidth: 1,
+    // borderColor: colors.border,
     gap: 12,
   },
   bankRowSelected: {
-    borderColor: InstacardColors.textPrimary,
+    // borderColor: InstacardColors.textPrimary,
     // backgroundColor: `${InstacardColors.primary}08`,
   },
   bankIcon: {
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: `${InstacardColors.primary}15`,
+    backgroundColor: colors.lightGray,
     alignItems: 'center',
     justifyContent: 'center',
   },
   bankIconText: {
     fontSize: 18,
-    fontFamily: AppFonts.bold,
-    color: InstacardColors.primary,
+    fontWeight: '500',
+    color: colors.textPrimary,
   },
   bankText: {
     flex: 1,
@@ -89,14 +90,13 @@ const styles = StyleSheet.create({
   },
   bankName: {
     flex: 1,
-    fontSize: 15,
-    fontFamily: AppFonts.medium,
-    color: InstacardColors.textPrimary,
+    fontSize: 14,
+    fontWeight: '500',
+    color: colors.textPrimary,
   },
   bankSub: {
     fontSize: 12,
-    fontFamily: AppFonts.regular,
-    color: InstacardColors.textSecondary,
+    color: colors.textSecondary,
   },
   radioOuter: {
     width: 22,
@@ -107,15 +107,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   radioOuterSelected: {
-    borderColor: InstacardColors.textPrimary,
+    borderColor: colors.textPrimary,
   },
   radioOuterUnselected: {
-    borderColor: InstacardColors.border,
+    borderColor: colors.border,
   },
   radioInner: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: InstacardColors.orange,
+    backgroundColor: colors.orange,
   },
 });

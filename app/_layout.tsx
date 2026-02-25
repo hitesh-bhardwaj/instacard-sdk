@@ -54,6 +54,14 @@ export default function RootLayout() {
                 }}
               />
               <Stack.Screen
+                name="help-and-support"
+                options={{
+                  headerShown: false,
+                  animation: 'fade',
+                  animationDuration: 300,
+                }}
+              />
+              <Stack.Screen
                 name="card-detail"
                 options={{
                   headerShown: false,

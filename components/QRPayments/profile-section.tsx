@@ -1,7 +1,8 @@
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { AppFonts } from '@/constants/fonts';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
+import VerifiedIcon from '@/assets/svg/check.svg';
 
 interface ProfileSectionProps {
   name: string;
@@ -11,6 +12,8 @@ interface ProfileSectionProps {
 }
 
 export function ProfileSection({ name, phone, upiId, initials }: ProfileSectionProps) {
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
   return (
     <View style={styles.profileSection}>
       <View style={styles.avatar}>
@@ -19,21 +22,19 @@ export function ProfileSection({ name, phone, upiId, initials }: ProfileSectionP
       <View style={styles.nameRow}>
         <Text style={styles.name}>{name}</Text>
         <View style={styles.verifiedBadge}>
-          <Ionicons name="checkmark-circle" size={16} color="#4CAF50" />
+          <VerifiedIcon width={20} height={20} color={InstacardColors.success} />
         </View>
       </View>
       <Text style={styles.phone}>{phone}</Text>
       <View style={styles.upiRow}>
         <Text style={styles.upiId}>{upiId}</Text>
-        <View style={styles.upiVerifiedBadge}>
-          <Ionicons name="shield-checkmark" size={12} color="#4CAF50" />
-        </View>
+       
       </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   profileSection: {
     alignItems: 'center',
     paddingVertical: 16,
@@ -42,15 +43,15 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#E8F5E9',
+    backgroundColor: colors.orange,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
   },
   avatarText: {
-    fontSize: 20,
+    fontSize: 24,
     fontFamily: AppFonts.medium,
-    color: '#4CAF50',
+    color: colors.white,
   },
   nameRow: {
     flexDirection: 'row',
@@ -58,9 +59,9 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   name: {
-    fontSize: 18,
+    fontSize: 24,
     fontFamily: AppFonts.medium,
-    color: InstacardColors.textPrimary,
+    color: colors.textPrimary,
   },
   verifiedBadge: {
     marginLeft: 4,
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
   phone: {
     fontSize: 14,
     fontFamily: AppFonts.regular,
-    color: InstacardColors.textSecondary,
+    color: colors.textSecondary,
     marginBottom: 2,
   },
   upiRow: {
@@ -76,9 +77,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   upiId: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: AppFonts.regular,
-    color: InstacardColors.textSecondary,
+    color: colors.textSecondary,
   },
   upiVerifiedBadge: {
     marginLeft: 4,

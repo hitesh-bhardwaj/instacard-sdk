@@ -7,14 +7,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CardData, CardImages } from '@/constants/cards';
 import { ACTIONS, type ActionItem } from '@/constants/CARDS_ACTIONS';
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
+import { useThemeStore } from '@/hooks/use-theme-store';
 import { hapticLight, hapticSelection } from '@/lib/haptics';
 import { DEV_SDK_CONFIG } from '@/lib/instacard-sdk';
 import FAQModal from '../Modals/FAQModal';
 import { PWAWebViewModal } from '../pwa/pwa-webview-modal';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-const DRAWER_HEIGHT = Math.min(SCREEN_HEIGHT * 0.42);
+const DRAWER_HEIGHT = Math.min(SCREEN_HEIGHT * 0.5);
 const CARD_ASPECT = 1.58;
 const CARD_THUMB_WIDTH = 100;
 const CARD_THUMB_HEIGHT = CARD_THUMB_WIDTH / CARD_ASPECT;
@@ -38,6 +39,9 @@ export function CardActionsDrawer({
   onSelectCard,
   onActionPress,
 }: CardActionsDrawerProps) {
+  const colors = useInstacardColors();
+  const { isDarkMode } = useThemeStore();
+  const styles = createStyles(colors);
   const insets = useSafeAreaInsets();
   const sheetRef = useRef<BottomSheetModal>(null);
   const [faqModalVisible, setFaqModalVisible] = useState<boolean>(false);
@@ -157,7 +161,7 @@ export function CardActionsDrawer({
         snapPoints={snapPoints}
         enablePanDownToClose
         enableDismissOnClose
-        handleIndicatorStyle={styles.handleIndicator}
+        handleIndicatorStyle={isDarkMode ? styles.handleIndicator : styles.handleIndicator}
         backgroundStyle={styles.sheetBackground}
         backdropComponent={() => null}
         onDismiss={handleDismiss}
@@ -166,7 +170,7 @@ export function CardActionsDrawer({
         }}
         backgroundComponent={({ style }) => (
           <BlurView
-            intensity={90}
+            intensity={40}
             tint="light"
             experimentalBlurMethod='dimezisBlurView'
             blurReductionFactor={6}
@@ -214,11 +218,14 @@ export function CardActionsDrawer({
 
           <View style={styles.actionsGrid}>
             {ACTIONS.map((action) => {
-              const IconComponent = action.icon;
+              const IconComponent = isDarkMode && action.iconDark ? action.iconDark : action.icon;
               return (
                 <TouchableOpacity
                   key={action.id}
-                  style={styles.actionCard}
+                  style={[
+                    styles.actionCard,
+                    ACTIONS.indexOf(action) === ACTIONS.length - 1 && styles.actionCardFullWidth
+                  ]}
                   activeOpacity={0.9}
                   onPress={() => {
                     hapticLight();
@@ -233,6 +240,7 @@ export function CardActionsDrawer({
                         width={25}
                         height={25}
                         color={InstacardColors.primary}
+                        
                       />
                     )}
                     <TouchableOpacity
@@ -272,12 +280,12 @@ export function CardActionsDrawer({
         route={routes.manage}
         onClose={() => setViewManageCard(false)}
       />
-      <PWAWebViewModal
+      {/* <PWAWebViewModal
         visible={viewAddGift}
         config={{ ...DEV_SDK_CONFIG, cardType: selectedCard?.cardType }}
         route={routes.addGift}
         onClose={() => setViewAddGift(false)}
-      />
+      /> */}
       <PWAWebViewModal
         visible={linkPhysicalVisible}
         config={{ ...DEV_SDK_CONFIG, cardType: selectedCard?.cardType }}
@@ -297,9 +305,9 @@ export function CardActionsDrawer({
 
 
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   sheetBackground: {
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    backgroundColor: `${colors.cardBackground}60`,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
   },
@@ -307,14 +315,14 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     overflow: 'hidden',
-    borderColor: InstacardColors.border,
+    borderColor: colors.border,
     borderWidth: 1,
   },
   handleIndicator: {
     width: 42,
     height: 5,
     borderRadius: 3,
-    backgroundColor: InstacardColors.border,
+    backgroundColor: `${colors.textPrimary}40`,
   },
   sheetContent: {
     paddingHorizontal: 0,
@@ -361,17 +369,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     rowGap: ACTION_GAP,
   },
-  actionCard: {
-    width: '48.7%',
-    backgroundColor: InstacardColors.white,
-    borderRadius: 16,
-    padding: 12,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    minHeight: 80,
-    borderWidth: 1,
-    borderColor: InstacardColors.border,
+    actionCard: {
+      width: '48.7%',
+      backgroundColor: colors.cardBackground,
+      borderRadius: 16,
+      padding: 12,
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      minHeight: 80,
+      borderWidth: 1,
+      borderColor: colors.border,
+
+    },
+  actionCardFullWidth: {
+    width: '100%',
   },
   actionHeader: {
     flexDirection: 'row',
@@ -383,6 +395,6 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontSize: 13,
-    color: InstacardColors.textPrimary,
+    color: colors.textPrimary,
   },
 });

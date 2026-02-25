@@ -1,4 +1,4 @@
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { AppFonts } from '@/constants/fonts';
 import { convertToWords } from '@/utils/formatamountinwords';
 import formatAmountWithCommas from '@/utils/formatAmountWithCommas';
@@ -16,7 +16,8 @@ interface AmountDisplayProps {
 }
 
 export function AmountDisplay({ amount }: AmountDisplayProps) {
-
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);  
 
 
   const formattedAmount = formatAmountWithCommas(amount);
@@ -35,7 +36,7 @@ export function AmountDisplay({ amount }: AmountDisplayProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   amountSection: {
     flex: 1,
     justifyContent: 'center',
@@ -53,19 +54,19 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textDecorationLine:'line-through',
     fontFamily: AppFonts.bold,
-    color: InstacardColors.textPrimary,
+    color: colors.textPrimary,
     marginTop: 8,
     marginRight: 4,
   },
   amountText: {
     fontSize: 56,
     fontFamily: AppFonts.bold,
-    color: InstacardColors.textPrimary,
+    color: colors.textPrimary,
   },
   amountInWords: {
     fontSize: 14,
     fontFamily: AppFonts.regular,
-    color: InstacardColors.textSecondary,
+    color: colors.textSecondary,
     marginTop: 4,
     textAlign: 'center',
   },

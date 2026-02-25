@@ -1,3 +1,4 @@
+import { CardsHeader } from '@/components/cards/cards-header';
 import { InstacardColors } from '@/constants/colors';
 import { BlurView } from 'expo-blur';
 import { CameraView, useCameraPermissions } from 'expo-camera';
@@ -5,29 +6,23 @@ import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { ChevronLeft, Flashlight, FlashlightOff, Image } from 'lucide-react-native';
+import { Flashlight } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Dimensions, Linking, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
-  Easing,
-  useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
-import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
+import GalleryIcon from '@/assets/svg/gallery.svg';
+import ThunderIconOff from '@/assets/svg/thunder-off.svg';
+import ThunderIconOn from '@/assets/svg/thunder-on.svg';
+import MaskedView from '@react-native-masked-view/masked-view';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const CAMERA_HEIGHT = SCREEN_WIDTH * 1.85;
-
-// Camera container corner radius
-const CAMERA_CORNER_RADIUS = 24;
-const STROKE_WIDTH = 5;
-const TRAIL_LENGTH = 0.15; // 15% of the perimeter
-
-const AnimatedRect = Animated.createAnimatedComponent(Rect);
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const CAMERA_HEIGHT = SCREEN_WIDTH * 1.9;
 
 export default function ScanScreen() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -39,26 +34,11 @@ export default function ScanScreen() {
   // Scanning line animation
   const scanLinePosition = useSharedValue(0);
 
-  // Snake trail animation progress (0 to 1 represents full loop around the camera edges)
-  const snakeProgress = useSharedValue(0);
+  // Breathing scale animation
+  const breathingScale = useSharedValue(1);
 
-  // Calculate total perimeter length for the rounded rect
-  const calculatePerimeter = () => {
-    const w = SCREEN_WIDTH - STROKE_WIDTH;
-    const h = CAMERA_HEIGHT - STROKE_WIDTH;
-    const r = Math.max(0, CAMERA_CORNER_RADIUS - STROKE_WIDTH / 2);
-    // Two straight edges on top (minus corners) + two full vertical edges + bottom edge + two quarter circles
-    const straightTop = w - 2 * r;
-    const straightBottom = w;
-    const straightLeft = h - r;
-    const straightRight = h - r;
-    const curvedCorners = 2 * (Math.PI * r / 2);
-    return straightTop + straightBottom + straightLeft + straightRight + curvedCorners;
-  };
-
-  const perimeter = calculatePerimeter();
-  const trailDashLength = perimeter * TRAIL_LENGTH;
-  const gapLength = perimeter - trailDashLength;
+  // Corner border animation
+  const cornerSize = useSharedValue(CORNER_SIZE);
 
   // Start scanning animation
   useEffect(() => {
@@ -68,17 +48,27 @@ export default function ScanScreen() {
         withTiming(0, { duration: 2000 })
       ),
       -1,
-      false
+      true
     );
-  }, []);
 
-  // Snake trail animation - runs continuously around the camera edges
-  useEffect(() => {
-    snakeProgress.value = 0;
-    snakeProgress.value = withRepeat(
-      withTiming(1, { duration: 3000, easing: Easing.linear }),
+    // Start breathing animation
+    breathingScale.value = withRepeat(
+      withSequence(
+        withTiming(1.05, { duration: 1000 }),
+        withTiming(1, { duration: 1000 })
+      ),
       -1,
-      false
+      true
+    );
+
+    // Start corner border animation (shrink then expand back)
+    cornerSize.value = withRepeat(
+      withSequence(
+        withTiming(CORNER_SIZE * 0.8, { duration: 1000 }),
+        withTiming(CORNER_SIZE, { duration: 1000 })
+      ),
+      -1,
+      true
     );
   }, []);
 
@@ -86,13 +76,29 @@ export default function ScanScreen() {
     transform: [{ translateY: scanLinePosition.value * 200 }],
   }));
 
-  // Animated props for the snake trail rect
-  const animatedRectProps = useAnimatedProps(() => {
-    const offset = -snakeProgress.value * perimeter;
-    return {
-      strokeDashoffset: offset,
-    };
-  });
+  const breathingStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: breathingScale.value }],
+  }));
+
+  const topLeftCornerStyle = useAnimatedStyle(() => ({
+    width: cornerSize.value,
+    height: cornerSize.value,
+  }));
+
+  const topRightCornerStyle = useAnimatedStyle(() => ({
+    width: cornerSize.value,
+    height: cornerSize.value,
+  }));
+
+  const bottomLeftCornerStyle = useAnimatedStyle(() => ({
+    width: cornerSize.value,
+    height: cornerSize.value,
+  }));
+
+  const bottomRightCornerStyle = useAnimatedStyle(() => ({
+    width: cornerSize.value,
+    height: cornerSize.value,
+  }));
 
   const handleFlashToggle = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -133,10 +139,10 @@ export default function ScanScreen() {
   const handleBarcodeScanned = (data: string) => {
     if (hasScanned.current) return;
     hasScanned.current = true;
-    
+
     setResult(data);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    
+
     setTimeout(() => {
       router.replace('/QRPayments/payment-amount');
     }, 1500);
@@ -156,7 +162,7 @@ export default function ScanScreen() {
 
   if (!permission.granted) {
     return (
-      <View  style={styles.container}>
+      <View style={styles.container}>
         <StatusBar style="light" />
         <View style={styles.permissionContainer}>
           <Text style={styles.permissionTitle}>Camera Access Required</Text>
@@ -174,49 +180,17 @@ export default function ScanScreen() {
     );
   }
 
-  // Calculate rect dimensions for SVG
-  const rectX = STROKE_WIDTH / 2;
-  const rectY = STROKE_WIDTH / 2;
-  const rectWidth = SCREEN_WIDTH - STROKE_WIDTH;
-  const rectHeight = CAMERA_HEIGHT - STROKE_WIDTH;
-  const rectRx = Math.max(0, CAMERA_CORNER_RADIUS - STROKE_WIDTH / 2);
-
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
 
       {/* Header - Background Layer (z-index: 0) */}
-      <View style={styles.headerBackground}>
-        <View style={styles.header}>
-          <TouchableOpacity activeOpacity={0.8} style={styles.closeButton} onPress={handleClose}>
-            <ChevronLeft size={20} color={InstacardColors.white} strokeWidth={2.5} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Scan QR Code</Text>
-          <View style={styles.placeholder} />
-        </View>
-      </View>
-
+      <CardsHeader
+        subtitle="Scan QR Code"
+        showHomeIcon={false}
+      />
       Camera View - Middle Layer with rounded top
       <View style={styles.cameraContainer}>
-        {/* <View style={styles.svgContainer} pointerEvents="none">
-          <Svg width={SCREEN_WIDTH} height={CAMERA_HEIGHT}>
-            <AnimatedRect
-              x={rectX}
-              y={rectY}
-              width={rectWidth}
-              height={rectHeight}
-              rx={rectRx}
-              ry={rectRx}
-              fill="none"
-              stroke={InstacardColors.white}
-              strokeWidth={STROKE_WIDTH}
-              strokeLinecap="round"
-              strokeDasharray={`${trailDashLength} ${gapLength}`}
-              animatedProps={animatedRectProps}
-            />
-          </Svg>
-        </View> */}
-
         <CameraView
           style={styles.camera}
           facing="back"
@@ -231,50 +205,55 @@ export default function ScanScreen() {
 
         {/* Scanner Frame Overlay */}
         <View style={styles.scannerOverlay}>
-          <View style={styles.scannerFrame}>
-            {/* Corner Brackets */}
-            <View style={[styles.corner, styles.topLeft]} />
-            <View style={[styles.corner, styles.topRight]} />
-            <View style={[styles.corner, styles.bottomLeft]} />
-            <View style={[styles.corner, styles.bottomRight]} />
 
-            {result && (
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={styles.resultContainer}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  Linking.openURL(result);
-                }}
-              >
-                <BlurView
-                  intensity={90}
-                  tint="light"
-                  experimentalBlurMethod='dimezisBlurView'
-                  blurReductionFactor={6}
-                  style={StyleSheet.absoluteFillObject}
-                />
-                <View style={styles.resultContent}>
-                  <Text style={styles.resultText} numberOfLines={1} ellipsizeMode="tail">
-                    {truncateText(result)}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}
+          {/* SCANNER BOX */}
+          <Animated.View style={[{padding: 20, backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 24 }, breathingStyle]}>
 
-            {/* Scanning Line */}
-            <Animated.View style={[styles.scanLine, scanLineStyle]} />
-          </View>
+            <View style={[styles.scannerFrame, ]}>
+              {/* Corner Brackets */}
+
+              <Animated.View style={[styles.corner, styles.topLeft, topLeftCornerStyle]} />
+              <Animated.View style={[styles.corner, styles.topRight, topRightCornerStyle]} />
+              <Animated.View style={[styles.corner, styles.bottomLeft, bottomLeftCornerStyle]} />
+              <Animated.View style={[styles.corner, styles.bottomRight, bottomRightCornerStyle]} />
+
+
+              {result && (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={styles.resultContainer}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    Linking.openURL(result);
+                  }}
+                >
+                  <BlurView
+                    intensity={90}
+                    tint="light"
+                    experimentalBlurMethod='dimezisBlurView'
+                    blurReductionFactor={6}
+                    style={StyleSheet.absoluteFillObject}
+                  />
+                  <View style={styles.resultContent}>
+                    <Text style={styles.resultText} numberOfLines={1} ellipsizeMode="tail">
+                      {truncateText(result)}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+
+              {/* Scanning Line */}
+              <Animated.View style={[styles.scanLine, scanLineStyle]} />
+            </View>
+          </Animated.View>
+
         </View>
       </View>
 
       {/* Bottom Section - Top Layer (z-index: 2) */}
-      <BlurView  intensity={90}
-          tint="light"
-          experimentalBlurMethod='dimezisBlurView'
-          blurReductionFactor={6} style={styles.bottomSection}>
+      <View style={styles.bottomSection}>
         <View
-         
+
           style={StyleSheet.absoluteFillObject}
         />
         <View style={styles.bottomContent}>
@@ -288,12 +267,12 @@ export default function ScanScreen() {
               activeOpacity={0.8}
               style={styles.actionButton}
               // onPress={handleGalleryPress}
-              onPress={()=>{
+              onPress={() => {
                 router.push('/QRPayments/payment-amount');
               }}
             >
               <View style={styles.actionButtonInner}>
-                <Image size={24} color={InstacardColors.white} strokeWidth={1.5} />
+                <GalleryIcon width={24} height={24} color={InstacardColors.white} />
               </View>
               <Text style={styles.actionButtonLabel}>Gallery</Text>
             </TouchableOpacity>
@@ -305,9 +284,9 @@ export default function ScanScreen() {
             >
               <View style={[styles.actionButtonInner, flashOn && styles.actionButtonActive]}>
                 {flashOn ? (
-                  <Flashlight size={24} color={InstacardColors.white} strokeWidth={1.5} />
+                  <ThunderIconOn width={24} height={24} color={InstacardColors.white} />
                 ) : (
-                  <FlashlightOff size={24} color={InstacardColors.white} strokeWidth={1.5} />
+                  <ThunderIconOff width={24} height={24} color={InstacardColors.white} />
                 )}
               </View>
               <Text style={styles.actionButtonLabel}>
@@ -316,7 +295,7 @@ export default function ScanScreen() {
             </TouchableOpacity>
           </View>
         </View>
-      </BlurView>
+      </View>
     </View>
   );
 }
@@ -330,40 +309,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: InstacardColors.primary,
   },
-  headerBackground: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 0,
-    backgroundColor: InstacardColors.primary,
-    paddingTop: Platform.OS === 'ios' ? 60 : 40,
-    paddingBottom: 100,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    paddingHorizontal: 20,
-  },
-  closeButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: InstacardColors.white,
-    letterSpacing: 0.3,
-  },
-  placeholder: {
-    width: 40,
-  },
   cameraContainer: {
     position: 'absolute',
     bottom: 0,
@@ -376,25 +321,15 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
     overflow: 'hidden',
   },
-  // SVG container for snake trail - positioned over camera
-  svgContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 100,
-    
-  },
   camera: {
     flex: 1,
   },
   scannerOverlay: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
-    marginBottom: "40%",
+    paddingBottom: "40%",
     alignItems: 'center',
-    // backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   scannerFrame: {
     width: SCANNER_SIZE,
@@ -404,8 +339,6 @@ const styles = StyleSheet.create({
   },
   corner: {
     position: 'absolute',
-    width: CORNER_SIZE,
-    height: CORNER_SIZE,
   },
   topLeft: {
     top: 0,
@@ -465,13 +398,12 @@ const styles = StyleSheet.create({
   bottomContent: {
     alignItems: 'center',
     paddingTop: 32,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    paddingBottom: Platform.OS === 'ios' ? 50 : 40,
+    paddingBottom: Platform.OS === 'ios' ? 120 : 110,
   },
   instructionText: {
     fontSize: 15,
     fontWeight: '500',
-    color: InstacardColors.textPrimary,
+    color: InstacardColors.white,
     textAlign: 'center',
     marginBottom: 28,
     opacity: 0.8,
@@ -489,7 +421,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: InstacardColors.primary,
+    backgroundColor: `${InstacardColors.white}70`,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -499,7 +431,7 @@ const styles = StyleSheet.create({
   actionButtonLabel: {
     fontSize: 13,
     fontWeight: '500',
-    color: InstacardColors.textPrimary,
+    color: InstacardColors.white,
   },
   permissionContainer: {
     flex: 1,

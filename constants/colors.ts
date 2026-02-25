@@ -10,8 +10,8 @@ export const InstacardColors = {
   cardBackground: '#FFFFFF',
 
   // Text colors
-  textPrimary: '#1A1A1A',
-  textSecondary: '#666666',
+  textPrimary: '#111111',
+  textSecondary: '#333333',
   textOnPrimary: '#FFFFFF',
   textMuted: '#999999',
 
@@ -33,17 +33,17 @@ export const InstacardColors = {
 // Dark mode colors - use with useThemeStore hook inside components
 export const InstacardDarkColors = {
   // Primary purple (header background, buttons, active states)
-  primary: '#5A1186',
+  primary: '#C77DFF',
   primaryDark: '#5A189A',
   primaryLight: '#9D4EDD',
 
   // Backgrounds
-  white: '#1A1A1A',
+  white: '#1D1D1D',
   lightGray: '#2A2A2A',
   cardBackground: '#252525',
 
   // Text colors
-  textPrimary: '#FFFFFF',
+  textPrimary: '#ffffff',
   textSecondary: '#AAAAAA',
   textOnPrimary: '#FFFFFF',
   textMuted: '#777777',
@@ -55,7 +55,7 @@ export const InstacardDarkColors = {
 
   // Shadows and borders
   shadow: '#000000',
-  border: '#3A3A3A',
+  border: '#5A5A5A',
 
   // Status colors
   success: '#34C759',

@@ -46,7 +46,7 @@ export function CardsHeader({
           />
         </TouchableOpacity>
         <View style={styles.brandSection} accessibilityRole="header">
-          <Text style={styles.brandName}>Instacard</Text>
+          <Text style={styles.brandName}>{subtitleText}</Text>
         </View>
         {!showHomeIcon && <View style={styles.placeholder} />}
         {showHomeIcon && (
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   brandName: {
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: '400',
     color: InstacardColors.textOnPrimary,
   },

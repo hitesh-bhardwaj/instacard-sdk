@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { hapticLight } from '@/lib/haptics';
 
 interface GreetingBarProps {
@@ -20,10 +20,11 @@ export function GreetingBar({
   onAvatarPress,
   isDarkMode,
 }: GreetingBarProps) {
-
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
   return (
     <View style={styles.container}>
-      <Text style={[styles.greeting, { color: isDarkMode ? InstacardColors.white : InstacardColors.textPrimary }]} accessibilityRole="text">
+      <Text style={[styles.greeting, { color: colors.textPrimary }]} accessibilityRole="text">
         Hello, {userName}
       </Text>
 
@@ -40,7 +41,7 @@ export function GreetingBar({
           <IconSymbol
             name="magnifyingglass"
             size={27}
-            color={isDarkMode ? InstacardColors.white : InstacardColors.textPrimary}
+            color={colors.textPrimary}
           />
         </TouchableOpacity>
         <TouchableOpacity
@@ -76,7 +77,7 @@ export function GreetingBar({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 16,
-    color: InstacardColors.textPrimary,
+    color: colors.textPrimary,
   },
   rightSection: {
     flexDirection: 'row',

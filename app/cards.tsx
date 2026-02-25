@@ -25,6 +25,7 @@ export default function CardsScreen() {
   const [profileDrawerVisible, setProfileDrawerVisible] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [pwaVisible, setPwaVisible] = useState(false);
+  const [viewAddGift, setViewAddGift] = useState(false);
   const [cardMode, setCardMode] = useState<'virtual' | 'universal'>('virtual');
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const cardStackRef = useRef<CardStackRef>(null);
@@ -83,7 +84,10 @@ export default function CardsScreen() {
 
     // Filter by recently used when sort/recent tab is active
     if (recentFilterActive) {
-      cards = cards.filter((card) => card.recentlyUsed);
+      cards = [...cards].sort(
+        (a, b) =>
+          new Date(b.issuedDate).getTime() - new Date(a.issuedDate).getTime()
+      );
     }
 
     // Then filter by card type filters
@@ -108,6 +112,12 @@ export default function CardsScreen() {
     setSelectedCardId(null);
     setCurrentCardIndex(0);
   }, []);
+
+  // Get the currently selected card for PWA modals
+  const selectedCard = useMemo(() => {
+    if (!filteredCards.length) return undefined;
+    return filteredCards.find((card) => card.id === selectedCardId) ?? filteredCards[0];
+  }, [filteredCards, selectedCardId]);
 
   // ============================================
   // Render
@@ -154,13 +164,13 @@ export default function CardsScreen() {
           <View style={styles.overlay}>
             {/* Blur effect for the overlay background */}
             <BlurView
-              intensity={90}
-              tint={isDarkMode ? 'dark' : 'light'}
+              intensity={isDarkMode ? 10 : 90}
+              tint={isDarkMode ? 'light' : 'light'}
               experimentalBlurMethod={Platform.OS === 'android' ? 'dimezisBlurView' : 'none'}
               blurReductionFactor={Platform.OS === 'android' ? 6 : 4}
               style={StyleSheet.absoluteFillObject}
             />
-            
+
             {/* Greeting bar with user info and action buttons */}
             <GreetingBar
               userName="Nirdesh Malik"
@@ -169,16 +179,16 @@ export default function CardsScreen() {
                 router.push('/search');
               }}
               onHelpPress={() => {
-                // TODO: Implement help/support screen
+                router.push('/help-and-support');
               }}
               onAvatarPress={() => {
                 setProfileDrawerVisible(true);
               }}
             />
-            
+
             {/* Filter bar for card mode and type filtering */}
             <FilterBar
-            isDarkMode={isDarkMode}
+              isDarkMode={isDarkMode}
               mode={cardMode}
               onModeChange={handleModeChange}
               cardFilters={cardFilters}
@@ -208,10 +218,12 @@ export default function CardsScreen() {
           onHomePress={() => {
             // TODO: Navigate to home
           }}
-          onScanPress={() => { 
+          onScanPress={() => {
             router.push('/QRPayments/scan');
           }}
           onAddPress={handleAddNewPress}
+          onAddGiftPress={() => setViewAddGift(true)}
+
         />
 
         {/* Card actions drawer for managing selected card */}
@@ -223,6 +235,7 @@ export default function CardsScreen() {
           onSelectCard={(card) => setSelectedCardId(card.id)}
         />
 
+
         {/* PWA WebView modal for adding new cards via SDK */}
         <PWAWebViewModal
           visible={pwaVisible}
@@ -230,8 +243,15 @@ export default function CardsScreen() {
           route="/"
           onClose={handlePWAClose}
         />
+
+        <PWAWebViewModal
+          visible={viewAddGift}
+          config={DEV_SDK_CONFIG}
+          route="/add-a-gift-card"
+          onClose={() => setViewAddGift(false)}
+        />
       </View>
-      
+
       {/* Profile drawer with user settings and options */}
       <ProfileDrawer
         visible={profileDrawerVisible}

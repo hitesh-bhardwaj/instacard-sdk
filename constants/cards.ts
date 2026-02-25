@@ -28,6 +28,7 @@ export interface CardData {
   cardType: CardType;
   cardForm: CardForm;
   recentlyUsed: boolean;
+  issuedDate: string;
 }
 
 // Plain array of card objects
@@ -40,6 +41,7 @@ export const mockCards: CardData[] = [
     cardType: "debit",
     cardForm: "virtual",
     recentlyUsed: true,
+    issuedDate: "2024-01-05",
   },
   {
     id: "card-2",
@@ -49,6 +51,7 @@ export const mockCards: CardData[] = [
     cardType: "credit",
     cardForm: "virtual",
     recentlyUsed: true,
+    issuedDate: "2024-02-10",
   },
   {
     id: "card-3",
@@ -58,6 +61,7 @@ export const mockCards: CardData[] = [
     cardType: "debit",
     cardForm: "virtual",
     recentlyUsed: true,
+    issuedDate: "2024-03-12",
   },
   {
     id: "card-4",
@@ -67,6 +71,7 @@ export const mockCards: CardData[] = [
     cardType: "prepaid",
     cardForm: "universal",
     recentlyUsed: true,
+    issuedDate: "2024-04-18",
   },
   {
     id: "card-5",
@@ -76,6 +81,7 @@ export const mockCards: CardData[] = [
     cardType: "gift",
     cardForm: "universal",
     recentlyUsed: true,
+    issuedDate: "2024-05-20",
   },
   {
     id: "card-6",
@@ -85,6 +91,7 @@ export const mockCards: CardData[] = [
     cardType: "credit",
     cardForm: "universal",
     recentlyUsed: false,
+    issuedDate: "2023-11-15",
   },
   {
     id: "card-7",
@@ -94,6 +101,7 @@ export const mockCards: CardData[] = [
     cardType: "debit",
     cardForm: "virtual",
     recentlyUsed: false,
+    issuedDate: "2023-10-22",
   },
   {
     id: "card-8",
@@ -103,6 +111,7 @@ export const mockCards: CardData[] = [
     cardType: "credit",
     cardForm: "virtual",
     recentlyUsed: false,
+    issuedDate: "2023-09-30",
   },
   {
     id: "card-9",
@@ -112,6 +121,7 @@ export const mockCards: CardData[] = [
     cardType: "prepaid",
     cardForm: "virtual",
     recentlyUsed: false,
+    issuedDate: "2023-08-18",
   },
   {
     id: "card-10",
@@ -121,6 +131,7 @@ export const mockCards: CardData[] = [
     cardType: "gift",
     cardForm: "virtual",
     recentlyUsed: false,
+    issuedDate: "2023-07-05",
   },
   {
     id: "card-11",
@@ -130,6 +141,7 @@ export const mockCards: CardData[] = [
     cardType: "prepaid",
     cardForm: "virtual",
     recentlyUsed: false,
+    issuedDate: "2023-06-12",
   },
   {
     id: "card-12",
@@ -139,6 +151,7 @@ export const mockCards: CardData[] = [
     cardType: "gift",
     cardForm: "virtual",
     recentlyUsed: false,
+    issuedDate: "2023-05-01",
   },
   {
     id: "card-13",
@@ -148,6 +161,7 @@ export const mockCards: CardData[] = [
     cardType: "debit",
     cardForm: "virtual",
     recentlyUsed: false,
+    issuedDate: "2023-04-10",
   },
   {
     id: "card-14",
@@ -157,6 +171,7 @@ export const mockCards: CardData[] = [
     cardType: "credit",
     cardForm: "virtual",
     recentlyUsed: false,
+    issuedDate: "2023-03-08",
   },
   {
     id: "card-15",
@@ -166,5 +181,6 @@ export const mockCards: CardData[] = [
     cardType: "debit",
     cardForm: "universal",
     recentlyUsed: false,
+    issuedDate: "2023-02-14",
   },
 ];

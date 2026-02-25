@@ -1,6 +1,8 @@
 import { InstacardColors, useInstacardColors } from '@/constants/colors';
+import { useThemeStore } from '@/hooks/use-theme-store';
 import { hapticLight } from '@/lib/haptics';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { useEffect } from 'react';
 import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
@@ -32,7 +34,7 @@ export function SwipeIndicator({
 }: SwipeIndicatorProps) {
   const canGoLeft = currentIndex > 0;
   const canGoRight = currentIndex < totalCount - 1;
-
+  const { isDarkMode } = useThemeStore();
   const scaleLeft = useSharedValue(1);
   const scaleRight = useSharedValue(1);
   const opacityLeft = useSharedValue(canGoLeft ? ACTIVE_OPACITY : INACTIVE_OPACITY);
@@ -103,10 +105,9 @@ export function SwipeIndicator({
           style={styles.arrowPressable}
         >
           <Animated.View style={[styles.arrowContainer, animatedStyleLeft]}>
-            <MaterialIcons
-              name="chevron-left"
-              size={ARROW_SIZE}
-              color={InstacardColors.textSecondary}
+            <ChevronLeft
+              size={16}
+              color={isDarkMode ? colors.textPrimary : colors.textSecondary}
             />
           </Animated.View>
         </TouchableOpacity>
@@ -126,10 +127,9 @@ export function SwipeIndicator({
           style={styles.arrowPressable}
         >
           <Animated.View style={[styles.arrowContainer, animatedStyleRight]}>
-            <MaterialIcons
-              name="chevron-right"
-              size={ARROW_SIZE}
-              color={InstacardColors.textSecondary}
+            <ChevronRight
+              size={16}
+              color={isDarkMode ? colors.textPrimary : colors.textSecondary}
             />
           </Animated.View>
         </TouchableOpacity>
@@ -149,7 +149,7 @@ const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   },
   hint: {
     fontSize: 13,
-    color: colors.textSecondary,
+    color: colors.textPrimary,
     textAlign: 'center',
   },
   hintBold: {

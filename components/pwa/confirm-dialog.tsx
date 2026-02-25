@@ -3,7 +3,7 @@ import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { InstacardColors } from '@/constants/colors';
 import { hapticLight } from '@/lib/haptics';
-import { CreditCard, Plus, AlertCircle, Home, StepBack, ArrowLeft, LogOut } from 'lucide-react-native';
+import { Home, LogOut, X } from 'lucide-react-native';
 
 interface ConfirmDialogProps {
   visible: boolean;
@@ -37,62 +37,44 @@ export function ConfirmDialog({ visible, title, message, onCancel, onConfirm }: 
       animationType="fade"
       onRequestClose={onCancel}
     >
-      <TouchableOpacity 
-        style={dialogStyles.overlay} 
-        activeOpacity={1} 
+      <TouchableOpacity
+        style={dialogStyles.overlay}
+        activeOpacity={1}
         onPress={onCancel}
       >
-        <TouchableOpacity 
-          style={dialogStyles.container} 
+        <TouchableOpacity
+          style={dialogStyles.container}
           activeOpacity={1}
-          onPress={() => {}}
+          onPress={() => { }}
         >
-          {/* Warning Icon */}
-          {/* <View style={dialogStyles.warningIconWrap}> */}
-            <AlertCircle style={{marginBottom: 16}} width={32} height={32} color={InstacardColors.primary} />
-          {/* </View> */}
-          
-          <Text style={dialogStyles.title}>Wait!</Text>
-          <Text style={dialogStyles.message}>{message}</Text>
-          
-          <View style={dialogStyles.divider} />
-          
-          <Text style={dialogStyles.subtitle}>Where would you like to go?</Text>
-          
+          <TouchableOpacity
+            style={dialogStyles.closeButton}
+            onPress={onCancel}
+          >
+            <X width={20} height={20} color={InstacardColors.textSecondary} />
+          </TouchableOpacity>
+
+          <Text style={dialogStyles.title}>{message}</Text>
+
           <View style={dialogStyles.buttonRow}>
             <TouchableOpacity
               style={dialogStyles.optionButton}
               onPress={handleInstacard}
               accessibilityRole="button"
-              accessibilityLabel="Add more cards"
+              accessibilityLabel="Go to Instacard"
             >
-              <View style={dialogStyles.optionIconWrap}>
-                <LogOut width={28} height={28} color={InstacardColors.white} strokeWidth={2} />
-              </View>
               <Text style={dialogStyles.optionText}>Instacard</Text>
-              <Text style={dialogStyles.optionSubtext}>Exit To Instacard</Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity
               style={dialogStyles.optionButton}
               onPress={handleHome}
               accessibilityRole="button"
-              accessibilityLabel="View your cards"
+              accessibilityLabel="Go to Home"
             >
-              <View style={dialogStyles.optionIconWrap}>
-                <Home width={26} height={26} color={InstacardColors.white} strokeWidth={2} />
-              </View>
               <Text style={dialogStyles.optionText}>Home</Text>
-              <Text style={dialogStyles.optionSubtext}>Back To Home</Text>
             </TouchableOpacity>
           </View>
-          
-          <TouchableOpacity 
-            style={dialogStyles.cancelButton}
-            onPress={onCancel}
-          >
-            <Text style={dialogStyles.cancelText}>Stay here</Text>
-          </TouchableOpacity>
         </TouchableOpacity>
       </TouchableOpacity>
     </Modal>
@@ -109,49 +91,29 @@ const dialogStyles = StyleSheet.create({
   },
   container: {
     backgroundColor: InstacardColors.white,
-    borderRadius: 28,
+    borderRadius: 24,
     padding: 24,
-    paddingTop: 32,
+    paddingTop: 40,
     width: '100%',
-    maxWidth: 360,
+    maxWidth: 320,
     alignItems: 'center',
   },
-  warningIconWrap: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: `${InstacardColors.primary}15`,
+  closeButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 32,
+    height: 32,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
   },
   title: {
-    fontSize: 26,
-    fontWeight: '800',
+    fontSize: 16,
+    paddingHorizontal: 32,
+    // fontWeight: '700',
     color: InstacardColors.textPrimary,
-    marginBottom: 8,
+    marginBottom: 32,
     textAlign: 'center',
-    letterSpacing: -0.5,
-  },
-  message: {
-    fontSize: 15,
-    color: InstacardColors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 22,
-    paddingHorizontal: 8,
-  },
-  divider: {
-    width: 60,
-    height: 3,
-    backgroundColor: InstacardColors.lightGray,
-    borderRadius: 2,
-    marginVertical: 20,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: InstacardColors.textSecondary,
-    marginBottom: 16,
-    fontWeight: '600',
   },
   buttonRow: {
     flexDirection: 'row',
@@ -160,42 +122,18 @@ const dialogStyles = StyleSheet.create({
   },
   optionButton: {
     flex: 1,
-    borderRadius: 20,
-    paddingVertical: 20,
+    borderRadius: 16,
+    paddingVertical: 16,
     paddingHorizontal: 12,
     alignItems: 'center',
-    backgroundColor: `${InstacardColors.primary}08`,
-    borderWidth: 1.5,
-    borderColor: `${InstacardColors.primary}20`,
-  },
-  optionIconWrap: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
+    flexDirection: 'row',
+    gap: 8,
     backgroundColor: InstacardColors.primary,
   },
   optionText: {
     fontSize: 16,
-    fontWeight: '700',
-    color: InstacardColors.textPrimary,
-    marginBottom: 4,
-  },
-  optionSubtext: {
-    fontSize: 12,
-    color: InstacardColors.textSecondary,
-    fontWeight: '500',
-  },
-  cancelButton: {
-    marginTop: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-  },
-  cancelText: {
-    fontSize: 16,
-    color: InstacardColors.textPrimary,
     fontWeight: '600',
+    color: InstacardColors.white,
   },
 });

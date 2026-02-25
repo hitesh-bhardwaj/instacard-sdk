@@ -75,13 +75,13 @@ export function AnimatedCard({
     const focusLift = interpolate(
       focusProgress.value,
       [0, 1],
-      [0, -120 * selectionStrength],
+      [0, -200 * selectionStrength],
       Extrapolation.CLAMP
     );
     const focusScale = interpolate(
       focusProgress.value,
       [0, 1],
-      [1, 1 - 0.1 * selectionStrength],
+      [1, 1 - 0.3 * selectionStrength],
       Extrapolation.CLAMP
     );
 

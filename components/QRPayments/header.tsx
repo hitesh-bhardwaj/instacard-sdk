@@ -1,4 +1,4 @@
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { hapticLight } from '@/lib/haptics';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -12,6 +12,8 @@ import Animated, {
 export function PaymentHeader() {
   const router = useRouter();
   const scale = useSharedValue(1);
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
 
   const handlePress = () => {
     hapticLight();
@@ -40,14 +42,14 @@ export function PaymentHeader() {
           style={styles.backButton}
           activeOpacity={1}
         >
-          <Ionicons name="chevron-back" size={24} color={InstacardColors.textPrimary} />
+          <Ionicons name="chevron-back" size={24} color={colors.textPrimary} />
         </TouchableOpacity>
       </Animated.View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   header: {
     paddingHorizontal: 16,
     paddingVertical: 12,

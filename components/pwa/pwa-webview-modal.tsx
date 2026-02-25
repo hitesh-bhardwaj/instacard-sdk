@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   BackHandler,
+  KeyboardAvoidingView,
   Modal,
   Platform,
   StyleSheet,
@@ -196,7 +197,7 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
       presentationStyle="pageSheet"
       onRequestClose={handleClose}
     >
-      <View style={styles.container}>
+      <KeyboardAvoidingView  style={styles.container}>
         <CardsHeader
           subtitle={currentScreen}
           onBackPress={handleClose}
@@ -259,12 +260,12 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
             )}
           </View>
         </SheetContainer>
-      </View>
+      </KeyboardAvoidingView>
 
       <ConfirmDialog
         visible={showHomeConfirm}
         title="Go to Home"
-        message="Are you sure you want to leave this screen and go to back?"
+        message="Are you sure you want to leave this screen?"
         onCancel={handleHomeCancel}
         onConfirm={handleHomeConfirm}
       />

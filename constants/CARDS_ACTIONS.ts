@@ -4,11 +4,18 @@ import GiftIcon from "@/assets/svg/gift-card.svg";
 import CreditCardIcon from "@/assets/svg/manage-card.svg";
 import GlobeIcon from "@/assets/svg/phone.svg";
 import LinkIcon from "@/assets/svg/sigma.svg";
+// Dark mode variants (light-on-dark optimized)
+import DocTextIconDark from "@/assets/svg/viewdetails.svg";
+import HandTapIconDark from "@/assets/svg/contactlessdark.svg";
+import CreditCardIconDark from "@/assets/svg/managecarddark.svg";
+import GlobeIconDark from "@/assets/svg/makepaymentsdarkl.svg";
+import LinkIconDark from "@/assets/svg/linkdark.svg";
 
 export interface ActionItem {
   id: string;
   title: string;
   icon: React.FC<{ width: number; height: number; color: string }>;
+  iconDark?: React.FC<{ width: number; height: number; color: string }>;
   faqData: {
     heading: string;
     bulletPoints: string[];
@@ -16,10 +23,12 @@ export interface ActionItem {
 }
 
 export const ACTIONS: ActionItem[] = [
+
   {
     id: "manage",
     title: "Manage Card",
     icon: CreditCardIcon,
+    iconDark: CreditCardIconDark,
     faqData: {
       heading: "Manage Card",
       bulletPoints: [
@@ -35,6 +44,7 @@ export const ACTIONS: ActionItem[] = [
     id: "card-details",
     title: "View Card Details",
     icon: DocTextIcon,
+    iconDark: DocTextIconDark,
     faqData: {
       heading: "View Card Details",
       bulletPoints: [
@@ -49,6 +59,7 @@ export const ACTIONS: ActionItem[] = [
     id: "make-online-payments",
     title: "Make Online Payment",
     icon: GlobeIcon,
+    iconDark: GlobeIconDark,
     faqData: {
       heading: "Make Online Payment",
       bulletPoints: [
@@ -59,24 +70,25 @@ export const ACTIONS: ActionItem[] = [
       ],
     },
   },
-  {
-    id: "add-gift",
-    title: "Add a Gift-card",
-    icon: GiftIcon,
-    faqData: {
-      heading: "Add a Gift-card",
-      bulletPoints: [
-        "Add gift cards from various retailers to your wallet.",
-        "Manage all your gift cards in one place.",
-        "Check gift card balances and transaction history.",
-        "Use gift cards for in-store and online purchases.",
-      ],
-    },
-  },
+  // {
+  //   id: "add-gift",
+  //   title: "Add a Gift-card",
+  //   icon: GiftIcon,
+  //   faqData: {
+  //     heading: "Add a Gift-card",
+  //     bulletPoints: [
+  //       "Add gift cards from various retailers to your wallet.",
+  //       "Manage all your gift cards in one place.",
+  //       "Check gift card balances and transaction history.",
+  //       "Use gift cards for in-store and online purchases.",
+  //     ],
+  //   },
+  // },
   {
     id: "contactless-default",
     title: "Make default for Contactless Payments",
     icon: HandTapIcon,
+    iconDark: HandTapIconDark,
     faqData: {
       heading: "Make Default for Contactless Payments",
       bulletPoints: [
@@ -91,6 +103,7 @@ export const ACTIONS: ActionItem[] = [
     id: "link-physical",
     title: "Link to Physical Card",
     icon: LinkIcon,
+    iconDark: LinkIconDark,
     faqData: {
       heading: "Link to a Physical Universal or Sigma Instacard",
       bulletPoints: [

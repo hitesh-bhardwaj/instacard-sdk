@@ -5,7 +5,7 @@ import { MessageInput } from '@/components/QRPayments/message-input';
 import { NumberPad } from '@/components/QRPayments/number-pad';
 import { ProceedButton } from '@/components/QRPayments/proceed-button';
 import { ProfileSection } from '@/components/QRPayments/profile-section';
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
@@ -18,6 +18,8 @@ export default function PaymentAmounts() {
   const [message, setMessage] = useState('');
   const [bankDrawerVisible, setBankDrawerVisible] = useState(false);
   const [selectedBankId, setSelectedBankId] = useState<string | null>(null);
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
 
   // Mock data - replace with actual data from navigation params
   const recipientData = {
@@ -160,10 +162,10 @@ export default function PaymentAmounts() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: InstacardColors.white,
+    backgroundColor: colors.white,
    
   },
   proceedSection: {
