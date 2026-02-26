@@ -63,6 +63,7 @@ export const CardStack = forwardRef<CardStackRef, CardStackProps>(function CardS
     onCardChange,
     isDrawerOpen = false,
     selectedCardId = null,
+    
   },
   ref
 ) {
@@ -284,12 +285,38 @@ export const CardStack = forwardRef<CardStackRef, CardStackProps>(function CardS
   return (
     <View style={styles.container}>
       <GestureDetector gesture={panGesture}>
-        <Animated.View style={styles.stackContainer}>{visibleCards}</Animated.View>
+        <Animated.View style={styles.stackContainer}>{visibleCards}
+          {/* <View style={{ 
+            position: 'absolute', 
+            bottom: '36%', 
+            left: '2%',
+            borderLeftWidth: 3,
+            borderBottomWidth: 3,
+            borderColor: 'black',
+            borderBottomLeftRadius: 100,
+            width: 24,
+            height: 24,
+          }} />
+          <View style={{ 
+            position: 'absolute', 
+            bottom: '36%', 
+            right: '2%',
+            borderRightWidth: 3,
+            borderBottomWidth: 3,
+            borderColor: 'black',
+            borderBottomRightRadius: 100,
+            width: 24,
+            height: 24,
+          }} /> */}
+
+        </Animated.View>
       </GestureDetector>
+
 
     </View>
   );
 });
+
 
 const styles = StyleSheet.create({
   container: {
@@ -298,6 +325,7 @@ const styles = StyleSheet.create({
   stackContainer: {
     flex: 1,
     marginTop: 25,
+    position: 'relative',
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingHorizontal: 16,

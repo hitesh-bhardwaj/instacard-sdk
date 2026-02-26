@@ -46,6 +46,7 @@ export interface SDKConfig {
   environment?: "development" | "staging" | "production";
   /** Current app language code (e.g. 'en', 'ar', 'fr') */
   language?: string;
+  
 }
 
 export interface SDKResult {
@@ -147,7 +148,7 @@ export function generateDevToken(): string {
  */
 export const DEV_SDK_CONFIG: SDKConfig = {
   // pwaBaseUrl: 'http://localhost:3000',
-  pwaBaseUrl: "http://10.5.50.179:3000",
+  pwaBaseUrl: "http://10.5.50.34:3000",
   // pwaBaseUrl: "https://instacard-pwa.vercel.app/",
   userToken: generateDevToken(),
   environment: "development",

@@ -151,6 +151,7 @@ export default function CardsScreen() {
                 }}
                 isDrawerOpen={drawerVisible}
                 selectedCardId={selectedCardId}
+                
               />
             ) : (
               // Empty state when no cards match the current filters

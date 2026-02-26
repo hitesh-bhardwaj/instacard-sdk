@@ -180,9 +180,8 @@ const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   },
   dropdownContainer: {
     position: 'absolute',
-    top: '30%',
-    left: '5%',
-    right: 16,
+    top: '27%',
+    right: '5%',
   
     alignItems: 'flex-start',
   },

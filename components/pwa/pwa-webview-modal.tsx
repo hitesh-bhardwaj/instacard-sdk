@@ -28,6 +28,7 @@ import {
   SDKResult,
 } from '@/lib/instacard-sdk';
 import { ConfirmDialog } from './confirm-dialog';
+import { useThemeStore } from '@/hooks/use-theme-store';
 
 interface PWAWebViewModalProps {
   visible: boolean;
@@ -51,15 +52,35 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
   const [showHomeConfirm, setShowHomeConfirm] = useState(false);
   const router = useRouter();
   const { i18n } = useTranslation();
-
+  const { isDarkMode } = useThemeStore();
   const pwaUrl = buildPWAUrl({ ...config, route, language: i18n.language });
-  console.log('[PWA] Built URL with language:', i18n.language, pwaUrl);
+  // console.log('[PWA] Built URL with language:', i18n.language, pwaUrl);
 
   const sendLanguageToPWA = useCallback(() => {
     const payload = JSON.stringify({ type: 'SET_LANGUAGE', lang: i18n.language });
     console.log('[PWA] Sending language to WebView:', payload);
     webViewRef.current?.postMessage(payload);
   }, [i18n.language]);
+
+  const sendThemeToggleToPWA = useCallback(() => {
+    const payload = JSON.stringify({
+      type: 'SET_THEME',
+      theme: isDarkMode ? 'dark' : 'light',
+      isDarkMode,
+    });
+  
+    console.log('[SDK] Posting theme → WebView:', payload);
+  
+    webViewRef.current?.postMessage(payload);
+  }, [isDarkMode]);
+
+  // Send theme toggle to PWA whenever it changes
+  useEffect(() => {
+    if (visible) {
+      sendThemeToggleToPWA();
+      console.log('[PWA] Sent theme to WebView:', isDarkMode);
+    }
+  }, [isDarkMode, visible, sendThemeToggleToPWA]);
 
   // Live update: send language to PWA whenever it changes
   useEffect(() => {
@@ -232,15 +253,16 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
                 onMessage={handleMessage}
                 onLoadEnd={() => {
                   console.log('[PWA] WebView onLoadEnd — sending language');
-                  setIsLoading(false);
+                  // setIsLoading(false);
                   sendLanguageToPWA();
+                  sendThemeToggleToPWA();
                 }}
                 onError={handleLoadError}
                 onHttpError={handleLoadError}
                 onNavigationStateChange={handleNavigationStateChange}
                 javaScriptEnabled
                 domStorageEnabled
-                startInLoadingState
+                // startInLoadingState
                 scalesPageToFit
                 allowsInlineMediaPlayback
                 mediaPlaybackRequiresUserAction={false}
@@ -253,9 +275,9 @@ export function PWAWebViewModal({ visible, config, onClose, route }: PWAWebViewM
             )}
 
             {isLoading && !error && (
-              <View style={styles.loadingOverlay}>
+              <View style={[styles.loadingOverlay, { backgroundColor: isDarkMode ? '#111111' : '#ffffff' }]}>
                 <ActivityIndicator size="large" color={InstacardColors.primary} />
-                <Text style={styles.loadingText}>Loading...</Text>
+                <Text style={[styles.loadingText,{color: InstacardColors.textOnPrimary}]}>Loading...</Text>
               </View>
             )}
           </View>
@@ -288,7 +310,6 @@ const styles = StyleSheet.create({
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: InstacardColors.white,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 16,

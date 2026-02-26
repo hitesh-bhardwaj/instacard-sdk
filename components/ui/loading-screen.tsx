@@ -1,6 +1,7 @@
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { InstacardColors } from '@/constants/colors';
+import { useThemeStore } from '@/hooks/use-theme-store';
 
 interface LoadingScreenProps {
   backgroundColor?: string;
@@ -11,16 +12,17 @@ interface LoadingScreenProps {
  * (e.g., while fonts are loading).
  */
 export function LoadingScreen({ backgroundColor }: LoadingScreenProps) {
+  const { isDarkMode } = useThemeStore();
   return (
     <View
       style={[
         styles.container,
-        backgroundColor ? { backgroundColor } : undefined,
+        { backgroundColor: isDarkMode ? '#111111' : "#ffffff" },
       ]}
       accessibilityRole="progressbar"
       accessibilityLabel="Loading application"
     >
-      <ActivityIndicator size="large" color={InstacardColors.primary} />
+      <ActivityIndicator size="large" color={isDarkMode ? InstacardColors.white : '#000000'} />
     </View>
   );
 }
@@ -28,7 +30,6 @@ export function LoadingScreen({ backgroundColor }: LoadingScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: InstacardColors.white,
     justifyContent: 'center',
     alignItems: 'center',
   },
