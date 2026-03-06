@@ -33,7 +33,7 @@ export const InstacardColors = {
 // Dark mode colors - use with useThemeStore hook inside components
 export const InstacardDarkColors = {
   // Primary purple (header background, buttons, active states)
-  primary: '#C77DFF',
+  primary: '#5A1186',
   primaryDark: '#5A189A',
   primaryLight: '#9D4EDD',
 

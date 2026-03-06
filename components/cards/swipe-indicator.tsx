@@ -11,6 +11,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import { useTranslation } from 'react-i18next';
 
 interface SwipeIndicatorProps {
   currentIndex: number;
@@ -39,6 +40,7 @@ export function SwipeIndicator({
   const scaleRight = useSharedValue(1);
   const opacityLeft = useSharedValue(canGoLeft ? ACTIVE_OPACITY : INACTIVE_OPACITY);
   const opacityRight = useSharedValue(canGoRight ? ACTIVE_OPACITY : INACTIVE_OPACITY);
+  const { t } = useTranslation();
 
   useEffect(() => {
     opacityLeft.value = withTiming(canGoLeft ? ACTIVE_OPACITY : INACTIVE_OPACITY, {
@@ -58,10 +60,32 @@ export function SwipeIndicator({
   const styles = createStyles(colors);
 
   const hintText = totalCount === 1
-    ? <Text style={styles.hint}><Text style={styles.hintBold}>Tap</Text> to view card details</Text>
+    ? (
+      <Text style={styles.hint}>
+        <Text style={styles.hintBold}>{t('cards.swipe.tap')}</Text>
+        {' '}
+        {t('cards.swipe.toViewDetails')}
+      </Text>
+    )
     : canGoRight
-      ? <Text style={styles.hint}><Text style={styles.hintBold}>Tap</Text> to view details & <Text style={styles.hintBold}>← Swipe Left</Text> to see next cards</Text>
-      : <Text style={styles.hint}><Text style={styles.hintBold}>Swipe Right →</Text> to see previous cards</Text>;
+      ? (
+        <Text style={styles.hint}>
+          <Text style={styles.hintBold}>{t('cards.swipe.tap')}</Text>
+          {' '}
+          {t('cards.swipe.toViewDetailsAnd')}
+          {' '}
+          <Text style={styles.hintBold}>{t('cards.swipe.swipeLeft')}</Text>
+          {' '}
+          {t('cards.swipe.toSeeNext')}
+        </Text>
+      )
+      : (
+        <Text style={styles.hint}>
+          <Text style={styles.hintBold}>{t('cards.swipe.swipeRight')}</Text>
+          {' '}
+          {t('cards.swipe.toSeePrevious')}
+        </Text>
+      );
 
   const handlePrevious = () => {
     if (canGoLeft && onPreviousPress) {
@@ -140,6 +164,7 @@ export function SwipeIndicator({
 
 const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   container: {
+    direction: 'ltr',
     position: 'absolute',
     left: 0,
     right: 0,
@@ -151,11 +176,13 @@ const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
     fontSize: 13,
     color: colors.textPrimary,
     textAlign: 'center',
+    writingDirection: 'ltr',
   },
   hintBold: {
     fontWeight: '700',
   },
   arrowRow: {
+    direction: 'ltr',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -179,6 +206,7 @@ const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
     borderRadius: 20,
   },
   counter: {
+    writingDirection: 'ltr',
     fontSize: 12,
     fontWeight: '700',
     color: colors.textSecondary,

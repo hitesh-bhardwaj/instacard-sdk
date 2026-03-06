@@ -19,6 +19,7 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { captureRef } from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
+import { useTranslation } from 'react-i18next';
 
 export default function PaymentSuccess() {
   const insets = useSafeAreaInsets();
@@ -54,6 +55,7 @@ export default function PaymentSuccess() {
   const buttonOpacity = useSharedValue(0);
   const buttonTranslateY = useSharedValue(20);
   const confettiProgress = useSharedValue(0);
+  const { t } = useTranslation();
 
   const paymentData = {
     amount:
@@ -157,7 +159,7 @@ export default function PaymentSuccess() {
       if (isAvailable) {
         await Sharing.shareAsync(uri, {
           mimeType: 'image/png',
-          dialogTitle: 'Share Payment Receipt',
+          dialogTitle: t('cards.success.shareDialogTitle'),
         });
       }
     } catch (error) {
@@ -206,14 +208,14 @@ export default function PaymentSuccess() {
             </View>
 
             <Animated.View style={[styles.successTextContainer, contentAnimatedStyle]}>
-              <Text style={styles.successTitle}>Payment Successful!</Text>
-              <Text style={styles.successSubtitle}>Your transaction has been completed</Text>
+              <Text style={styles.successTitle}>{t('cards.success.title')}</Text>
+              <Text style={styles.successSubtitle}>{t('cards.success.subtitle')}</Text>
             </Animated.View>
           </View>
 
           {/* Amount Card */}
           <Animated.View style={[styles.amountCard, contentAnimatedStyle]}>
-            <Text style={styles.amountLabel}>Amount Paid</Text>
+            <Text style={styles.amountLabel}>{t('cards.success.amountLabel')}</Text>
             <View style={styles.amountRow}>
 
               <Text style={styles.amountText}> <Text style={{ textDecorationLine: 'line-through' }}>N</Text> {paymentData.amount}</Text>
@@ -232,7 +234,7 @@ export default function PaymentSuccess() {
                   <Ionicons name="person-outline" size={18} color={InstacardColors.primary} />
                 </View>
                 <View style={styles.detailContent}>
-                  <Text style={styles.detailLabel}>Paid To</Text>
+                  <Text style={styles.detailLabel}>{t('cards.success.paidTo')}</Text>
                   <Text style={styles.detailValue}>{paymentData.recipientName}</Text>
                 </View>
               </View>
@@ -244,7 +246,7 @@ export default function PaymentSuccess() {
                   <Ionicons name="at-outline" size={18} color={InstacardColors.primary} />
                 </View>
                 <View style={styles.detailContent}>
-                  <Text style={styles.detailLabel}>UPI ID</Text>
+                  <Text style={styles.detailLabel}>{t('cards.success.upiId')}</Text>
                   <Text style={styles.detailValue}>{paymentData.upiId}</Text>
                 </View>
               </View>
@@ -256,7 +258,7 @@ export default function PaymentSuccess() {
                   <Ionicons name="receipt-outline" size={18} color={InstacardColors.primary} />
                 </View>
                 <View style={styles.detailContent}>
-                  <Text style={styles.detailLabel}>Transaction ID</Text>
+                  <Text style={styles.detailLabel}>{t('cards.success.transactionId')}</Text>
                   <Text style={styles.detailValueSmall}>{paymentData.transactionId}</Text>
                 </View>
               </View>
@@ -268,7 +270,7 @@ export default function PaymentSuccess() {
                   <Ionicons name="calendar-outline" size={18} color={InstacardColors.primary} />
                 </View>
                 <View style={styles.detailContent}>
-                  <Text style={styles.detailLabel}>Date & Time</Text>
+                  <Text style={styles.detailLabel}>{t('cards.success.dateTime')}</Text>
                   <Text style={styles.detailValue}>{paymentData.date}</Text>
                 </View>
               </View>
@@ -284,7 +286,7 @@ export default function PaymentSuccess() {
             onPress={handleShareReceipt}
             activeOpacity={0.7}
           >
-            <Text style={styles.shareButtonText}>Share Receipt</Text>
+            <Text style={styles.shareButtonText}>{t('cards.success.shareReceipt')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -292,7 +294,7 @@ export default function PaymentSuccess() {
             onPress={handleDone}
             activeOpacity={0.8}
           >
-            <Text style={styles.doneButtonText}>Done</Text>
+            <Text style={styles.doneButtonText}>{t('cards.success.done')}</Text>
           </TouchableOpacity>
         </Animated.View>
       </ScrollView>

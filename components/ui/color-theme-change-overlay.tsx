@@ -9,7 +9,9 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
+import { useTranslation } from 'react-i18next';
 
+import { useAppDirection } from '@/hooks/use-app-direction';
 import { useThemeStore } from '@/hooks/use-theme-store';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -17,6 +19,8 @@ const DIAGONAL = Math.sqrt(SCREEN_WIDTH ** 2 + SCREEN_HEIGHT ** 2);
 
 export function ColorThemeChangeOverlay() {
   const { isDarkMode } = useThemeStore();
+  const { t } = useTranslation();
+  const { isRTL } = useAppDirection();
 
   const backgroundOpacity = useSharedValue(0);
   const clipProgress = useSharedValue(0);
@@ -78,7 +82,7 @@ export function ColorThemeChangeOverlay() {
     opacity: contentOpacity.value,
   }));
 
-  const message = isDarkMode ? 'Dark mode' : 'Light mode';
+  const message = isDarkMode ? t('themeOverlay.switchedToDark') : t('themeOverlay.switchedToLight');
   const themeColor = isDarkMode ? '#1a1a1a' : '#f5f5f5';
   const textColor = isDarkMode ? '#ffffff' : '#1a1a1a';
   const iconColor = isDarkMode ? '#ffffff' : '#1a1a1a';
@@ -87,13 +91,27 @@ export function ColorThemeChangeOverlay() {
     <View pointerEvents="none" style={styles.container}>
       <Animated.View style={[{backgroundColor: isDarkMode ? '#000000' : '#ffffff'},styles.background, backgroundAnimatedStyle]} />
       <Animated.View style={[styles.overlay, overlayAnimatedStyle, { backgroundColor: themeColor }]}>
-        <Animated.View style={[styles.content, contentAnimatedStyle]}>
+        <Animated.View
+          style={[
+            styles.content,
+            contentAnimatedStyle,
+            { flexDirection: isRTL ? 'row-reverse' : 'row' },
+          ]}
+        >
           {isDarkMode ? (
             <Moon size={28} color={iconColor} strokeWidth={1.5} />
           ) : (
             <Sun size={28} color={iconColor} strokeWidth={1.5} />
           )}
-          <Text style={[styles.text, { color: textColor }]}>{message}</Text>
+          <Text
+            style={[
+              styles.text,
+              { color: textColor },
+              isRTL && styles.textRTL,
+            ]}
+          >
+            {message}
+          </Text>
         </Animated.View>
       </Animated.View>
     </View>
@@ -127,5 +145,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     letterSpacing: 0.5,
+  },
+  textRTL: {
+    writingDirection: 'rtl',
+    textAlign: 'right',
   },
 });

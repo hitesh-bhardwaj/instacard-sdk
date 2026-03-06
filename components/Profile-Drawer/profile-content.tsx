@@ -1,15 +1,13 @@
 import { InstacardColors, useInstacardColors } from '@/constants/colors';
+import { useAppDirection } from '@/hooks/use-app-direction';
 import { useThemeStore } from '@/hooks/use-theme-store';
 import { ArrowLeft, ArrowRight, HelpCircle, LogOut, Moon, User } from 'lucide-react-native';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LanguageDropdown } from './language-dropdown';
 import { MenuRow } from './menu-row';
 import { ToggleSwitch } from './toggle-switch';
-
-const RTL_LANGUAGES = ['ar'];
 
 interface ProfileContentProps {
   userName?: string;
@@ -22,9 +20,8 @@ export function ProfileContent({ userName = 'User', onClose }: ProfileContentPro
   const { isDarkMode, toggleTheme } = useThemeStore();
   const colors = useInstacardColors();
   const styles = createStyles(colors);
-  const [selectedLang, setSelectedLang] = useState(i18n.language?.split('-')[0] ?? 'en');
-
-  const isRTL = RTL_LANGUAGES.includes(selectedLang);
+  const { isRTL } = useAppDirection();
+  const selectedLang = i18n.language?.split('-')[0] ?? 'en';
 
   const handleDarkModeToggle = () => {
     toggleTheme();
@@ -74,7 +71,7 @@ export function ProfileContent({ userName = 'User', onClose }: ProfileContentPro
             />
             <LanguageDropdown
               selectedLang={selectedLang}
-              onSelect={setSelectedLang}
+              onSelect={() => {}}
               isRTL={isRTL}
               isDarkMode={isDarkMode}
             />

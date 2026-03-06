@@ -26,7 +26,7 @@ const ANIM_EASING = Easing.bezier(0.25, 0.1, 0.25, 1);
 
 interface LanguageDropdownProps {
   selectedLang: string;
-  onSelect: (code: string) => void;
+  onSelect?: (code: string) => void;
   isRTL?: boolean;
   isDarkMode?: boolean;
 }
@@ -67,7 +67,7 @@ export function LanguageDropdown({ selectedLang, onSelect, isRTL = false, isDark
   const handleSelect = useCallback((code: string) => {
     hapticLight();
     i18n.changeLanguage(code);
-    onSelect(code);
+    onSelect?.(code);
     setIsOpen(false);
     animHeight.value = withTiming(0, { duration: ANIM_DURATION, easing: ANIM_EASING });
     chevronRotate.value = withTiming(0, { duration: ANIM_DURATION, easing: ANIM_EASING });

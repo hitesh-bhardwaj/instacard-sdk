@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import FilterIcon from '@/assets/svg/filter.svg';
 import SortIcon from '@/assets/svg/sort.svg';
@@ -13,29 +14,6 @@ import { CardFilterType, FilterDropdown } from './filter-dropdown';
 export type { CardFilterType };
 
 export type FilterTab = 'all' | 'recent';
-
-/** Labels for card filter types */
-const FILTER_LABELS: Record<CardFilterType, string> = {
-  all: 'All Cards',
-  debit: 'Debit',
-  credit: 'Credit',
-  prepaid: 'Pre-Paid',
-  gift: 'Gift',
-};
-
-/** Get display label for selected filters */
-function getFilterLabel(filters: CardFilterType[]): string {
-  if (filters.includes('all') || filters.length === 0) {
-    return 'All Cards';
-  }
-  if (filters.length === 1) {
-    return `${FILTER_LABELS[filters[0]]} Cards`;
-  }
-  if (filters.length === 2) {
-    return `${FILTER_LABELS[filters[0]]}, ${FILTER_LABELS[filters[1]]}`;
-  }
-  return `${filters.length} Selected`;
-}
 
 interface FilterBarProps {
   /** Currently selected card type filters (multi-select) */
@@ -61,6 +39,7 @@ export function FilterBar({
   isDarkMode,
 }: FilterBarProps) {  
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const { t } = useTranslation();
 
   const handleFilterTabPress = () => {
     hapticLight();
@@ -74,6 +53,27 @@ export function FilterBar({
     onCardFiltersChange?.(filters);
   };
 
+  const getFilterLabel = (filters: CardFilterType[]): string => {
+    const labels: Record<CardFilterType, string> = {
+      all: t('cards.filters.all'),
+      debit: t('cards.filters.debit'),
+      credit: t('cards.filters.credit'),
+      prepaid: t('cards.filters.prepaid'),
+      gift: t('cards.filters.gift'),
+    };
+
+    if (filters.includes('all') || filters.length === 0) {
+      return t('cards.filters.all');
+    }
+    if (filters.length === 1) {
+      return `${labels[filters[0]]}`;
+    }
+    if (filters.length === 2) {
+      return `${labels[filters[0]]}, ${labels[filters[1]]}`;
+    }
+    return `${filters.length}`;
+  };
+
   const filterLabel = getFilterLabel(cardFilters);
 
   return (
@@ -82,14 +82,14 @@ export function FilterBar({
         <AnimatedToggle value={mode} onChange={onModeChange} />
       </View>
       <View style={styles.tabsContainer}>
-      <Text style={styles.tabText}>Filters</Text>
+      <Text style={styles.tabText}>{t('cards.filters.title')}</Text>
         
         <TouchableOpacity
           style={styles.tab}
           onPress={handleFilterTabPress}
           accessibilityRole="tab"
           accessibilityLabel={filterLabel}
-          accessibilityHint="Opens card type filter dropdown"
+          accessibilityHint={t('cards.filters.dropdownHint')}
           activeOpacity={0.7}
         >
           <FilterIcon
@@ -106,7 +106,11 @@ export function FilterBar({
             onRecentFilterPress?.();
           }}
           accessibilityRole="tab"
-          accessibilityLabel={recentFilterActive ? 'Recently Used (active)' : 'Recently Used'}
+          accessibilityLabel={
+            recentFilterActive
+              ? t('cards.filters.recentlyUsedActive')
+              : t('cards.filters.recentlyUsed')
+          }
           accessibilityState={{ selected: recentFilterActive }}
           activeOpacity={0.7}
         >

@@ -17,6 +17,7 @@ import { BlurView } from 'expo-blur';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 
 export default function CardsScreen() {
@@ -30,6 +31,7 @@ export default function CardsScreen() {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const { mode: cardMode, setMode: setCardMode } = useCardModeStore();
   const cardStackRef = useRef<CardStackRef>(null);
+  const { t } = useTranslation();
 
   const handleAddNewPress = () => {
     setPwaVisible(true);
@@ -40,13 +42,18 @@ export default function CardsScreen() {
 
     if (result.success && result.data) {
       Alert.alert(
-        'Card Added!',
-        `Your new ${result.data.cardType} card ending in ${result.data.lastFourDigits} has been added.`,
-        [{ text: 'OK' }]
+        t('cards.alerts.addedTitle'),
+        t('cards.alerts.addedMessage', {
+          cardType: result.data.cardType,
+          lastFourDigits: result.data.lastFourDigits,
+        }),
+        [{ text: t('cards.alerts.ok') }],
       );
     } else if (result.error) {
       // An error occurred during card addition
-      Alert.alert('Error', result.error.message, [{ text: 'OK' }]);
+      Alert.alert(t('cards.alerts.errorTitle'), result.error.message, [
+        { text: t('cards.alerts.ok') },
+      ]);
     }
     // If cancelled, just close silently
   }, []);
@@ -138,7 +145,11 @@ export default function CardsScreen() {
 
         {/* Header with dynamic subtitle based on drawer state */}
         <CardsHeader
-          subtitle={drawerVisible ? 'Manage Card' : 'Digital Instacard Wallet'}
+          subtitle={
+            drawerVisible
+              ? t('cards.header.manage')
+              : t('cards.header.walletSubtitle')
+          }
           showHomeIcon={false}
         />
 
@@ -160,7 +171,7 @@ export default function CardsScreen() {
             ) : (
               // Empty state when no cards match the current filters
               <View style={styles.emptyState}>
-                <Text style={styles.emptyStateText}>No card available</Text>
+                <Text style={styles.emptyStateText}>{t('cards.emptyState')}</Text>
               </View>
             )}
           </View>

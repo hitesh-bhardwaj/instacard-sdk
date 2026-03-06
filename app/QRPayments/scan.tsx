@@ -9,6 +9,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Flashlight } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Dimensions, Linking, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -30,6 +31,7 @@ export default function ScanScreen() {
   const [result, setResult] = useState<string | null>(null);
   const [image, setImage] = useState<string | null>(null);
   const hasScanned = useRef(false);
+  const { t } = useTranslation();
 
   // Scanning line animation
   const scanLinePosition = useSharedValue(0);
@@ -154,7 +156,7 @@ export default function ScanScreen() {
       <View style={styles.container}>
         <StatusBar style="light" />
         <View style={styles.permissionContainer}>
-          <Text style={styles.permissionText}>Loading camera...</Text>
+          <Text style={styles.permissionText}>{t('cards.scan.loadingCamera')}</Text>
         </View>
       </View>
     );
@@ -165,15 +167,15 @@ export default function ScanScreen() {
       <View style={styles.container}>
         <StatusBar style="light" />
         <View style={styles.permissionContainer}>
-          <Text style={styles.permissionTitle}>Camera Access Required</Text>
+          <Text style={styles.permissionTitle}>{t('cards.scan.permissionTitle')}</Text>
           <Text style={styles.permissionText}>
-            We need your permission to scan QR codes
+            {t('cards.scan.permissionMessage')}
           </Text>
           <TouchableOpacity activeOpacity={0.8} style={styles.permissionButton} onPress={requestPermission}>
-            <Text style={styles.permissionButtonText}>Grant Permission</Text>
+            <Text style={styles.permissionButtonText}>{t('cards.scan.grantPermission')}</Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.8} style={styles.backLink} onPress={handleClose}>
-            <Text style={styles.backLinkText}>Go Back</Text>
+            <Text style={styles.backLinkText}>{t('cards.scan.goBack')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -186,7 +188,7 @@ export default function ScanScreen() {
 
       {/* Header - Background Layer (z-index: 0) */}
       <CardsHeader
-        subtitle="Scan QR Code"
+        subtitle={t('cards.scan.header')}
         showHomeIcon={false}
       />
       {/* Camera View - Middle Layer with rounded top */}
@@ -258,7 +260,7 @@ export default function ScanScreen() {
         />
         <View style={styles.bottomContent}>
           <Text style={styles.instructionText}>
-            Align the QR code within the frame to scan
+            {t('cards.scan.instruction')}
           </Text>
 
           {/* Action Buttons */}
@@ -274,7 +276,7 @@ export default function ScanScreen() {
               <View style={styles.actionButtonInner}>
                 <GalleryIcon width={24} height={24} color={InstacardColors.white} />
               </View>
-              <Text style={styles.actionButtonLabel}>Gallery</Text>
+              <Text style={styles.actionButtonLabel}>{t('cards.scan.gallery')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -290,7 +292,7 @@ export default function ScanScreen() {
                 )}
               </View>
               <Text style={styles.actionButtonLabel}>
-                {flashOn ? 'Flash On' : 'Flash Off'}
+                {flashOn ? t('cards.scan.flashOn') : t('cards.scan.flashOff')}
               </Text>
             </TouchableOpacity>
           </View>

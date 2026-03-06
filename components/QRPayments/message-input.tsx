@@ -11,6 +11,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { useTranslation } from 'react-i18next';
 
 interface MessageInputProps {
   value: string;
@@ -20,17 +21,6 @@ interface MessageInputProps {
 const COLLAPSED_HEIGHT = 40;
 const EXPANDED_HEIGHT = 160;
 
-const MESSAGE_SUGGESTIONS = [
-  'Dinner 🍽️',
-  'Rent',
-  'Thanks',
-  'Gift 🎁',
-  'Coffee ☕',
-  'Groceries 🛒',
-  'Utilities',
-  'Birthday 🎂',
-];
-
 export function MessageInput({ value, onChangeText }: MessageInputProps) {
   const colors = useInstacardColors();
   const styles = createStyles(colors);
@@ -38,6 +28,7 @@ export function MessageInput({ value, onChangeText }: MessageInputProps) {
   const height = useSharedValue(COLLAPSED_HEIGHT);
   const opacity = useSharedValue(0);
   const inputRef = useRef<TextInput>(null);
+  const { t } = useTranslation();
 
   const collapse = () => {
     setIsExpanded(false);
@@ -86,8 +77,19 @@ export function MessageInput({ value, onChangeText }: MessageInputProps) {
     opacity: opacity.value,
   }));
 
-  const displayText = value.trim() ? value : 'Add Message';
+  const displayText = value.trim() ? value : t('cards.message.addMessage');
   const hasMessage = value.trim().length > 0;
+
+  const suggestions = [
+    t('cards.message.suggestions.dinner'),
+    t('cards.message.suggestions.rent'),
+    t('cards.message.suggestions.thanks'),
+    t('cards.message.suggestions.gift'),
+    t('cards.message.suggestions.coffee'),
+    t('cards.message.suggestions.groceries'),
+    t('cards.message.suggestions.utilities'),
+    t('cards.message.suggestions.birthday'),
+  ];
 
   return (
     <View style={styles.messageSection}>
@@ -112,7 +114,7 @@ export function MessageInput({ value, onChangeText }: MessageInputProps) {
         ) : (
           <View style={styles.expandedContainer}>
             <View style={styles.expandedHeader}>
-              <Text style={styles.messageLabel}>Message</Text>
+              <Text style={styles.messageLabel}>{t('cards.message.label')}</Text>
               <TouchableOpacity
                 onPress={handleToggle}
                 style={styles.closeButton}
@@ -125,7 +127,7 @@ export function MessageInput({ value, onChangeText }: MessageInputProps) {
               <TextInput
                 ref={inputRef}
                 style={styles.textInput}
-                placeholder="Enter message (optional)"
+                placeholder={t('cards.message.placeholder')}
                 placeholderTextColor={colors.textSecondary}
                 value={value}
                 onChangeText={onChangeText}
@@ -142,7 +144,7 @@ export function MessageInput({ value, onChangeText }: MessageInputProps) {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.suggestionsContent}
               >
-                {MESSAGE_SUGGESTIONS.map((suggestion) => (
+                {suggestions.map((suggestion) => (
                   <TouchableOpacity
                     key={suggestion}
                     style={[

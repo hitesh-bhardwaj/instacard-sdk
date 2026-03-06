@@ -21,6 +21,7 @@ import { NumberPad } from '@/components/QRPayments/number-pad';
 import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { AppFonts } from '@/constants/fonts';
 import { hapticLight } from '@/lib/haptics';
+import { useTranslation } from 'react-i18next';
 
 const PIN_LENGTH = 4;
 const CORRECT_PIN = '0000';
@@ -73,7 +74,7 @@ function PinInputBoxes({ length, filled, shake }: { length: number; filled: numb
 }
 
 export default function CardPinAuth({
-  title = 'Enter PIN for Selected Instacard',
+  title,
   cardImageSrc = require('@/assets/images/cards/Instacard_1.png'),
   onVerified = () => {},
   verifyPin = (pin: string) => pin === CORRECT_PIN,
@@ -83,6 +84,7 @@ export default function CardPinAuth({
   const [shake, setShake] = useState(false);
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { t } = useTranslation();
 
   const rawParams = useLocalSearchParams<{
     amount?: string | string[];
@@ -127,7 +129,7 @@ export default function CardPinAuth({
       });
       onVerified();
     } else {
-      setError('Incorrect PIN. Please try again.');
+      setError(t('cards.pin.errorIncorrectPin'));
       setShake(true);
       setTimeout(() => setShake(false), 300);
       setPin('');
@@ -137,6 +139,8 @@ export default function CardPinAuth({
   const isComplete = pin.length === PIN_LENGTH;
   const colors = useInstacardColors();
   const styles = createStyles(colors)
+  const headerTitle = t('cards.pin.headerTitle');
+  const bodyTitle = title ?? t('cards.pin.title');
 
   useEffect(() => {
     if (pin.length === PIN_LENGTH) {
@@ -175,13 +179,13 @@ export default function CardPinAuth({
         >
           <Ionicons name="chevron-back" size={24} color={colors.textPrimary} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Verify Payment</Text>
+        <Text style={styles.headerTitle}>{headerTitle}</Text>
         <View style={styles.headerSpacer} />
       </View>
 
       {/* Content */}
       <View style={styles.content}>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title}>{bodyTitle}</Text>
 
         <View style={styles.cardContainer}>
           <Image
@@ -193,7 +197,7 @@ export default function CardPinAuth({
 
 
         <View style={styles.pinSection}>
-          <Text style={styles.enterPinText}>Enter your 4-digit PIN</Text>
+          <Text style={styles.enterPinText}>{t('cards.pin.enterPin')}</Text>
           <PinInputBoxes length={PIN_LENGTH} filled={pin.length} shake={shake} />
           <View style={styles.errorContainer}>
             {error ? <Text style={styles.errorText}>{error}</Text> : null}

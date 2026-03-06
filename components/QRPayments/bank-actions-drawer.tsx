@@ -11,6 +11,7 @@ import Animated, {
   interpolate,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { BankRow } from '@/components/QRPayments/bank-drawer/bank-row';
 import { DrawerFooter } from '@/components/QRPayments/bank-drawer/drawer-footer';
@@ -42,7 +43,7 @@ interface BankActionsDrawerProps {
 
 interface AccordionSectionProps {
   type: CardType;
-  label: string;
+  labelKey: string;
   banks: BankItem[];
   isExpanded: boolean;
   selectedBankId?: string;
@@ -52,7 +53,7 @@ interface AccordionSectionProps {
 
 function AccordionSection({
   type,
-  label,
+  labelKey,
   banks,
   isExpanded,
   selectedBankId,
@@ -61,6 +62,8 @@ function AccordionSection({
 }: AccordionSectionProps) {
   const colors = useInstacardColors();
   const styles = createStyles(colors);
+  const { t } = useTranslation();
+  const label = t(labelKey as any);
   const animationProgress = useSharedValue(isExpanded ? 1 : 0);
   const contentHeight = useSharedValue(0);
   const [measuredHeight, setMeasuredHeight] = useState(0);
@@ -274,10 +277,10 @@ export function BankActionsDrawer({
   const cardTypeOrder: CardType[] = ['debit', 'credit', 'prepaid', 'gift'];
 
   const cardTypeLabels: Record<CardType, string> = {
-    debit: 'Debit cards',
-    credit: 'Credit cards',
-    prepaid: 'Prepaid cards',
-    gift: 'Gift cards',
+    debit: 'cards.bankDrawer.debit',
+    credit: 'cards.bankDrawer.credit',
+    prepaid: 'cards.bankDrawer.prepaid',
+    gift: 'cards.bankDrawer.gift',
   };
 
   const canConfirm = Boolean(selectedBank?.id);
@@ -321,7 +324,7 @@ export function BankActionsDrawer({
               <AccordionSection
                 key={type}
                 type={type}
-                label={cardTypeLabels[type]}
+                labelKey={cardTypeLabels[type]}
                 banks={banksForType}
                 isExpanded={isExpanded}
                 selectedBankId={selectedBank?.id}

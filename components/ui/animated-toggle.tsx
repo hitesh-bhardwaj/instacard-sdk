@@ -6,6 +6,7 @@ import Animated, {
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
+import { useTranslation } from 'react-i18next';
 
 import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { hapticMedium } from '@/lib/haptics';
@@ -17,17 +18,13 @@ interface AnimatedToggleProps {
   onChange: (value: ToggleValue) => void;
 }
 
-const TOGGLE_OPTIONS: Array<{ id: ToggleValue; label: string }> = [
-  { id: 'virtual', label: 'Virtual' },
-  { id: 'universal', label: 'Universal' },
-];
-
 const GAP = 4;
 const PADDING = 8;
 
 export function AnimatedToggle({ value, onChange }: AnimatedToggleProps) {
   const [layoutWidth, setLayoutWidth] = useState(0);
   const translateX = useSharedValue(0);
+  const { t } = useTranslation();
 
   const handleLayout = (event: LayoutChangeEvent) => {
     setLayoutWidth(event.nativeEvent.layout.width);
@@ -54,22 +51,26 @@ export function AnimatedToggle({ value, onChange }: AnimatedToggleProps) {
   return (
     <View style={styles.container} onLayout={handleLayout} accessibilityRole="tablist">
       <Animated.View style={[styles.indicator, indicatorStyle]} />
-      {TOGGLE_OPTIONS.map((option) => {
-        const isActive = option.id === value;
+      {(['virtual', 'universal'] as ToggleValue[]).map((id) => {
+        const isActive = id === value;
+        const label =
+          id === 'virtual'
+            ? t('cards.modes.virtual')
+            : t('cards.modes.universal');
         return (
           <TouchableOpacity
-            key={option.id}
+            key={id}
             style={styles.option}
             onPress={() => {
               hapticMedium();
-              onChange(option.id);
+              onChange(id);
             }}
             activeOpacity={0.9}
             accessibilityRole="tab"
             accessibilityState={{ selected: isActive }}
           >
             <Text style={[styles.optionText, isActive && styles.optionTextActive]}>
-              {option.label}
+              {label}
             </Text>
           </TouchableOpacity>
         );
@@ -80,6 +81,7 @@ export function AnimatedToggle({ value, onChange }: AnimatedToggleProps) {
 
 const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   container: {
+    direction: 'ltr',
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.white,
@@ -106,6 +108,7 @@ const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
     borderRadius: 9999,
   },
   optionText: {
+    writingDirection: 'ltr',
     fontSize: 12,
     fontWeight: '500',
     color: colors.textSecondary,

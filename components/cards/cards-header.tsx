@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import HomeIcon from '@/assets/svg/home.svg';
@@ -23,8 +24,9 @@ export function CardsHeader({
 }: CardsHeaderProps) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { t } = useTranslation();
   const handleBackPress = onBackPress ?? router.back;
-  const subtitleText = subtitle ?? 'Digital Instacard Wallet';
+  const subtitleText = subtitle ?? t('cards.header.walletSubtitle');
   
 
   return (

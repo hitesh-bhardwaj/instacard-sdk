@@ -4,6 +4,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { hapticLight } from '@/lib/haptics';
+import { useTranslation } from 'react-i18next';
 
 interface GreetingBarProps {
   userName: string;
@@ -22,10 +23,11 @@ export function GreetingBar({
 }: GreetingBarProps) {
   const colors = useInstacardColors();
   const styles = createStyles(colors);
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <Text style={[styles.greeting, { color: colors.textPrimary }]} accessibilityRole="text">
-        Hello, {userName}
+        {t('cards.greeting.hello', { name: userName })}
       </Text>
 
       <View style={styles.rightSection}>
@@ -36,7 +38,7 @@ export function GreetingBar({
             onSearchPress?.();
           }}
           accessibilityRole="button"
-          accessibilityLabel="Search"
+          accessibilityLabel={t('cards.greeting.searchLabel')}
         >
           <IconSymbol
             name="magnifyingglass"
@@ -51,7 +53,7 @@ export function GreetingBar({
             onHelpPress?.();
           }}
           accessibilityRole="button"
-          accessibilityLabel="Help"
+          accessibilityLabel={t('cards.greeting.helpLabel')}
         >
           <IconSymbol
             name="questionmark.circle"

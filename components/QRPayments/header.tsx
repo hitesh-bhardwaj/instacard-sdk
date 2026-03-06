@@ -53,6 +53,7 @@ const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   header: {
     paddingHorizontal: 16,
     paddingVertical: 12,
+    
   },
   backButton: {
     width: 40,

@@ -17,6 +17,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { hapticLight, hapticSelection } from '@/lib/haptics';
 import { useThemeStore } from '@/hooks/use-theme-store';
+import { useTranslation } from 'react-i18next';
 
 export type CardFilterType = 'all' | 'debit' | 'credit' | 'prepaid' | 'gift';
 
@@ -48,6 +49,7 @@ export function FilterDropdown({
 }: FilterDropdownProps) {
   const colors = useInstacardColors();
   const styles = createStyles(colors);
+  const { t } = useTranslation();
   const handleToggle = useCallback(
     (filter: CardFilterType) => {
       hapticSelection();
@@ -111,7 +113,7 @@ export function FilterDropdown({
                     height={16}
                     color={isDarkMode ? 'black' : colors.textPrimary}
                   />
-                    <Text style={styles.headerText}>Filters</Text>
+                    <Text style={styles.headerText}>{t('cards.filterDropdown.title')}</Text>
                   </View>
                   <TouchableOpacity
                     onPress={() => {
@@ -119,7 +121,7 @@ export function FilterDropdown({
                       onClose();
                     }}
                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                    accessibilityLabel="Close filters"
+                    accessibilityLabel={t('cards.filterDropdown.close')}
                     accessibilityRole="button"
                   >
                     <X
@@ -135,6 +137,19 @@ export function FilterDropdown({
                 {/* Options */}
                 <View style={styles.optionsList}>
                   {FILTER_OPTIONS.map((option) => {
+                    const labelKey =
+                      option.id === 'all'
+                        ? 'all'
+                        : option.id === 'debit'
+                        ? 'debit'
+                        : option.id === 'credit'
+                        ? 'credit'
+                        : option.id === 'prepaid'
+                        ? 'prepaid'
+                        : 'gift';
+
+                    const label = t(`cards.filterDropdown.${labelKey}`);
+
                     const isSelected = selectedFilters.includes(option.id);
                     return (
                       <TouchableOpacity
@@ -143,9 +158,9 @@ export function FilterDropdown({
                         onPress={() => handleToggle(option.id)}
                         accessibilityRole="checkbox"
                         accessibilityState={{ checked: isSelected }}
-                        accessibilityLabel={option.label}
+                        accessibilityLabel={label}
                       >
-                        <Text style={styles.optionText}>{option.label}</Text>
+                        <Text style={styles.optionText}>{label}</Text>
                         <View
                           style={[
                             styles.checkbox,

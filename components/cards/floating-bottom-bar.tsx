@@ -9,6 +9,7 @@ import { hapticLight, hapticMedium } from '@/lib/haptics';
 import { Gift, GiftIcon, LucideGift, Plus } from 'lucide-react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useThemeStore } from '@/hooks/use-theme-store';
+import { useTranslation } from 'react-i18next';
 
 interface FloatingBottomBarProps {
   onHomePress?: () => void;
@@ -36,6 +37,7 @@ export function FloatingBottomBar({
   const colors = useInstacardColors();
   const styles = createStyles(colors);
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -67,7 +69,7 @@ export function FloatingBottomBar({
           <Animated.View style={rotationStyle}>
             <Plus width={25} height={25} color={InstacardColors.textOnPrimary} />
           </Animated.View>
-          <Text style={styles.bottomText}>Add Instacard</Text>
+          <Text style={styles.bottomText}>{t('cards.bottomBar.addInstacard')}</Text>
         </TouchableOpacity>
         <View style={styles.centerButtonWrap}>
           <TouchableOpacity
@@ -90,7 +92,9 @@ export function FloatingBottomBar({
 
           <LucideGift width={20} height={20} color={isDarkMode ? '#ffffff' : InstacardColors.textSecondary} />
         </View>
-        <Text style={{ color: isDarkMode ? '#ffffff' : InstacardColors.textSecondary }}>Add Gift Card</Text>
+        <Text style={{ color: isDarkMode ? '#ffffff' : InstacardColors.textSecondary }}>
+          {t('cards.bottomBar.addGiftCard')}
+        </Text>
       </TouchableOpacity >
     </>
   );

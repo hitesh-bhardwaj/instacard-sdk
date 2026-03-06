@@ -4,14 +4,17 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
+import { useTranslation } from 'react-i18next';
 
 import { ColorThemeChangeOverlay } from '@/components/ui/color-theme-change-overlay';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { LoadingScreen } from '@/components/ui/loading-screen';
 import { AppFonts } from '@/constants/fonts';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAppDirection } from '@/hooks/use-app-direction';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -19,6 +22,8 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  useTranslation();
+  const { isRTL } = useAppDirection();
   const [fontsLoaded] = useFonts({
     [AppFonts.thin]: require('@/assets/fonts/HelveticaNeueThin.otf'),
     [AppFonts.light]: require('@/assets/fonts/HelveticaNeueLight.otf'),
@@ -32,7 +37,7 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={[styles.root, isRTL && styles.rtl]}>
       <BottomSheetModalProvider>
         <ErrorBoundary>
           <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -113,3 +118,12 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+  rtl: {
+    direction: 'rtl',
+  },
+});

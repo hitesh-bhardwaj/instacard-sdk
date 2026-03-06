@@ -7,6 +7,7 @@ import { ChevronDown } from 'lucide-react-native';
 import { useState } from 'react';
 import { hapticLight } from '@/lib/haptics';
 import { useThemeStore } from '@/hooks/use-theme-store';
+import { useTranslation } from 'react-i18next';
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
@@ -16,49 +17,16 @@ import Animated, {
     Easing,
 } from 'react-native-reanimated';
 
-interface FAQItem {
-    id: string;
-    question: string;
-    answer: string;
-}
-
-const FAQ_DATA: FAQItem[] = [
-    {
-        id: '1',
-        question: 'How do I add a new card?',
-        answer: 'To add a new card, tap the "+" button on the cards screen. You can then choose to add a virtual or physical card by following the on-screen instructions.',
-    },
-    {
-        id: '2',
-        question: 'How do I view my card details?',
-        answer: 'Tap on any card in your wallet to view its details. You can see the card number, expiry date, and CVV by authenticating with your biometrics or PIN.',
-    },
-    {
-        id: '3',
-        question: 'Is my card information secure?',
-        answer: 'Yes, all your card information is encrypted and stored securely. We use industry-standard encryption and never store your full card details on our servers.',
-    },
-    {
-        id: '4',
-        question: 'How do I make a payment?',
-        answer: 'You can make payments by selecting a card and tapping the "Pay" button. You can also use QR code scanning for quick payments at supported merchants.',
-    },
-    {
-        id: '5',
-        question: 'How do I contact support?',
-        answer: 'You can reach our support team by emailing support@instacard.com or calling our 24/7 helpline at 1-800-INSTACARD.',
-    },
-];
-
 interface FAQRowProps {
-    item: FAQItem;
+    id: string;
     isExpanded: boolean;
     onToggle: () => void;
 }
 
-function FAQRow({ item, isExpanded, onToggle }: FAQRowProps) {
+function FAQRow({ id, isExpanded, onToggle }: FAQRowProps) {
     const colors = useInstacardColors();
     const { isDarkMode } = useThemeStore();
+    const { t } = useTranslation();
 
     const animationProgress = useSharedValue(isExpanded ? 1 : 0);
     const measuredHeight = useSharedValue(0);
@@ -128,9 +96,11 @@ function FAQRow({ item, isExpanded, onToggle }: FAQRowProps) {
                 style={rowStyles.header}
 
                 accessibilityRole="button"
-                accessibilityLabel={item.question}
+                accessibilityLabel={t(`cards.help.faq.${id}.question`)}
             >
-                <Text style={[rowStyles.question, { color: colors.textPrimary }]}>{item.question}</Text>
+                <Text style={[rowStyles.question, { color: colors.textPrimary }]}>
+                    {t(`cards.help.faq.${id}.question`)}
+                </Text>
                 <TouchableOpacity activeOpacity={0.6} onPress={() => {
                     hapticLight();
                     onToggle();
@@ -142,7 +112,9 @@ function FAQRow({ item, isExpanded, onToggle }: FAQRowProps) {
             </Pressable>
             <Animated.View style={[rowStyles.answerContainer, contentStyle]}>
                 <View onLayout={handleContentLayout} style={rowStyles.answerInner}>
-                    <Text style={[rowStyles.answer, { color: colors.textSecondary }]}>{item.answer}</Text>
+                    <Text style={[rowStyles.answer, { color: colors.textSecondary }]}>
+                        {t(`cards.help.faq.${id}.answer`)}
+                    </Text>
                 </View>
             </Animated.View>
         </Animated.View>
@@ -202,6 +174,7 @@ export default function HelpAndSupportScreen() {
     const insets = useSafeAreaInsets();
     const colors = useInstacardColors();
     const [expandedId, setExpandedId] = useState<string | null>(null);
+    const { t } = useTranslation();
 
     const handleToggle = (id: string) => {
         setExpandedId(expandedId === id ? null : id);
@@ -211,7 +184,7 @@ export default function HelpAndSupportScreen() {
         <View style={[styles.container, { backgroundColor: colors.primary }]}>
             <StatusBar style="light" />
             <CardsHeader
-                subtitle={'Help & Support'}
+                subtitle={t('cards.header.helpSupport')}
                 showHomeIcon={false}
             />
 
@@ -221,14 +194,16 @@ export default function HelpAndSupportScreen() {
                     contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 20 }]}
                     showsVerticalScrollIndicator={false}
                 >
-                    <Text style={[styles.headingText, { color: colors.textPrimary }]}>Help Topics</Text>
+                    <Text style={[styles.headingText, { color: colors.textPrimary }]}>
+                        {t('cards.helpTopics')}
+                    </Text>
 
-                    {FAQ_DATA.map((item) => (
+                    {['1', '2', '3', '4', '5'].map((id) => (
                         <FAQRow
-                            key={item.id}
-                            item={item}
-                            isExpanded={expandedId === item.id}
-                            onToggle={() => handleToggle(item.id)}
+                            key={id}
+                            id={id}
+                            isExpanded={expandedId === id}
+                            onToggle={() => handleToggle(id)}
                         />
                     ))}
                 </ScrollView>
