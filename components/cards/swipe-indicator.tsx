@@ -60,8 +60,8 @@ export function SwipeIndicator({
   const hintText = totalCount === 1
     ? <Text style={styles.hint}><Text style={styles.hintBold}>Tap</Text> to view card details</Text>
     : canGoRight
-      ? <Text style={styles.hint}><Text style={styles.hintBold}>Tap</Text> to view details & <Text style={styles.hintBold}>Swipe</Text> left to see next cards</Text>
-      : <Text style={styles.hint}><Text style={styles.hintBold}>Swipe back</Text> to see previous cards</Text>;
+      ? <Text style={styles.hint}><Text style={styles.hintBold}>Tap</Text> to view details & <Text style={styles.hintBold}>← Swipe Left</Text> to see next cards</Text>
+      : <Text style={styles.hint}><Text style={styles.hintBold}>Swipe Right →</Text> to see previous cards</Text>;
 
   const handlePrevious = () => {
     if (canGoLeft && onPreviousPress) {

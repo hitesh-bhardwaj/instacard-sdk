@@ -1,6 +1,6 @@
 import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { StatusBar } from 'expo-status-bar';
-import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { LayoutChangeEvent, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { CardsHeader } from '@/components/cards/cards-header';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChevronDown } from 'lucide-react-native';
@@ -61,7 +61,7 @@ function FAQRow({ item, isExpanded, onToggle }: FAQRowProps) {
     const { isDarkMode } = useThemeStore();
 
     const animationProgress = useSharedValue(isExpanded ? 1 : 0);
-    const contentHeight = useSharedValue(0);
+    const measuredHeight = useSharedValue(0);
 
     // Update animation when isExpanded changes
     React.useEffect(() => {
@@ -87,7 +87,7 @@ function FAQRow({ item, isExpanded, onToggle }: FAQRowProps) {
         const height = interpolate(
             animationProgress.value,
             [0, 1],
-            [0, 80],
+            [0, measuredHeight.value],
             Extrapolation.CLAMP
         );
         const opacity = interpolate(
@@ -115,6 +115,13 @@ function FAQRow({ item, isExpanded, onToggle }: FAQRowProps) {
         };
     });
 
+    const handleContentLayout = (event: LayoutChangeEvent) => {
+        const { height } = event.nativeEvent.layout;
+        if (height > 0) {
+            measuredHeight.value = height;
+        }
+    };
+
     return (
         <Animated.View style={[rowStyles.container, { backgroundColor: colors.cardBackground }, containerStyle]}>
             <Pressable
@@ -134,7 +141,9 @@ function FAQRow({ item, isExpanded, onToggle }: FAQRowProps) {
                 </TouchableOpacity>
             </Pressable>
             <Animated.View style={[rowStyles.answerContainer, contentStyle]}>
-                <Text style={[rowStyles.answer, { color: colors.textSecondary }]}>{item.answer}</Text>
+                <View onLayout={handleContentLayout} style={rowStyles.answerInner}>
+                    <Text style={[rowStyles.answer, { color: colors.textSecondary }]}>{item.answer}</Text>
+                </View>
             </Animated.View>
         </Animated.View>
     );
@@ -171,6 +180,13 @@ const rowStyles = StyleSheet.create({
         fontWeight: '500',
     },
     answerContainer: {
+        overflow: 'hidden',
+    },
+    answerInner: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
         paddingHorizontal: 16,
         paddingLeft: 16,
     },

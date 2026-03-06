@@ -4,7 +4,7 @@ import HomeIcon from '@/assets/svg/home.svg';
 import AddIcon from '@/assets/svg/add.svg';
 import ScanIcon from '@/assets/svg/scan.svg';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { hapticLight, hapticMedium } from '@/lib/haptics';
 import { Gift, GiftIcon, LucideGift, Plus } from 'lucide-react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -33,12 +33,14 @@ export function FloatingBottomBar({
       duration: 1000,
     });
   };
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
   const insets = useSafeAreaInsets();
 
   return (
     <>
 
-      <View style={[styles.bottomBar, { bottom: insets.bottom + 24 }]}>
+      <View style={[styles.bottomBar, { bottom: insets.bottom + 40 }]}>
         {/* <TouchableOpacity
         style={styles.bottomAction}
         onPress={() => {
@@ -83,10 +85,10 @@ export function FloatingBottomBar({
 
 
       </View>
-      <TouchableOpacity style={[styles.addGiftCardText, { bottom: insets.bottom - 10 }]} activeOpacity={0.8} onPress={onAddGiftPress}>
-        <View style={{ width: 20, height: 20, marginBottom:5, alignItems: 'center', justifyContent: 'center' }}>
+      <TouchableOpacity style={[styles.addGiftCardText, { bottom: insets.bottom }]} activeOpacity={0.8} onPress={onAddGiftPress}>
+        <View style={{ width: 20, height: 20, marginBottom: 5, alignItems: 'center', justifyContent: 'center' }}>
 
-            <LucideGift width={20} height={20} color={isDarkMode ? '#ffffff' : InstacardColors.textSecondary} />
+          <LucideGift width={20} height={20} color={isDarkMode ? '#ffffff' : InstacardColors.textSecondary} />
         </View>
         <Text style={{ color: isDarkMode ? '#ffffff' : InstacardColors.textSecondary }}>Add Gift Card</Text>
       </TouchableOpacity >
@@ -94,7 +96,7 @@ export function FloatingBottomBar({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   bottomBar: {
     position: 'absolute',
     alignSelf: 'center',
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
     transform: [{ translateX: '-50%' }],
     height: 70,
     gap: 20,
-    backgroundColor: InstacardColors.primary,
+    backgroundColor: colors.primary,
     borderRadius: 50,
     flexDirection: 'row',
     alignItems: 'center',
@@ -121,7 +123,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   bottomText: {
-    color: InstacardColors.textOnPrimary,
+    color: colors.textOnPrimary,
     fontSize: 16,
   },
   centerSlot: {
@@ -138,11 +140,11 @@ const styles = StyleSheet.create({
     width: 55,
     height: 55,
     borderRadius: 50,
-    backgroundColor: InstacardColors.primary,
+    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
     borderColor: InstacardColors.white,
   },
-  addGiftCardText: { position: 'absolute', left: 0, right: 0, textAlign: 'center', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, display:'flex' }
+  addGiftCardText: { position: 'absolute', left: 0, right: 0, textAlign: 'center', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, display: 'flex' }
 });

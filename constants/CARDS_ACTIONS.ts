@@ -101,11 +101,11 @@ export const ACTIONS: ActionItem[] = [
   },
   {
     id: "link-physical",
-    title: "Link to Physical Card",
+  title: "Link Virtual / Physical Card",
     icon: LinkIcon,
     iconDark: LinkIconDark,
     faqData: {
-      heading: "Link to a Physical Universal or Sigma Instacard",
+    heading: "Link Virtual Instacard with Physical Universal or Sigma Instacard",
       bulletPoints: [
         "You can purchase a Universal Card or a Sigma card from your Bank or any Agent, Marketplace or order online.",
         "Universal Card or Sigma Card offer unified card experience such that you can link any Virtual Instacard to them to start using the virtual Instacard on any POS/ATM through the linked Universal or Sigma Instacard.",

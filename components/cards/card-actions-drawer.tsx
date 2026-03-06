@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CardData, CardImages } from '@/constants/cards';
 import { ACTIONS, type ActionItem } from '@/constants/CARDS_ACTIONS';
 import { InstacardColors, useInstacardColors } from '@/constants/colors';
+import { useCardModeStore } from '@/hooks/use-card-mode-store';
 import { useThemeStore } from '@/hooks/use-theme-store';
 import { hapticLight, hapticSelection } from '@/lib/haptics';
 import { DEV_SDK_CONFIG } from '@/lib/instacard-sdk';
@@ -51,6 +52,7 @@ export function CardActionsDrawer({
   const [linkPhysicalVisible, setLinkPhysicalVisible] = useState<boolean>(false);
   const [viewAddGift, setViewAddGift] = useState<boolean>(false);
   const [makeOnlinePaymentsVisible, setMakeOnlinePaymentsVisible] = useState<boolean>(false);
+  const { mode: cardMode } = useCardModeStore();
 
   const snapPoints = useMemo(() => [DRAWER_HEIGHT], []);
 
@@ -64,15 +66,22 @@ export function CardActionsDrawer({
   const selectedCardType = useMemo(() => selectedCard?.cardType ?? 'debit', [selectedCard]);
 
   const routes = useMemo(() => {
-    return {
+    const base = {
       manage: `/manage-card/${selectedCardType}`,
       details: `/card-detail/${selectedCardType}`,
-      // linkPhysical: `/link-physical-card-${selectedCardType}`,
       makeOnlinePayments: `/make-online-payments`,
-      linkPhysical: `/link-physical-card`,
       addGift: `/add-a-gift-card`,
     };
-  }, [selectedCardType]);
+
+    const linkPhysicalRoute = `/link-physical-card`;
+    const linkVirtualRoute = `/link-virtual-card`;
+
+    return {
+      ...base,
+      // When viewing virtual cards, link to physical; when viewing universal/physical cards, link to virtual.
+      linkPhysical: cardMode === 'virtual' ? linkPhysicalRoute : linkVirtualRoute,
+    };
+  }, [cardMode, selectedCardType]);
 
   const handleActionOpen = useCallback(
     (actionId: string) => {
@@ -219,6 +228,13 @@ export function CardActionsDrawer({
           <View style={styles.actionsGrid}>
             {ACTIONS.map((action) => {
               const IconComponent = isDarkMode && action.iconDark ? action.iconDark : action.icon;
+              const displayTitle =
+                action.id === 'link-physical'
+                  ? cardMode === 'virtual'
+                    ? 'Link to Universal Card'
+                    : 'Link to Virtual Card'
+                  : action.title;
+
               return (
                 <TouchableOpacity
                   key={action.id}
@@ -232,7 +248,7 @@ export function CardActionsDrawer({
                     handleActionOpen(action.id);
                   }}
                   accessibilityRole="button"
-                  accessibilityLabel={action.title}
+                  accessibilityLabel={displayTitle}
                 >
                   <View style={styles.actionHeader}>
                     {IconComponent && (
@@ -256,7 +272,7 @@ export function CardActionsDrawer({
                     </TouchableOpacity>
 
                   </View>
-                  <Text style={styles.actionText}>{action.title}</Text>
+                  <Text style={styles.actionText}>{displayTitle}</Text>
                 </TouchableOpacity>
               );
             })}

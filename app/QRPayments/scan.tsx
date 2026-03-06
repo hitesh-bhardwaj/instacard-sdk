@@ -189,7 +189,7 @@ export default function ScanScreen() {
         subtitle="Scan QR Code"
         showHomeIcon={false}
       />
-      Camera View - Middle Layer with rounded top
+      {/* Camera View - Middle Layer with rounded top */}
       <View style={styles.cameraContainer}>
         <CameraView
           style={styles.camera}

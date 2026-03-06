@@ -1,4 +1,4 @@
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { AppFonts } from '@/constants/fonts';
 import { hapticLight } from '@/lib/haptics';
 import { Ionicons } from '@expo/vector-icons';
@@ -40,6 +40,9 @@ function NumberButton({
     transform: [{ scale: scale.value }],
   }));
 
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
+
   return (
     <AnimatedTouchableOpacity
       style={[styles.numButton, animatedStyle]}
@@ -58,6 +61,8 @@ function NumberButton({
 }
 
 export function NumberPad({ onNumberPress, onBackspace }: NumberPadProps) {
+  const colors = useInstacardColors();
+  const styles = createStyles(colors);
   return (
     <View style={styles.numPad}>
       <View style={styles.numRow}>
@@ -84,9 +89,9 @@ export function NumberPad({ onNumberPress, onBackspace }: NumberPadProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   numPad: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.lightGray,
     paddingVertical: 8,
     paddingBottom: 24,
   },
@@ -103,6 +108,6 @@ const styles = StyleSheet.create({
   numText: {
     fontSize: 24,
     fontFamily: AppFonts.medium,
-    color: InstacardColors.textPrimary,
+    color: colors.textPrimary,
   },
 });

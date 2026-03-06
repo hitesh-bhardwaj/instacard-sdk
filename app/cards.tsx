@@ -10,6 +10,7 @@ import { ProfileDrawer } from '@/components/Profile-Drawer/profile-drawer';
 import { PWAWebViewModal } from '@/components/pwa/pwa-webview-modal';
 import { CardData, mockCards } from '@/constants/cards';
 import { InstacardColors, useInstacardColors } from '@/constants/colors';
+import { useCardModeStore } from '@/hooks/use-card-mode-store';
 import { useThemeStore } from '@/hooks/use-theme-store';
 import { DEV_SDK_CONFIG, SDKResult } from '@/lib/instacard-sdk';
 import { BlurView } from 'expo-blur';
@@ -26,8 +27,8 @@ export default function CardsScreen() {
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [pwaVisible, setPwaVisible] = useState(false);
   const [viewAddGift, setViewAddGift] = useState(false);
-  const [cardMode, setCardMode] = useState<'virtual' | 'universal'>('virtual');
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const { mode: cardMode, setMode: setCardMode } = useCardModeStore();
   const cardStackRef = useRef<CardStackRef>(null);
 
   const handleAddNewPress = () => {
@@ -62,11 +63,14 @@ export default function CardsScreen() {
    * Handles switching between virtual and universal card modes.
    * Resets selection state when mode changes.
    */
-  const handleModeChange = useCallback((mode: 'virtual' | 'universal') => {
-    setCardMode(mode);
-    setSelectedCardId(null);
-    setCurrentCardIndex(0);
-  }, []);
+  const handleModeChange = useCallback(
+    (mode: 'virtual' | 'universal') => {
+      setCardMode(mode);
+      setSelectedCardId(null);
+      setCurrentCardIndex(0);
+    },
+    [setCardMode],
+  );
 
   // ============================================
   // Computed Values
@@ -241,7 +245,7 @@ export default function CardsScreen() {
         <PWAWebViewModal
           visible={pwaVisible}
           config={DEV_SDK_CONFIG}
-          route="/"
+          route="/add-instacard"
           onClose={handlePWAClose}
         />
 

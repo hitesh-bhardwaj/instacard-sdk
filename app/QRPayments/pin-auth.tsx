@@ -18,7 +18,7 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NumberPad } from '@/components/QRPayments/number-pad';
-import { InstacardColors } from '@/constants/colors';
+import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { AppFonts } from '@/constants/fonts';
 import { hapticLight } from '@/lib/haptics';
 
@@ -51,6 +51,9 @@ function PinInputBoxes({ length, filled, shake }: { length: number; filled: numb
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
   }));
+
+  const colors = useInstacardColors();
+  const styles = createStyles(colors)
 
   return (
     <Animated.View style={[styles.pinBoxesContainer, animatedStyle]}>
@@ -132,6 +135,8 @@ export default function CardPinAuth({
   }, [pin, verifyPin, onVerified, router]);
 
   const isComplete = pin.length === PIN_LENGTH;
+  const colors = useInstacardColors();
+  const styles = createStyles(colors)
 
   useEffect(() => {
     if (pin.length === PIN_LENGTH) {
@@ -152,6 +157,8 @@ export default function CardPinAuth({
     setPin((prev) => prev.slice(0, -1));
   };
 
+
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <StatusBar style="dark" />
@@ -166,7 +173,7 @@ export default function CardPinAuth({
           style={styles.backButton}
           hitSlop={12}
         >
-          <Ionicons name="chevron-back" size={24} color={InstacardColors.textPrimary} />
+          <Ionicons name="chevron-back" size={24} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Verify Payment</Text>
         <View style={styles.headerSpacer} />
@@ -203,10 +210,10 @@ export default function CardPinAuth({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: InstacardColors.white,
+    backgroundColor: colors.white,
   },
   header: {
     flexDirection: 'row',
@@ -224,7 +231,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontFamily: AppFonts.medium,
-    color: InstacardColors.textPrimary,
+    color: colors.textPrimary,
   },
   headerSpacer: {
     width: 40,
@@ -238,14 +245,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 14,
     fontFamily: AppFonts.regular,
-    color: InstacardColors.textSecondary,
+    color: colors.textSecondary,
     textAlign: 'center',
     marginBottom: 24,
   },
   cardContainer: {
     width: '65%',
     aspectRatio: 1.586,
-    shadowColor: '#000',
+    shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.15,
     shadowRadius: 16,
@@ -260,7 +267,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 16,
     fontFamily: AppFonts.medium,
-    color: InstacardColors.textPrimary,
+    color: colors.textPrimary,
     letterSpacing: 2,
   },
   pinSection: {
@@ -272,7 +279,7 @@ const styles = StyleSheet.create({
   enterPinText: {
     fontSize: 14,
     fontFamily: AppFonts.regular,
-    color: InstacardColors.textSecondary,
+    color: colors.textSecondary,
     textAlign: 'center',
   },
   pinBoxesContainer: {
@@ -284,19 +291,19 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 12,
     borderWidth: 1.5,
-    borderColor: InstacardColors.border,
-    backgroundColor: InstacardColors.white,
+    borderColor: colors.border,
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
   pinBoxFilled: {
-    borderColor: InstacardColors.primary,
+    borderColor: colors.primary,
   },
   pinDotInside: {
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: InstacardColors.primary,
+    backgroundColor: colors.primary,
   },
   errorContainer: {
     height: 20,
@@ -305,7 +312,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 13,
     fontFamily: AppFonts.regular,
-    color: '#EF4444',
+    color: colors.error,
     textAlign: 'center',
   },
   footer: {
@@ -319,6 +326,6 @@ const styles = StyleSheet.create({
   forgotPinText: {
     fontSize: 14,
     fontFamily: AppFonts.medium,
-    color: InstacardColors.primary,
+    color: colors.primary,
   },
 });

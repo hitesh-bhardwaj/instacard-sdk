@@ -7,6 +7,7 @@ import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
+import { ColorThemeChangeOverlay } from '@/components/ui/color-theme-change-overlay';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { LoadingScreen } from '@/components/ui/loading-screen';
 import { AppFonts } from '@/constants/fonts';
@@ -35,74 +36,77 @@ export default function RootLayout() {
       <BottomSheetModalProvider>
         <ErrorBoundary>
           <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="cards"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                  animationDuration: 300,
-                }}
-              />
-              <Stack.Screen
-                name="search"
-                options={{
-                  headerShown: false,
-                  animation: 'fade',
-                  animationDuration: 300,
-                }}
-              />
-              <Stack.Screen
-                name="help-and-support"
-                options={{
-                  headerShown: false,
-                  animation: 'fade',
-                  animationDuration: 300,
-                }}
-              />
-              <Stack.Screen
-                name="card-detail"
-                options={{
-                  headerShown: false,
-                  animation: 'fade',
-                  animationDuration: 300,
-                }}
-              />
-              <Stack.Screen
-                name="add-instacard-type"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                }}
-              />
-              <Stack.Screen
-                name="add-instacard-debit"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                }}
-              />
-              <Stack.Screen
-                name="add-instacard-otp"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                }}
-              />
-              <Stack.Screen
-                name="QRPayments"
-                options={{
-                  headerShown: false,
-                  presentation: 'card',
-                  animation: 'fade',
-                  animationDuration: 300,
-                  
-                }}
-              />
-              <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal', }} />
-            </Stack>
-            <StatusBar style="auto" />
+            <>
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="cards"
+                  options={{
+                    headerShown: false,
+                    animation: 'slide_from_right',
+                    animationDuration: 300,
+                  }}
+                />
+                <Stack.Screen
+                  name="search"
+                  options={{
+                    headerShown: false,
+                    animation: 'fade',
+                    animationDuration: 300,
+                  }}
+                />
+                <Stack.Screen
+                  name="help-and-support"
+                  options={{
+                    headerShown: false,
+                    animation: 'fade',
+                    animationDuration: 300,
+                  }}
+                />
+                <Stack.Screen
+                  name="card-detail"
+                  options={{
+                    headerShown: false,
+                    animation: 'fade',
+                    animationDuration: 300,
+                  }}
+                />
+                <Stack.Screen
+                  name="add-instacard-type"
+                  options={{
+                    headerShown: false,
+                    animation: 'slide_from_right',
+                  }}
+                />
+                <Stack.Screen
+                  name="add-instacard-debit"
+                  options={{
+                    headerShown: false,
+                    animation: 'slide_from_right',
+                  }}
+                />
+                <Stack.Screen
+                  name="add-instacard-otp"
+                  options={{
+                    headerShown: false,
+                    animation: 'slide_from_right',
+                  }}
+                />
+                <Stack.Screen
+                  name="QRPayments"
+                  options={{
+                    headerShown: false,
+                    presentation: 'card',
+                    animation: 'fade',
+                    animationDuration: 300,
+                    
+                  }}
+                />
+                <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal', }} />
+              </Stack>
+              <ColorThemeChangeOverlay />
+              <StatusBar style="auto" />
+            </>
           </ThemeProvider>
         </ErrorBoundary>
       </BottomSheetModalProvider>
