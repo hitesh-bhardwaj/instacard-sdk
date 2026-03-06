@@ -138,6 +138,7 @@ const createStyles = (colors: typeof InstacardColors) => StyleSheet.create({
     // top: -26,
     // left: 0,
     // right: 0,
+
     alignItems: 'center',
   },
   centerButton: {
