@@ -23,7 +23,7 @@ export function CardItem({ card, onPress, style }: CardItemProps) {
     >
       <View style={styles.cardWrapper}>
         <Image
-          source={CardImages[card.imageId]}
+          source={CardImages[card.imageUrl]}
           style={styles.cardImage}
           resizeMode="contain"
           accessibilityIgnoresInvertColors

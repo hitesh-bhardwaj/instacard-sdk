@@ -12,6 +12,7 @@ import { useThemeStore } from '@/hooks/use-theme-store';
 import { useTranslation } from 'react-i18next';
 
 interface FloatingBottomBarProps {
+  mode: 'virtual' | 'universal';
   onHomePress?: () => void;
   onScanPress?: () => void;
   onAddPress?: () => void;
@@ -19,6 +20,7 @@ interface FloatingBottomBarProps {
 }
 
 export function FloatingBottomBar({
+  mode,
   onHomePress,
   onScanPress,
   onAddPress,
@@ -69,7 +71,7 @@ export function FloatingBottomBar({
           <Animated.View style={rotationStyle}>
             <Plus width={25} height={25} color={InstacardColors.textOnPrimary} />
           </Animated.View>
-          <Text style={styles.bottomText}>{t('cards.bottomBar.addInstacard')}</Text>
+          <Text style={styles.bottomText}>{mode === 'virtual' ? 'Add Virtual Card' : 'Add Universal Card'}</Text>
         </TouchableOpacity>
         <View style={styles.centerButtonWrap}>
           <TouchableOpacity

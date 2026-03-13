@@ -24,7 +24,11 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.instacardsdk"
+      "package": "com.anonymous.instacardsdk",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "plugins": [
       "expo-router",
@@ -63,7 +67,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "ef078ae9-802b-40f1-a21f-bc55066816da"
+        "projectId": "71fd7c87-7d23-4e86-b01a-512fcf090149"
       }
     }
   }

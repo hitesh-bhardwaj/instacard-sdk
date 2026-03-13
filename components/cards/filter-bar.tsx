@@ -9,9 +9,10 @@ import { hapticLight } from '@/lib/haptics';
 
 import { AnimatedToggle } from '../ui/animated-toggle';
 import { CardFilterType, FilterDropdown } from './filter-dropdown';
+import { SortByValue, SortDropdown } from './sort-dropdown';
 
 // Re-export for convenience
-export type { CardFilterType };
+export type { CardFilterType, SortByValue };
 
 export type FilterTab = 'all' | 'recent';
 
@@ -20,10 +21,10 @@ interface FilterBarProps {
   cardFilters?: CardFilterType[];
   /** Called when user changes filter selection */
   onCardFiltersChange?: (filters: CardFilterType[]) => void;
-  /** Whether "Recently Used" filter is active */
-  recentFilterActive?: boolean;
-  /** Called when user taps Recently Used / Sort icon */
-  onRecentFilterPress?: () => void;
+  /** Current sort mode (e.g. recent / most-used) */
+  sortBy?: SortByValue;
+  /** Called when user selects a different sort mode */
+  onSortChange?: (sort: SortByValue) => void;
   mode: 'virtual' | 'universal';
   onModeChange: (mode: 'virtual' | 'universal') => void;
   isDarkMode?: boolean;
@@ -32,18 +33,26 @@ interface FilterBarProps {
 export function FilterBar({
   cardFilters = ['all'],
   onCardFiltersChange,
-  recentFilterActive = false,
-  onRecentFilterPress,
+  sortBy = 'recent',
+  onSortChange,
   mode,
   onModeChange,
   isDarkMode,
-}: FilterBarProps) {  
-  const [dropdownVisible, setDropdownVisible] = useState(false);
+}: FilterBarProps) {
+  const [filterDropdownVisible, setFilterDropdownVisible] = useState(false);
+  const [sortDropdownVisible, setSortDropdownVisible] = useState(false);
   const { t } = useTranslation();
 
   const handleFilterTabPress = () => {
     hapticLight();
-    setDropdownVisible(true);
+    setFilterDropdownVisible(true);
+    setSortDropdownVisible(false);
+  };
+
+  const handleSortTabPress = () => {
+    hapticLight();
+    setSortDropdownVisible(true);
+    setFilterDropdownVisible(false);
   };
 
   const colors = useInstacardColors();
@@ -100,32 +109,34 @@ export function FilterBar({
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.tab, recentFilterActive && styles.tabActive]}
-          onPress={() => {
-            hapticLight();
-            onRecentFilterPress?.();
-          }}
+          style={[styles.tab, styles.tabActive]}
+          onPress={handleSortTabPress}
           accessibilityRole="tab"
-          accessibilityLabel={
-            recentFilterActive
-              ? t('cards.filters.recentlyUsedActive')
-              : t('cards.filters.recentlyUsed')
-          }
-          accessibilityState={{ selected: recentFilterActive }}
+          accessibilityLabel={t('cards.sortDropdown.title')}
+          accessibilityState={{ expanded: sortDropdownVisible }}
           activeOpacity={0.7}
         >
           <SortIcon
             width={16}
             height={16}
-            color={recentFilterActive ? colors.primary : colors.textPrimary}
+            color={colors.primary}
           />
         </TouchableOpacity>
       </View>
       <FilterDropdown
-        visible={dropdownVisible}
+        visible={filterDropdownVisible}
         selectedFilters={cardFilters}
         onSelectionChange={handleFiltersChange}
-        onClose={() => setDropdownVisible(false)}
+        onClose={() => setFilterDropdownVisible(false)}
+      />
+      <SortDropdown
+        visible={sortDropdownVisible}
+        selectedSort={sortBy}
+        onSelect={(value) => {
+          onSortChange?.(value);
+          setSortDropdownVisible(false);
+        }}
+        onClose={() => setSortDropdownVisible(false)}
       />
     </View>
   );

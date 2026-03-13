@@ -1,0 +1,168 @@
+[
+  {
+    "id": "card-1",
+    "imageUrl": "debit",
+    "name": "FCMB Debit",
+    "cardNumber": "**** **** **** 1234",
+    "cardType": "debit",
+    "cardForm": "virtual",
+    "recentlyUsed": true,
+    "mostUsed": true,
+    "issuedDate": "2024-01-05"
+  },
+  {
+    "id": "card-2",
+    "imageUrl": "credit",
+    "name": "GTB Credit",
+    "cardNumber": "**** **** **** 1235",
+    "cardType": "credit",
+    "cardForm": "virtual",
+    "recentlyUsed": true,
+    "mostUsed": true,
+    "issuedDate": "2024-02-10"
+  },
+  {
+    "id": "card-3",
+    "imageUrl": "debit",
+    "name": "Access Debit",
+    "cardNumber": "**** **** **** 1236",
+    "cardType": "debit",
+    "cardForm": "virtual",
+    "recentlyUsed": true,
+    "mostUsed": false,
+    "issuedDate": "2024-03-12"
+  },
+  {
+    "id": "card-4",
+    "imageUrl": "prepaid",
+    "name": "Prepaid Card",
+    "cardNumber": "**** **** **** 1237",
+    "cardType": "prepaid",
+    "cardForm": "universal",
+    "recentlyUsed": true,
+    "mostUsed": true,
+    "issuedDate": "2024-04-18"
+  },
+  {
+    "id": "card-5",
+    "imageUrl": "gift",
+    "name": "Gift Card",
+    "cardNumber": "**** **** **** 1238",
+    "cardType": "gift",
+    "cardForm": "universal",
+    "recentlyUsed": true,
+    "mostUsed": false,
+    "issuedDate": "2024-05-20"
+  },
+  {
+    "id": "card-6",
+    "imageUrl": "credit",
+    "name": "FCMB Magic",
+    "cardNumber": "**** **** **** 1239",
+    "cardType": "credit",
+    "cardForm": "universal",
+    "recentlyUsed": false,
+    "mostUsed": true,
+    "issuedDate": "2023-11-15"
+  },
+  {
+    "id": "card-7",
+    "imageUrl": "debit",
+    "name": "GTB Debit",
+    "cardNumber": "**** **** **** 1240",
+    "cardType": "debit",
+    "cardForm": "virtual",
+    "recentlyUsed": false,
+    "mostUsed": false,
+    "issuedDate": "2023-10-22"
+  },
+  {
+    "id": "card-8",
+    "imageUrl": "credit",
+    "name": "Access Credit",
+    "cardNumber": "**** **** **** 1241",
+    "cardType": "credit",
+    "cardForm": "virtual",
+    "recentlyUsed": false,
+    "mostUsed": false,
+    "issuedDate": "2023-09-30"
+  },
+  {
+    "id": "card-9",
+    "imageUrl": "prepaid",
+    "name": "Travel Card",
+    "cardNumber": "**** **** **** 1242",
+    "cardType": "prepaid",
+    "cardForm": "virtual",
+    "recentlyUsed": false,
+    "mostUsed": true,
+    "issuedDate": "2023-08-18"
+  },
+  {
+    "id": "card-10",
+    "imageUrl": "gift",
+    "name": "Reward Card",
+    "cardNumber": "**** **** **** 1243",
+    "cardType": "gift",
+    "cardForm": "virtual",
+    "recentlyUsed": false,
+    "mostUsed": false,
+    "issuedDate": "2023-07-05"
+  },
+  {
+    "id": "card-11",
+    "imageUrl": "prepaid",
+    "name": "Student Card",
+    "cardNumber": "**** **** **** 1244",
+    "cardType": "prepaid",
+    "cardForm": "virtual",
+    "recentlyUsed": false,
+    "mostUsed": false,
+    "issuedDate": "2023-06-12"
+  },
+  {
+    "id": "card-12",
+    "imageUrl": "gift",
+    "name": "Shopping Card",
+    "cardNumber": "**** **** **** 1245",
+    "cardType": "gift",
+    "cardForm": "virtual",
+    "recentlyUsed": false,
+    "mostUsed": true,
+    "issuedDate": "2023-05-01"
+  },
+  {
+    "id": "card-13",
+    "imageUrl": "debit",
+    "name": "FCMB Debit",
+    "cardNumber": "**** **** **** 1246",
+    "cardType": "debit",
+    "cardForm": "virtual",
+    "recentlyUsed": false,
+    "mostUsed": false,
+    "issuedDate": "2023-04-10"
+  },
+  {
+    "id": "card-14",
+    "imageUrl": "credit",
+    "name": "GTB Credit",
+    "cardNumber": "**** **** **** 1247",
+    "cardType": "credit",
+    "cardForm": "virtual",
+    "recentlyUsed": false,
+    "mostUsed": false,
+    "issuedDate": "2023-03-08"
+  },
+  {
+    "id": "card-15",
+    "imageUrl": "debit",
+    "name": "Access Debit",
+    "cardNumber": "**** **** **** 1248",
+    "cardType": "debit",
+    "cardForm": "universal",
+    "recentlyUsed": false,
+    "mostUsed": true,
+    "issuedDate": "2023-02-14"
+  }
+]
+

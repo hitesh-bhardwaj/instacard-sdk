@@ -1,7 +1,7 @@
 import { CardActionsDrawer } from '@/components/cards/card-actions-drawer';
 import { CardStack, CardStackRef } from '@/components/cards/card-stack';
 import { CardsHeader } from '@/components/cards/cards-header';
-import { CardFilterType, FilterBar } from '@/components/cards/filter-bar';
+import { CardFilterType, FilterBar, SortByValue } from '@/components/cards/filter-bar';
 import { FloatingBottomBar } from '@/components/cards/floating-bottom-bar';
 import { GreetingBar } from '@/components/cards/greeting-bar';
 import { SwipeIndicator } from '@/components/cards/swipe-indicator';
@@ -22,7 +22,7 @@ import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 
 export default function CardsScreen() {
   const [cardFilters, setCardFilters] = useState<CardFilterType[]>(['all']);
-  const [recentFilterActive, setRecentFilterActive] = useState(false);
+  const [sortBy, setSortBy] = useState<SortByValue>('recent');
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [profileDrawerVisible, setProfileDrawerVisible] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
@@ -86,20 +86,39 @@ export default function CardsScreen() {
   /**
    * Filters cards based on:
    * 1. Card form (virtual/universal)
-   * 2. Recently used filter
+   * 2. Sort mode (recent / most-used)
    * 3. Card type filters (debit, credit, prepaid, gift)
    */
   const filteredCards = useMemo(() => {
     // First filter by card form (virtual/universal)
     let cards = mockCards.filter((card) => card.cardForm === cardMode);
 
-    // Filter by recently used when sort/recent tab is active
-    if (recentFilterActive) {
-      cards = [...cards].sort(
-        (a, b) =>
-          new Date(b.issuedDate).getTime() - new Date(a.issuedDate).getTime()
+    // Sort cards based on selected sort mode
+    cards = [...cards].sort((a, b) => {
+      if (sortBy === 'recent') {
+        // Newest cards first
+        return (
+          new Date(b.issuedDate).getTime() -
+          new Date(a.issuedDate).getTime()
+        );
+      }
+
+      // "Most used" - primary sort on mostUsed flag
+      if (a.mostUsed !== b.mostUsed) {
+        return a.mostUsed ? -1 : 1;
+      }
+
+      // Secondary: recentlyUsed cards first
+      if (a.recentlyUsed !== b.recentlyUsed) {
+        return a.recentlyUsed ? -1 : 1;
+      }
+
+      // Fallback: newest first
+      return (
+        new Date(b.issuedDate).getTime() -
+        new Date(a.issuedDate).getTime()
       );
-    }
+    });
 
     // Then filter by card type filters
     // If 'all' is selected or no filters, show all cards of the selected form
@@ -111,7 +130,7 @@ export default function CardsScreen() {
     return cards.filter((card) =>
       cardFilters.includes(card.cardType as CardFilterType)
     );
-  }, [cardFilters, cardMode, recentFilterActive]);
+  }, [cardFilters, cardMode, sortBy]);
 
   /**
    * Handles card filter changes and resets selection state
@@ -209,9 +228,9 @@ export default function CardsScreen() {
               onModeChange={handleModeChange}
               cardFilters={cardFilters}
               onCardFiltersChange={handleCardFiltersChange}
-              recentFilterActive={recentFilterActive}
-              onRecentFilterPress={() => {
-                setRecentFilterActive((prev) => !prev);
+              sortBy={sortBy}
+              onSortChange={(value) => {
+                setSortBy(value);
                 setSelectedCardId(null);
                 setCurrentCardIndex(0);
               }}
@@ -231,6 +250,7 @@ export default function CardsScreen() {
 
         {/* Floating bottom navigation bar */}
         <FloatingBottomBar
+        mode={cardMode}
           onHomePress={() => {
             // TODO: Navigate to home
           }}

@@ -77,7 +77,7 @@ export default function CardDetailScreen() {
           sharedTransitionTag={`card-${card.id}`}
         >
           <Image
-            source={CardImages[card.imageId]}
+            source={CardImages[card.imageUrl]}
             style={styles.cardImage}
             resizeMode="contain"
             accessibilityIgnoresInvertColors

@@ -1,6 +1,7 @@
 import { InstacardColors, useInstacardColors } from '@/constants/colors';
 import { useAppDirection } from '@/hooks/use-app-direction';
 import { useThemeStore } from '@/hooks/use-theme-store';
+import { AccessFeaturesDropdown } from './access-features-dropdown';
 import { ArrowLeft, ArrowRight, HelpCircle, LogOut, Moon, User } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -8,6 +9,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LanguageDropdown } from './language-dropdown';
 import { MenuRow } from './menu-row';
 import { ToggleSwitch } from './toggle-switch';
+import { router } from 'expo-router';
+import { hapticLight } from '@/lib/haptics';
 
 interface ProfileContentProps {
   userName?: string;
@@ -39,71 +42,82 @@ export function ProfileContent({ userName = 'User', onClose }: ProfileContentPro
 
   return (
     <View style={[styles.wrapper, isRTL && styles.rtl]}>
-        <View style={[styles.header, { paddingTop: insets.top + 20, paddingBottom: 36 }, isRTL && styles.rtl]}>
-          <Text style={[styles.headerTitle, isRTL && styles.rtlText]}>{t('profile.settings')}</Text>
-          <TouchableOpacity onPress={onClose} hitSlop={12}>
-            <CloseArrow size={28} color={colors.textPrimary} />
-          </TouchableOpacity>
+      <View style={[styles.header, { paddingTop: insets.top + 20, paddingBottom: 36 }, isRTL && styles.rtl]}>
+
+
+      </View>
+
+
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 32 },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+        <TouchableOpacity
+          onPress={() => {
+            hapticLight();
+            router.back();
+          }}
+          style={{ flexDirection: 'row', alignItems: 'center', marginBottom:16, justifyContent: 'center', paddingVertical: 20, paddingHorizontal: 0, width: '100%', gap: 8, backgroundColor: colors.primary, padding: 12, borderRadius: 16 }}
+        >
+          <ArrowLeft size={16} color={'#ffffff'} style={isRTL ? { transform: [{ rotate: '180deg' }] } : undefined} />
+          <Text style={{ fontSize: 16, color: '#FFFFFF', textAlign: 'center' }}>Go back to my banking app</Text>
+        </TouchableOpacity>˝
+        <View style={styles.avatarSection}>
+
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>{initials}</Text>
+          </View>
+          <Text style={styles.avatarName}>{userName}</Text>
+          <Text style={styles.avatarEmail}>user@example.com</Text>
         </View>
 
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={[
-            styles.scrollContent,
-            { paddingTop: insets.top + 100, paddingBottom: insets.bottom + 32 },
-          ]}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.avatarSection}>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>{initials}</Text>
-            </View>
-            <Text style={styles.avatarName}>{userName}</Text>
-            <Text style={styles.avatarEmail}>user@example.com</Text>
-          </View>
-
-          <View style={[styles.menuList, isRTL && styles.rtl]}>
-            <MenuRow
-              icon={<User size={20} color={isDarkMode ? '#ffffff' : colors.primary} />}
-              label={t('profile.profileSettings')}
-              onPress={() => { }}
-              isRTL={isRTL}
-            />
-            <LanguageDropdown
-              selectedLang={selectedLang}
-              onSelect={() => {}}
-              isRTL={isRTL}
-              isDarkMode={isDarkMode}
-            />
-            <MenuRow
-              icon={<Moon size={20} color={isDarkMode ? '#ffffff' : colors.primary} />}
-              label={t('profile.darkMode')}
-              onPress={() => { }}
-              showChevron={false}
-              rightElement={
-                <ToggleSwitch isRTL={isRTL} value={isDarkMode} onToggle={handleDarkModeToggle} />
-              }
-              isRTL={isRTL}
-            />
-            <MenuRow
+        <View style={[styles.menuList, isRTL && styles.rtl]}>
+          <MenuRow
+            icon={<User size={20} color={isDarkMode ? '#ffffff' : colors.primary} />}
+            label={t('profile.profileSettings')}
+            onPress={() => { }}
+            isRTL={isRTL}
+          />
+          <LanguageDropdown
+            selectedLang={selectedLang}
+            onSelect={() => { }}
+            isRTL={isRTL}
+            isDarkMode={isDarkMode}
+          />
+          <AccessFeaturesDropdown isRTL={isRTL} />
+          <MenuRow
+            icon={<Moon size={20} color={isDarkMode ? '#ffffff' : colors.primary} />}
+            label={t('profile.darkMode')}
+            onPress={() => { }}
+            showChevron={false}
+            rightElement={
+              <ToggleSwitch isRTL={isRTL} value={isDarkMode} onToggle={handleDarkModeToggle} />
+            }
+            isRTL={isRTL}
+          />
+          {/* <MenuRow
               icon={<HelpCircle size={20} color={isDarkMode ? '#ffffff' : colors.primary} />}
               label={t('profile.helpSupport')}
               onPress={() => { }}
               isRTL={isRTL}
-            />
-            <MenuRow
-              icon={<LogOut size={20} color={InstacardColors.error} />}
-              label={t('profile.signOut')}
-              onPress={() => onClose()}
-              showChevron={false}
-              danger
-              isRTL={isRTL}
-            />
-          </View>
+            /> */}
+          <MenuRow
+            icon={<LogOut size={20} color={InstacardColors.error} />}
+            label={t('profile.signOut')}
+            onPress={() => onClose()}
+            showChevron={false}
+            danger
+            isRTL={isRTL}
+          />
+        </View>
 
-          <Text style={styles.versionText}>{t('profile.version')}</Text>
-        </ScrollView>
-      </View>
+        <Text style={styles.versionText}>{t('profile.version')}</Text>
+      </ScrollView>
+    </View>
   );
 }
 

@@ -83,6 +83,16 @@ export function CardActionsDrawer({
     };
   }, [cardMode, selectedCardType]);
 
+  // Filter actions based on card mode - hide payment actions for universal mode
+  const filteredActions = useMemo(() => {
+    if (cardMode === 'universal') {
+      return ACTIONS.filter(
+        (action) => action.id !== 'make-online-payments' && action.id !== 'contactless-default'
+      );
+    }
+    return ACTIONS;
+  }, [cardMode]);
+
   const handleActionOpen = useCallback(
     (actionId: string) => {
       if (!selectedCard) return;
@@ -213,7 +223,7 @@ export function CardActionsDrawer({
                     accessibilityState={{ selected: isSelected }}
                   >
                     <Image
-                      source={CardImages[card.imageId]}
+                      source={CardImages[card.imageUrl]}
                       style={styles.cardThumbImage}
                       resizeMode="contain"
                       accessibilityIgnoresInvertColors
@@ -226,7 +236,7 @@ export function CardActionsDrawer({
           </View>
 
           <View style={styles.actionsGrid}>
-            {ACTIONS.map((action) => {
+            {filteredActions.map((action) => {
               const IconComponent = isDarkMode && action.iconDark ? action.iconDark : action.icon;
               const displayTitle =
                 action.id === 'link-physical'
@@ -240,7 +250,7 @@ export function CardActionsDrawer({
                   key={action.id}
                   style={[
                     styles.actionCard,
-                    ACTIONS.indexOf(action) === ACTIONS.length - 1 && styles.actionCardFullWidth
+                    filteredActions.indexOf(action) === filteredActions.length - 1 && styles.actionCardFullWidth
                   ]}
                   activeOpacity={0.9}
                   onPress={() => {
